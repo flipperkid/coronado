@@ -146,4 +146,14 @@ public class TradeKingProxy {
                         AccountHoldingsResponse.ListOfAccountHoldings.class);
         return holdings.get();
     }
-}
+
+    public String getHistoricData()
+            throws OAuthMessageSignerException,
+            OAuthExpectationFailedException, OAuthCommunicationException,
+            IOException, InterruptedException {
+        final String url = "market/historical/search.json?symbols=AAPL&interval=daily&startdate=2013-01-01&enddate=2013-02-24";
+        final SyncRequest request = new SyncRequest(url, client);
+
+        final String response = request.send();
+        return response;
+    }}

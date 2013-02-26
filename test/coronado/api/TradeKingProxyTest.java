@@ -75,4 +75,12 @@ public class TradeKingProxyTest {
         List<AccountHoldingsResponse> accountHoldings = apiProxy.getHoldings();
         System.out.println(accountHoldings);
     }
+
+    @Test
+    public void testGetHistoricData() throws Exception {
+        TradeKingProxy apiProxy = new TradeKingProxy(new SecretKeys());
+        String historicData = apiProxy.getHistoricData();
+        System.out.println(historicData);
+    }
+
 }

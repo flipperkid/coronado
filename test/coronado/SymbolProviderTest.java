@@ -5,6 +5,7 @@ import static org.junit.Assert.assertTrue;
 import java.util.List;
 import java.util.Map;
 
+import coronado.api.SecretKeys;
 import org.junit.Test;
 
 import com.google.common.collect.Lists;
@@ -28,7 +29,7 @@ public class SymbolProviderTest {
 		//		symList.add("NFLX");
 		//		symList.add("AMZN");
 		symList.add("AAPL");
-		SymbolProvider sp = new SymbolProvider(symList, new TradeKingProxy());
+		SymbolProvider sp = new SymbolProvider(symList, new TradeKingProxy(new SecretKeys()));
 		sp.refreshSymbolPool();
 		Map<String, OptionContract> contracts = sp.getContractsMap();
 		assertTrue("Only " + contracts.size() + " contracts found",

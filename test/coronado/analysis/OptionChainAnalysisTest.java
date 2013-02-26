@@ -7,6 +7,7 @@ import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 
+import coronado.api.SecretKeys;
 import org.apache.commons.math3.distribution.AbstractRealDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import org.junit.Test;
@@ -24,7 +25,7 @@ public class OptionChainAnalysisTest {
 
 	@Test
 	public void testChain() throws Exception {
-		TradeKingProxy apiProxy = new TradeKingProxy();
+		TradeKingProxy apiProxy = new TradeKingProxy(new SecretKeys());
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = formatter.parse("2013-03-16");
 		OptionContract oc = new OptionContract("VXX", date, new BigDecimal(0),
@@ -67,7 +68,7 @@ public class OptionChainAnalysisTest {
 
 	@Test
 	public void testBestInChain() throws Exception {
-		TradeKingProxy apiProxy = new TradeKingProxy();
+		TradeKingProxy apiProxy = new TradeKingProxy(new SecretKeys());
 		SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
 		Date date = formatter.parse("2013-03-16");
 		OptionContract oc = new OptionContract("VXX", date, new BigDecimal(0),
