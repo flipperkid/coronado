@@ -37,6 +37,10 @@ public class AccountHoldingsDeserializer implements
         if(cusip != null) {
             contract.setCusip(cusip.getAsString());
         }
+        JsonElement desc = instrument.get("desc");
+        if(desc != null) {
+            contract.setDesc(desc.getAsString());
+        }
         return contract;
     }
 }

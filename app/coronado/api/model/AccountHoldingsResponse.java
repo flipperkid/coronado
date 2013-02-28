@@ -9,6 +9,7 @@ public class AccountHoldingsResponse {
     private double marketvalue;
     private double qty;
     private String cusip;
+    private String desc;
 
     @Override
     public String toString() {
@@ -54,6 +55,14 @@ public class AccountHoldingsResponse {
 
     public void setCusip(String cusip) {
         this.cusip = cusip;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     public static class ListOfAccountHoldings {

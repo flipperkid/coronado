@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import coronado.api.model.AccountHistoryResponse;
+import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import org.junit.Test;
 

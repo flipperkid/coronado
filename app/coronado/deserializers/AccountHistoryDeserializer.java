@@ -8,12 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 
 import java.lang.reflect.Type;
-import java.text.ParsePosition;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
-import coronado.api.model.AccountHistoryResponse;
+import coronado.model.api.AccountHistoryResponse;
 
 public class AccountHistoryDeserializer implements
         JsonDeserializer<AccountHistoryResponse.ListOfAccountHistories> {

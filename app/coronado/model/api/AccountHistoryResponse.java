@@ -1,16 +1,28 @@
-package coronado.api.model;
+package coronado.model.api;
 
+import play.db.ebean.Model;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Transient;
 import java.util.Date;
 import java.util.List;
 
-public class AccountHistoryResponse {
+@Entity
+public class AccountHistoryResponse extends Model {
+    @Id
+    private Long id;
     private String activity;
     private double amount;
     private Date date;
-    private String desc;
-    private String symbol;
     private String cusip;
+    @Transient
+    private String desc;
+    @Transient
+    private String symbol;
+    @Transient
     private String type;
+    @Transient
     private double quantity;
 
     public String getActivity() {
@@ -82,6 +94,10 @@ public class AccountHistoryResponse {
     public void setType(String type) {
         this.type = type;
     }
+
+    public static Model.Finder<Long,AccountHistoryResponse> find = new Model.Finder<Long,AccountHistoryResponse>(
+            Long.class, AccountHistoryResponse.class
+    );
 
     public static class ListOfAccountHistories {
         private final List<AccountHistoryResponse> transactions;

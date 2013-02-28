@@ -7,16 +7,17 @@ import org.junit.Test;
 public class PositionAnalyzerTest {
 
 	@Test
-	public void testGetPositions() throws Exception {
+	public void testDownloadHistory() throws Exception {
 		TradeKingProxy apiProxy = new TradeKingProxy(new SecretKeys());
 		PositionAnalyzer pa = new PositionAnalyzer(apiProxy);
-        pa.getHistory();
-	}
+        pa.downloadHistory();
+    }
 
     @Test
     public void testGetInvestmentSlices() throws Exception {
         final TradeKingProxy tkp = new TradeKingProxy(new SecretKeys());
         PositionAnalyzer pa = new PositionAnalyzer(tkp);
+        pa.downloadHistory();
         System.out.println(pa.getInvestmentSlices());
     }
 }

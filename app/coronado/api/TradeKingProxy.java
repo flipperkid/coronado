@@ -3,7 +3,7 @@ package coronado.api;
 import java.io.IOException;
 import java.util.List;
 
-import coronado.api.model.AccountHistoryResponse;
+import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import oauth.signpost.exception.OAuthCommunicationException;
 import oauth.signpost.exception.OAuthExpectationFailedException;

@@ -2,12 +2,14 @@ package coronado.model;
 
 import com.google.common.base.Joiner;
 import com.google.common.collect.Lists;
-import coronado.api.model.AccountHistoryResponse;
+import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import play.db.ebean.Model;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,7 @@ public class Position extends Model {
     private String desc;
     private String type;
 
+    @OneToMany(cascade = CascadeType.ALL)
     private final List<PositionClose> closes;
 
     public Position(final double quantity, final double amount, final Date date, final String symbol,

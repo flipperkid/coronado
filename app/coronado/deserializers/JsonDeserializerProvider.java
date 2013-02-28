@@ -3,7 +3,7 @@ package coronado.deserializers;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
-import coronado.api.model.AccountHistoryResponse;
+import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import coronado.api.model.OptionContractResponse;
 

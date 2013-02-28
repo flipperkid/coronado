@@ -15,6 +15,10 @@ public class Application extends Controller {
         return ok(index.render("Portfolio Analysis"));
     }
 
+    public static Result devStart() {
+        return ok();
+    }
+
     public static Result transactions() throws Exception {
         final TradeKingProxy tkp = new TradeKingProxy(new SecretKeys());
         return ok(Json.toJson(tkp.getHistory()));

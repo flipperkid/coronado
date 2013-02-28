@@ -1,6 +1,5 @@
 package coronado.model;
 
-import coronado.api.model.AccountHistoryResponse;
 import play.db.ebean.Model;
 
 import javax.persistence.Entity;
