@@ -26,7 +26,7 @@ public class Application extends Controller {
 
     public static Result investmentSlices() throws Exception {
         final TradeKingProxy tkp = new TradeKingProxy(new SecretKeys());
-        PositionAnalyzer pa = new PositionAnalyzer(tkp);
-        return ok(Json.toJson(pa.getInvestmentSlices()));
+        final PositionAnalyzer pa = new PositionAnalyzer(tkp);
+        return ok(Json.toJson(pa.getPositions()));
     }
 }

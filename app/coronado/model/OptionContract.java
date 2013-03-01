@@ -8,10 +8,6 @@ import coronado.api.model.OptionContractResponse;
 
 import play.db.ebean.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.Id;
-
-@Entity
 public class OptionContract extends Model {
     public enum OptionType {
         PUT('P'),
@@ -28,8 +24,6 @@ public class OptionContract extends Model {
         }
     }
 
-    @Id
-    private Long id;
     private int contractSize;
     private int openInterest;
     private String exchange;
@@ -50,10 +44,6 @@ public class OptionContract extends Model {
         contractSize = response.getContractSize();
         exchange = response.getExchange();
         openInterest = response.getOpeninterest();
-    }
-
-    public Long getId() {
-        return id;
     }
 
     public String getOccSymbol() {
@@ -90,8 +80,4 @@ public class OptionContract extends Model {
     public OptionType getOptionType() {
         return optionType;
     }
-
-    public static Finder<Long,OptionContract> find = new Finder<Long,OptionContract>(
-            Long.class, OptionContract.class
-    );
 };

@@ -3,27 +3,20 @@ Ext.Loader.setConfig({
     disableCaching: false
 });
 
-Ext.define('Transaction', {
-    extend: 'Ext.data.Model',
-    fields: [
-        {name: 'activity', type: 'string'},
-        {name: 'amount', type: 'decimal'},
-        {name: 'date', type: 'date', dateFormat: 'time'},
-        {name: 'symbol', type: 'string'},
-        {name: 'desc', type: 'string'},
-        {name: 'cusip', type: 'string'}
-    ]
-});
-
 Ext.define('Holding', {
     extend: 'Ext.data.Model',
     fields: [
         {name: 'costBasis', type: 'decimal'},
-        {name: 'profitLoss', type: 'decimal'},
-        {name: 'startDate', type: 'date', dateFormat: 'time' },
-        {name: 'endDate', type: 'date', dateFormat: 'time' },
+        {name: 'closeValue', type: 'decimal'},
+        {name: 'profitLoss', type: 'decimal', convert: function(value, record) {
+            return value || record.get('closeValue') - record.get('costBasis');
+        }},
+        {name: 'shares', type: 'decimal'},
+        {name: 'closed', type: 'boolean'},
+        {name: 'openDate', type: 'date', dateFormat: 'time' },
+        {name: 'closeDate', type: 'date', dateFormat: 'time' },
         {name: 'termLength', type: 'int', convert: function(value, record) {
-            return value || daysBetween(record.get('startDate'), record.get('endDate')) + 1;
+            return value || daysBetween(record.get('openDate'), record.get('closeDate')) + 1;
         }},
         {name: 'symbol', type: 'string'},
         {name: 'cusip', type: 'string'},
@@ -131,8 +124,8 @@ var loadPerformance = function() {
             { text: 'Cost Basis', dataIndex: 'costBasis', flex: 2, renderer: Ext.util.Format.usMoney },
             { text: 'Profit Loss', dataIndex: 'profitLoss', flex: 2, renderer: Ext.util.Format.usMoney },
             { text: 'Term Length', dataIndex: 'termLength', flex: 2, hidden: true },
-            { text: 'Start Date', dataIndex: 'startDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true },
-            { text: 'End Date', dataIndex: 'endDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true }
+            { text: 'Open Date', dataIndex: 'openDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true },
+            { text: 'Close Date', dataIndex: 'closeDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true }
         ],
         width: '60%',
         selModel: {
@@ -227,141 +220,6 @@ var loadPerformance = function() {
     bodyDiv.add(viewDiv);
 };
 
-var loadTransactions = function() {
-    var transactionStore = Ext.create('Ext.data.Store', {
-        model: 'Transaction',
-        groupField: 'activity',
-        proxy: {
-            type: 'ajax',
-            url: '/transactions',
-            reader: {
-                type: 'json'
-            }
-        },
-        sorters: [{
-            property: 'date',
-            direction: 'ASC'
-        }],
-        filters: [
-            function(item) {
-                return parseFloat(item.data.amount) !== 0 && item.data.symbol.length !== 0;
-            }
-        ],
-        autoLoad: true
-    });
-
-    var transCountStore = Ext.create('Ext.data.Store', {
-        fields: [{
-            name: 'name'
-        }, {
-            name: 'total', convert: function(value, record){
-                return record.raw.children.length;
-            }
-        }],
-        data: transactionStore.getGroups()
-    });
-
-    var aggrValues = [];
-    var transactionAggrStore = Ext.create('Ext.data.Store', {
-        model: 'Transaction',
-        proxy: {
-            type: 'memory',
-            data: aggrValues
-        }
-    });
-
-    transactionStore.addListener('datachanged', function() {
-        transCountStore.loadData(transactionStore.getGroups());
-        aggrValues.length = 0;
-        transactionStore.each(function(record) {
-            var cDate = record.get('date');
-            var cAmt = parseFloat(record.get('amount'));
-            if(aggrValues.length > 0) {
-                cAmt = cAmt + aggrValues[aggrValues.length-1].amount;
-            }
-//            console.log(Ext.Date.format(cDate, 'y-M-D') + '\t' + cAmt.toFixed(2) + '\t\t' + record.get('cusip') +
-//                '\t\t' + record.get('activity') + '\n' + record.get('desc'));
-            aggrValues.push({date: cDate, amount: cAmt});
-        });
-        transactionAggrStore.loadData(aggrValues);
-    });
-
-    Ext.create('Ext.chart.Chart', {
-//        renderTo: Ext.getBody(),
-        width: 1024,
-        height: 300,
-        animate: true,
-        store: transactionAggrStore,
-        axes: [{
-            type: 'Numeric',
-            position: 'left',
-            fields: ['amount'],
-            label: {
-                renderer: Ext.util.Format.numberRenderer('0,0.00')
-            },
-            title: 'Amount',
-            grid: true
-        }, {
-            type: 'Time',
-            position: 'bottom',
-            fields: ['date'],
-            title: 'Date',
-            dateFormat: 'n-j-y',
-            step: [Ext.Date.MONTH, 6]
-        }],
-        series: [{
-            type: 'line',
-            highlight: {
-                size: 7,
-                radius: 7
-            },
-            axis: 'bottom',
-            xField: 'date',
-            yField: 'amount',
-            markerConfig: {
-                type: 'cross',
-                size: 4,
-                radius: 4,
-                'stroke-width': 0
-            }
-        }]
-    });
-
-    var pieChart = Ext.create('Ext.chart.Chart', {
-        width: 800,
-        height: 600,
-        animate: true,
-        shadow: true,
-        store: transCountStore,
-        renderTo: Ext.getBody(),
-        legend: {
-            position: 'right'
-        },
-        insetPadding: 25,
-        theme: 'Base:gradients',
-        series: [{
-            type: 'pie',
-            field: 'total',
-            showInLegend: true,
-            highlight: {
-                segment: {
-                    margin: 20
-                }
-            },
-            label: {
-                field: 'name',
-                display: 'rotate',
-                contrast: true,
-                font: '18px Arial'
-            }
-        }]
-    });
-};
-
-var daysBetween = function(startDate, endDate) {
-    return parseInt((endDate - startDate) / 86400000);
-};
-
 var addTagged = function(selected, symbolText) {
     selected = selected.reduce(function(aggr, cVal) {
         if(cVal.parents) {
@@ -385,8 +243,8 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     positions.forEach(function(cSel) {
         costBasis += cSel.get('costBasis');
         profitLoss += cSel.get('profitLoss');
-        keyDates.push(Ext.Date.format(cSel.get('startDate'), 'U'));
-        keyDates.push(Ext.Date.format(Ext.Date.add(cSel.get('endDate'), Ext.Date.DAY, 1), 'U'));
+        keyDates.push(Ext.Date.format(cSel.get('openDate'), 'U'));
+        keyDates.push(Ext.Date.format(Ext.Date.add(cSel.get('closeDate'), Ext.Date.DAY, 1), 'U'));
     });
     newPositionPerf.set('costBasis', costBasis);
     newPositionPerf.set('profitLoss', profitLoss);
@@ -414,8 +272,8 @@ var combinePositionPerformance = function(positions, includeSymbol) {
         var aggrReturn = 0.0;
         var aggrCostBasis = 0.0;
         positions.forEach(function(cSel) {
-            if(Ext.Date.between(cDate, cSel.get('startDate'), cSel.get('endDate'))) {
-                var priorTerm = daysBetween(cSel.get('startDate'), cDate);
+            if(Ext.Date.between(cDate, cSel.get('openDate'), cSel.get('closeDate'))) {
+                var priorTerm = daysBetween(cSel.get('openDate'), cDate);
                 var adjCostBasis = cSel.get('costBasis') * Math.pow(cSel.get('annualizedReturn'), priorTerm/365.0);
                 aggrCostBasis += adjCostBasis;
                 aggrReturn += adjCostBasis * Math.pow(cSel.get('annualizedReturn'), cTerm/365.0);
@@ -431,4 +289,8 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     var totalTerm = daysBetween(keyDates[0], keyDates[keyDates.length-1]);
     newPositionPerf.set('annualizedReturn', Math.pow(compoundReturnRate, 365.0/totalTerm));
     return newPositionPerf;
+};
+
+var daysBetween = function(startDate, endDate) {
+    return parseInt((endDate - startDate) / 86400000);
 };

@@ -9,6 +9,7 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import org.mortbay.io.ByteArrayBuffer;
 import org.mortbay.jetty.HttpMethods;
 import org.mortbay.jetty.client.ContentExchange;
+import play.Logger;
 
 public class SyncRequest {
 	private static final String baseUri = "https://api.tradeking.com/v1/";
@@ -22,7 +23,7 @@ public class SyncRequest {
 			protected void onResponseComplete() throws IOException {
 				int status = getResponseStatus();
 				if (status != 200) {
-					System.out.println("Error Code Received: " + status);
+                    Logger.error("Error Code Received: " + status);
 				}
 			}
 		};
