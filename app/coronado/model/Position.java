@@ -15,13 +15,13 @@ public class Position extends Model {
     private double shares;
     private double costBasis;
     private double closeValue;
-    private Date openDate;
+    private final Date openDate;
     private Date closeDate;
     private boolean isClosed;
-    private String symbol;
-    private String cusip;
-    private String desc;
-    private String type;
+    private final String symbol;
+    private final String cusip;
+    private final String desc;
+    private final String type;
 
     public Position(final double shares, final double costBasis, final Date openDate,
                     final String symbol, final String cusip, final String desc, final String type) {

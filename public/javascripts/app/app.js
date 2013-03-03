@@ -3,7 +3,7 @@ Ext.Loader.setConfig({
     disableCaching: false
 });
 
-Ext.define('Holding', {
+Ext.define('Position', {
     extend: 'Ext.data.Model',
     fields: [
         {name: 'costBasis', type: 'decimal'},
@@ -47,54 +47,9 @@ var loadPerformance = function() {
         layout: 'column'
     });
 
-    aggrPerfStore = Ext.create('Ext.data.Store', {
-        model: 'Holding',
-        proxy: {
-            type: 'memory'
-        },
-        sorters: [{
-            property: 'annualizedReturn',
-            direction: 'DESC'
-        }]
-    });
-
-    taggedPerfStore = Ext.create('Ext.data.Store', {
-        model: 'Holding',
-        proxy: {
-            type: 'memory'
-        },
-        sorters: [{
-            property: 'annualizedReturn',
-            direction: 'DESC'
-        }]
-    });
-
-    performanceStore = Ext.create('Ext.data.Store', {
-        model: 'Holding',
-        proxy: {
-            type: 'ajax',
-            url: '/performance',
-            reader: {
-                type: 'json'
-            }
-        },
-        sorters: [{
-            property: 'annualizedReturn',
-            direction: 'DESC'
-        }],
-        autoLoad: true
-    });
-
-    performanceStore.addListener('load', function() {
-        taggedPerfStore.remove(taggedPerfStore.findRecord('symbol', 'All'));
-        addTagged(performanceStore.getRange(), 'All');
-        performanceStore.group('cusip');
-        var groups = performanceStore.getGroups();
-        aggrPerfStore.loadData(groups.map(function(group) {
-            return combinePositionPerformance(group.children, true);
-        }), true);
-        performanceStore.clearGrouping();
-    });
+    aggrPerfStore = createPositionStore(false);
+    taggedPerfStore = createPositionStore(false);
+    performanceStore = createPositionStore(true);
 
     var perfGrid = Ext.create('Ext.grid.Panel', {
         title: 'Performance',
@@ -158,10 +113,25 @@ var loadPerformance = function() {
     });
     viewDiv.add(aggrGrid);
 
+
+    // --- Listeners ---
+    performanceStore.addListener('load', function() {
+        addTagged(performanceStore.getRange(), 'All');
+
+        performanceStore.group('cusip');
+        var groups = performanceStore.getGroups();
+        aggrPerfStore.loadData(groups.map(function(group) {
+            return combinePositionPerformance(group.children, true);
+        }), true);
+        performanceStore.clearGrouping();
+    });
+
     perfGrid.addListener('selectionchange', function(selModel, selected) {
         aggrGrid.getSelectionModel().deselectAll(true);
         taggedPerfStore.remove(taggedPerfStore.findRecord('symbol', 'Selected'));
-        addTagged(selected, 'Selected');
+        if(selected.length > 0) {
+            addTagged(selected, 'Selected');
+        }
     });
 
     aggrGrid.addListener('beforeselect', function(self, record) {
@@ -177,6 +147,7 @@ var loadPerformance = function() {
         }
     });
 
+    // --- Buttons ---
     btnDiv.add(Ext.create('Ext.button.Button', {
         text: 'Select All',
         handler: function() {
@@ -221,6 +192,8 @@ var loadPerformance = function() {
 };
 
 var addTagged = function(selected, symbolText) {
+    taggedPerfStore.remove(taggedPerfStore.findRecord('symbol', symbolText));
+
     selected = selected.reduce(function(aggr, cVal) {
         if(cVal.parents) {
             aggr.push.apply(aggr, cVal.parents);
@@ -235,7 +208,7 @@ var addTagged = function(selected, symbolText) {
 };
 
 var combinePositionPerformance = function(positions, includeSymbol) {
-    var newPositionPerf = new Holding();
+    var newPositionPerf = new Position();
     newPositionPerf.parents = positions.slice(0);
     var costBasis = 0.0;
     var profitLoss = 0.0;
@@ -249,6 +222,7 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     newPositionPerf.set('costBasis', costBasis);
     newPositionPerf.set('profitLoss', profitLoss);
     newPositionPerf.set('return', profitLoss/costBasis);
+    // TODO this variable is poor form can be boolean or string
     if(includeSymbol === true) {
         newPositionPerf.set('symbol', positions[0].get('symbol'));
         newPositionPerf.set('cusip', positions[0].get('cusip'));
@@ -293,4 +267,30 @@ var combinePositionPerformance = function(positions, includeSymbol) {
 
 var daysBetween = function(startDate, endDate) {
     return parseInt((endDate - startDate) / 86400000);
+};
+
+var createPositionStore = function(isProxy) {
+    var proxyConfig = {
+        type: 'memory'
+    };
+    if(isProxy) {
+        proxyConfig = {
+            type: 'ajax',
+                url: '/positions',
+                reader: {
+                type: 'json'
+            }
+        };
+    }
+
+    var store = Ext.create('Ext.data.Store', {
+        model: 'Position',
+        proxy: proxyConfig,
+        sorters: [{
+            property: 'annualizedReturn',
+            direction: 'DESC'
+        }]
+    });
+    store.load();
+    return store;
 };

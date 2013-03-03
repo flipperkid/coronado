@@ -63,7 +63,7 @@ public class PositionAnalyzer {
         if(processedTransaction) {
             return;
         }
-        transaction.save();
+        Logger.info("Handling new transaction: " + transaction);
 
         if(transaction.getQuantity() > 0) {
             positions.add(new Position(transaction.getQuantity(), -1*transaction.getAmount(), transaction.getDate(),
@@ -89,8 +89,14 @@ public class PositionAnalyzer {
             if(remainingQuantity > 0) {
                 Logger.error("Too much sold: " + remainingQuantity + " " + transaction.getDesc() + " "
                         + transaction.getCusip());
+                /*
+                 * NOTE Don't save if this happens because saving will squash the error (would be easy to miss)
+                 * In this case it will constantly re-occur.
+                 */
+                return;
             }
         }
+        transaction.save();
     }
 
     private void rectifyHoldings(List<Position> positions) throws InterruptedException, OAuthExpectationFailedException,
