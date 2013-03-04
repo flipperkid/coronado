@@ -107,7 +107,7 @@ public class PositionAnalyzer {
         }
         for(Position cPos : positions) {
             if(!cPos.isClosed()) {
-                Logger.error("Position not closed or held: " + cPos.getDesc() + " " + cPos.getCusip());
+                Logger.error("Position not closed or held: " + cPos.getDescription() + " " + cPos.getCusip());
             }
         }
     }
@@ -117,7 +117,7 @@ public class PositionAnalyzer {
         for(Position p : positions) {
             if(remainingQuantity > 0
                     && (p.getCusip().equals(holding.getCusip())
-                        || ("?".equals(holding.getCusip()) && p.getDesc().equals(holding.getDesc())))) {
+                        || ("?".equals(holding.getCusip()) && p.getDescription().equals(holding.getDesc())))) {
                 remainingQuantity -= p.rectifyHolding(holding);
             }
         }

@@ -16,7 +16,7 @@ public class Tags extends Controller {
         JsonNode json = request().body().asJson();
         PositionTag newTag = Json.fromJson(json, PositionTag.class);
         newTag.save();
-        return ok(Json.toJson(newTag));
+        return created(Json.toJson(newTag));
     }
 
     public static Result read(final long id) {
@@ -26,13 +26,13 @@ public class Tags extends Controller {
     public static Result update(final long id) {
         JsonNode json = request().body().asJson();
         PositionTag newTag = Json.fromJson(json, PositionTag.class);
-        newTag.update(id);
-        return ok(Json.toJson(PositionTag.find.all()));
+        newTag.update();
+        return ok(Json.toJson(newTag));
     }
 
     public static Result delete(final long id) {
         PositionTag tag = PositionTag.find.byId(id);
         tag.delete();
-        return ok(Json.toJson(PositionTag.find.all()));
+        return noContent();
     }
 }

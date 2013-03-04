@@ -2,37 +2,72 @@ Ext.Loader.setConfig({
     enabled: true,
     disableCaching: false
 });
+Ext.syncRequire('Ext.data.Request');
+Ext.syncRequire('Ext.data.proxy.Rest');
+Ext.syncRequire('Ext.data.writer.Json');
+Ext.syncRequire('Ext.window.MessageBox');
 
 Ext.define('Position', {
     extend: 'Ext.data.Model',
     fields: [
         {name: 'costBasis', type: 'decimal'},
         {name: 'closeValue', type: 'decimal'},
-        {name: 'profitLoss', type: 'decimal', convert: function(value, record) {
+        {name: 'profitLoss', type: 'decimal', persist: false, convert: function(value, record) {
             return value || record.get('closeValue') - record.get('costBasis');
         }},
         {name: 'shares', type: 'decimal'},
         {name: 'closed', type: 'boolean'},
-        {name: 'openDate', type: 'date', dateFormat: 'time' },
-        {name: 'closeDate', type: 'date', dateFormat: 'time' },
-        {name: 'termLength', type: 'int', convert: function(value, record) {
+        {name: 'openDate', type: 'date', dateFormat: 'time', serialize: function(value, record) {
+            return Ext.Date.format(value, 'c');
+        }},
+        {name: 'closeDate', type: 'date', dateFormat: 'time', serialize: function(value, record) {
+            return Ext.Date.format(value, 'c');
+        }},
+        {name: 'termLength', type: 'int', persist: false, convert: function(value, record) {
             return value || daysBetween(record.get('openDate'), record.get('closeDate')) + 1;
         }},
         {name: 'symbol', type: 'string'},
         {name: 'cusip', type: 'string'},
-        {name: 'desc', type: 'string'},
-        {name: 'type', type: 'string'},
-        {name: 'return', type: 'decimal', convert: function(value, record) {
+        {name: 'description', type: 'string'},
+        {name: 'securityType', type: 'string'},
+        {name: 'return', type: 'decimal', persist: false, convert: function(value, record) {
             return value || record.get('profitLoss')/record.get('costBasis');
         }},
-        {name: 'annualizedReturn', type: 'decimal', convert: function(value, record) {
+        {name: 'annualizedReturn', type: 'decimal', persist: false, convert: function(value, record) {
             return value || Math.pow(1 + record.get('return'), 365/record.get('termLength'));
         }}
-    ]
+    ],
+    proxy: {
+        type: 'ajax',
+        url: '/positions',
+        reader: {
+            type: 'json'
+        }
+    }
+});
+
+Ext.define('PositionTag', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'tag', type: 'string'}
+    ],
+    hasMany: {model: 'Position', name: 'positions'},
+    proxy: {
+        type: 'rest',
+        url: '/tags',
+        reader: {
+            type: 'json'
+        },
+        writer: {
+            type: 'json'
+        }
+    }
 });
 
 Ext.onReady(function() {
-//    loadTransactions();
+    defineOverrides();
+
+    //    loadTransactions();
     loadPerformance();
 });
 
@@ -47,41 +82,42 @@ var loadPerformance = function() {
         layout: 'column'
     });
 
-    aggrPerfStore = createPositionStore(false);
-    taggedPerfStore = createPositionStore(false);
-    performanceStore = createPositionStore(true);
+    aggrPerfStore = createAggrPerfStore();
+    taggedPerfStore = createTagStore();
+    performanceStore = createPositionStore();
 
     var perfGrid = Ext.create('Ext.grid.Panel', {
         title: 'Performance',
         store: aggrPerfStore,
-        columns: [
-            {
-                text: 'Symbol', dataIndex: 'symbol', flex: 3,
+        columns: [{
+            text: 'Symbol', dataIndex: 'symbol', flex: 3,
                 renderer: function(value, metaData, record) {
-                    if(record.get('type') === 'OPT') {
-                        return record.get('desc');
+                    if(record.get('securityType') === 'OPT') {
+                        return record.get('description');
                     }
                     return value;
                 }
-            },
-            {
-                text: 'Annualized Return', dataIndex: 'annualizedReturn', flex: 3,
+        },{
+            text: 'Annualized Return', dataIndex: 'annualizedReturn', flex: 3,
                 renderer: function(value) {
                     return Ext.util.Format.numberRenderer('0.000')((value - 1.0) * 100.0) + '%';
                 }
-            },
-            {
-                text: 'Return', dataIndex: 'return', flex: 2,
+        },{
+            text: 'Return', dataIndex: 'return', flex: 2,
                 renderer: function(value) {
                     return Ext.util.Format.numberRenderer('0.000')(value * 100.0) + '%';
                 }
-            },
-            { text: 'Cost Basis', dataIndex: 'costBasis', flex: 2, renderer: Ext.util.Format.usMoney },
-            { text: 'Profit Loss', dataIndex: 'profitLoss', flex: 2, renderer: Ext.util.Format.usMoney },
-            { text: 'Term Length', dataIndex: 'termLength', flex: 2, hidden: true },
-            { text: 'Open Date', dataIndex: 'openDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true },
-            { text: 'Close Date', dataIndex: 'closeDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true }
-        ],
+        },{
+            text: 'Cost Basis', dataIndex: 'costBasis', flex: 2, renderer: Ext.util.Format.usMoney
+        },{
+            text: 'Profit Loss', dataIndex: 'profitLoss', flex: 2, renderer: Ext.util.Format.usMoney
+        },{
+            text: 'Term Length', dataIndex: 'termLength', flex: 2, hidden: true
+        },{
+            text: 'Open Date', dataIndex: 'openDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true
+        },{
+            text: 'Close Date', dataIndex: 'closeDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true
+        }],
         width: '60%',
         selModel: {
             mode: 'SIMPLE'
@@ -92,23 +128,34 @@ var loadPerformance = function() {
     var aggrGrid = Ext.create('Ext.grid.Panel', {
         title: 'Aggregate Performance',
         store: taggedPerfStore,
-        columns: [
-            { text: 'Symbol', dataIndex: 'symbol', flex: 3 },
-            {
-                text: 'Annualized Return', dataIndex: 'annualizedReturn', flex: 3,
-                renderer: function(value) {
-                    return Ext.util.Format.numberRenderer('0.000')((value - 1) * 100.0) + '%';
+        columns: [{
+            text: 'Symbol', dataIndex: 'symbol', flex: 3,
+                renderer: function(value, metaData, record) {
+                    return record.aggregatePerformance.get('symbol');
                 }
-            },
-            {
-                text: 'Return', dataIndex: 'return', flex: 2,
-                renderer: function(value) {
-                    return Ext.util.Format.numberRenderer('0.000')(value * 100.0) + '%';
+        },{
+            text: 'Annualized Return', dataIndex: 'annualizedReturn', flex: 3,
+                renderer: function(value, metaData, record) {
+                    return Ext.util.Format.numberRenderer('0.000')(
+                        (record.aggregatePerformance.get('annualizedReturn') - 1) * 100.0) + '%';
                 }
-            },
-            { text: 'Cost Basis', dataIndex: 'costBasis', flex: 2, renderer: Ext.util.Format.usMoney },
-            { text: 'Profit Loss', dataIndex: 'profitLoss', flex: 2, renderer: Ext.util.Format.usMoney }
-        ],
+        },{
+            text: 'Return', dataIndex: 'return', flex: 2,
+                renderer: function(value, metaData, record) {
+                    return Ext.util.Format.numberRenderer('0.000')(
+                        record.aggregatePerformance.get('return') * 100.0) + '%';
+                }
+        },{
+            text: 'Cost Basis', dataIndex: 'costBasis', flex: 2,
+                renderer: function(value, metaData, record) {
+                    return Ext.util.Format.usMoney(record.aggregatePerformance.get('costBasis'));
+                }
+        },{
+            text: 'Profit Loss', dataIndex: 'profitLoss', flex: 2,
+                renderer: function(value, metaData, record) {
+                    return Ext.util.Format.usMoney(record.aggregatePerformance.get('profitLoss'));
+                }
+        }],
         width: '40%'
     });
     viewDiv.add(aggrGrid);
@@ -116,8 +163,6 @@ var loadPerformance = function() {
 
     // --- Listeners ---
     performanceStore.addListener('load', function() {
-        addTagged(performanceStore.getRange(), 'All');
-
         performanceStore.group('cusip');
         var groups = performanceStore.getGroups();
         aggrPerfStore.loadData(groups.map(function(group) {
@@ -128,22 +173,24 @@ var loadPerformance = function() {
 
     perfGrid.addListener('selectionchange', function(selModel, selected) {
         aggrGrid.getSelectionModel().deselectAll(true);
-        taggedPerfStore.remove(taggedPerfStore.findRecord('symbol', 'Selected'));
         if(selected.length > 0) {
             addTagged(selected, 'Selected');
+        } else {
+            var selectedRecord = taggedPerfStore.findRecord('tag', 'Selected');
+            taggedPerfStore.remove(selectedRecord);
         }
     });
 
     aggrGrid.addListener('beforeselect', function(self, record) {
         if(perfGrid.getStore() == performanceStore) {
-            perfGrid.getSelectionModel().select(record.parents);
+            perfGrid.getSelectionModel().select(record.positions().getRange());
         } else {
             perfGrid.getSelectionModel().deselectAll(true);
-            record.parents.forEach(function(parentRecord) {
+            record.positions().each(function(parentRecord) {
                 var matchRow = aggrPerfStore.findRecord('cusip', parentRecord.get('cusip'));
                 perfGrid.getSelectionModel().select(matchRow, true, true);
             });
-            perfGrid.fireEvent('selectionchange', null, record.parents);
+            perfGrid.fireEvent('selectionchange', null, record.positions().getRange());
         }
     });
 
@@ -191,9 +238,8 @@ var loadPerformance = function() {
     bodyDiv.add(viewDiv);
 };
 
+// --- Methods ---
 var addTagged = function(selected, symbolText) {
-    taggedPerfStore.remove(taggedPerfStore.findRecord('symbol', symbolText));
-
     selected = selected.reduce(function(aggr, cVal) {
         if(cVal.parents) {
             aggr.push.apply(aggr, cVal.parents);
@@ -203,8 +249,21 @@ var addTagged = function(selected, symbolText) {
         return aggr;
     }, []);
     var newPerf = combinePositionPerformance(selected, symbolText);
-    taggedPerfStore.add(newPerf);
-    return newPerf;
+    var recordToUpdate = taggedPerfStore.findRecord('tag', symbolText);
+    var newRecord = false;
+    if(!recordToUpdate) {
+        recordToUpdate = new PositionTag();
+        newRecord = true;
+    }
+    recordToUpdate.set('tag', symbolText);
+    recordToUpdate.aggregatePerformance = newPerf;
+    recordToUpdate.positions().removeAll();
+    recordToUpdate.positions().add(newPerf.parents);
+    if(newRecord) {
+        taggedPerfStore.add(recordToUpdate);
+    } else {
+        recordToUpdate.save();
+    }
 };
 
 var combinePositionPerformance = function(positions, includeSymbol) {
@@ -226,8 +285,8 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     if(includeSymbol === true) {
         newPositionPerf.set('symbol', positions[0].get('symbol'));
         newPositionPerf.set('cusip', positions[0].get('cusip'));
-        newPositionPerf.set('desc', positions[0].get('desc'));
-        newPositionPerf.set('type', positions[0].get('type'));
+        newPositionPerf.set('description', positions[0].get('description'));
+        newPositionPerf.set('securityType', positions[0].get('securityType'));
     } else {
         newPositionPerf.set('symbol', includeSymbol);
     }
@@ -269,28 +328,92 @@ var daysBetween = function(startDate, endDate) {
     return parseInt((endDate - startDate) / 86400000);
 };
 
-var createPositionStore = function(isProxy) {
-    var proxyConfig = {
-        type: 'memory'
-    };
-    if(isProxy) {
-        proxyConfig = {
-            type: 'ajax',
-                url: '/positions',
-                reader: {
-                type: 'json'
-            }
-        };
-    }
-
+var createPositionStore = function() {
     var store = Ext.create('Ext.data.Store', {
         model: 'Position',
-        proxy: proxyConfig,
         sorters: [{
             property: 'annualizedReturn',
             direction: 'DESC'
         }]
     });
+    store.on('datachanged', function() {
+       taggedPerfStore.load();
+    });
     store.load();
     return store;
+};
+
+var createAggrPerfStore = function() {
+    return Ext.create('Ext.data.Store', {
+        model: 'Position',
+        proxy: {
+            type: 'memory'
+        },
+        sorters: [{
+            property: 'annualizedReturn',
+            direction: 'DESC'
+        }]
+    });
+};
+
+var createTagStore = function() {
+    var store = Ext.create('Ext.data.Store', {
+        model: 'PositionTag',
+        autoSync: true
+    });
+    store.on('datachanged', function() {
+        addTagged(performanceStore.getRange(), 'All');
+    });
+    return store;
+};
+
+var defineOverrides = function() {
+    Ext.override(Ext.data.reader.Json, {
+        read: function(response) {
+            var resultSet = this.callParent([response]);
+            if(resultSet.count > 0) {
+                resultSet.records.forEach(function(record) {
+                    if(record.$className === "PositionTag") {
+                        var positionStore = record.positions();
+                        var positions = positionStore.getRange().map(function(position) {
+                            var id = position.getId();
+                            return performanceStore.getById(id);
+                        });
+                        positionStore.removeAll();
+                        positionStore.add(positions);
+                        record.aggregatePerformance =
+                            combinePositionPerformance(positions, record.get('tag'));
+                    }
+                });
+            }
+            return resultSet;
+        }
+    });
+
+    Ext.override(Ext.data.writer.Json, {
+        getRecordData: function(record, operation) {
+            var data = this.callParent([record, operation]);
+
+            /* Iterate over all the hasMany associations */
+            var assocLen = record.associations.getCount();
+            for ( var i = 0; i < assocLen; i++) {
+                var association = record.associations.getAt(i);
+                if (association.type == 'hasMany') {
+                    data[association.name] = [];
+                    var childStore = record[association.name]();
+
+                    var processChild = function(childRecord) {
+                        // Recursively get the record data for children (depth first)
+                        var childData = this.getRecordData.call(this, childRecord, operation);
+                        if (childRecord.dirty | childRecord.phantom | (childData != null)) {
+                            data[association.name].push(childData);
+                            record.setDirty();
+                        }
+                    };
+                    childStore.each(processChild, this);
+                }
+            }
+            return data;
+        }
+    });
 };

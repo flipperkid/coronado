@@ -6,7 +6,7 @@
 create table account_history_response (
   id                        bigint not null,
   activity                  varchar(255),
-  amount                    double,
+  amount                    float,
   date                      timestamp,
   cusip                     varchar(255),
   constraint pk_account_history_response primary key (id))
@@ -14,16 +14,16 @@ create table account_history_response (
 
 create table position (
   id                        bigint not null,
-  shares                    double,
-  cost_basis                double,
-  close_value               double,
+  shares                    float,
+  cost_basis                float,
+  close_value               float,
   open_date                 timestamp,
   close_date                timestamp,
-  is_closed                 boolean,
+  closed                    boolean,
   symbol                    varchar(255),
   cusip                     varchar(255),
-  desc                      varchar(255),
-  type                      varchar(255),
+  description               varchar(255),
+  security_type             varchar(255),
   constraint pk_position primary key (id))
 ;
 
@@ -48,23 +48,19 @@ create sequence position_tag_seq;
 
 
 
-alter table position_tag_position add constraint fk_position_tag_position_posi_01 foreign key (position_tag_id) references position_tag (id) on delete restrict on update restrict;
+alter table position_tag_position add constraint fk_position_tag_position_posi_01 foreign key (position_tag_id) references position_tag (id);
 
-alter table position_tag_position add constraint fk_position_tag_position_posi_02 foreign key (position_id) references position (id) on delete restrict on update restrict;
+alter table position_tag_position add constraint fk_position_tag_position_posi_02 foreign key (position_id) references position (id);
 
 # --- !Downs
 
-SET REFERENTIAL_INTEGRITY FALSE;
+drop table if exists account_history_response cascade;
 
-drop table if exists account_history_response;
+drop table if exists position cascade;
 
-drop table if exists position;
+drop table if exists position_tag cascade;
 
-drop table if exists position_tag;
-
-drop table if exists position_tag_position;
-
-SET REFERENTIAL_INTEGRITY TRUE;
+drop table if exists position_tag_position cascade;
 
 drop sequence if exists account_history_response_seq;
 
