@@ -10,6 +10,10 @@ Ext.define('Transaction', {
     ]
 });
 
+Ext.onReady(function() {
+    loadTransactions();
+})
+
 var loadTransactions = function() {
     var transactionStore = Ext.create('Ext.data.Store', {
         model: 'Transaction',

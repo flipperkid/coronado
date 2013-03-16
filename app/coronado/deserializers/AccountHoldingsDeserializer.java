@@ -41,6 +41,14 @@ public class AccountHoldingsDeserializer implements
         if(desc != null) {
             contract.setDesc(desc.getAsString());
         }
+        JsonElement sectyp = instrument.get("sectyp");
+        if(sectyp != null) {
+            contract.setSectyp(sectyp.getAsString());
+        }
+        JsonElement sym = instrument.get("sym");
+        if(sym != null) {
+            contract.setSym(sym.getAsString());
+        }
         return contract;
     }
 }

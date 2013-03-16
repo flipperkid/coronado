@@ -1,12 +1,15 @@
-package coronado.api;
-
 import static org.junit.Assert.assertEquals;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
+import coronado.api.SecretKeys;
+import coronado.api.TradeKingProxy;
+import coronado.model.HistorySequence;
+import coronado.model.QuoteHistory;
 import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import org.junit.Test;
@@ -79,7 +82,12 @@ public class TradeKingProxyTest {
     @Test
     public void testGetHistoricData() throws Exception {
         TradeKingProxy apiProxy = new TradeKingProxy(new SecretKeys());
-        String historicData = apiProxy.getHistoricData();
+        Calendar cal = Calendar.getInstance();
+        cal.set(2013, 0, 2);
+        Date startDate = cal.getTime();
+        cal.set(2013, 0, 8);
+        Date endDate = cal.getTime();
+        List<QuoteHistory> historicData = apiProxy.getHistoricData(new HistorySequence("AAPL", startDate, endDate));
         System.out.println(historicData);
     }
 

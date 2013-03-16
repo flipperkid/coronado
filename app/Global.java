@@ -1,3 +1,4 @@
+import coronado.analysis.HistoryLoader;
 import coronado.analysis.PositionAnalyzer;
 import coronado.api.SecretKeys;
 import coronado.api.TradeKingProxy;
@@ -24,7 +25,11 @@ public class Global extends GlobalSettings {
                     tkp = new TradeKingProxy(new SecretKeys());
                     PositionAnalyzer pa = new PositionAnalyzer(tkp);
                     pa.downloadHistory();
+
+                    HistoryLoader hl = new HistoryLoader(tkp);
+                    hl.downloadHistory();
                 } catch (Exception e) {
+                    e.printStackTrace();
                     Logger.error("Unable to initialize connection to TradeKing.");
                 }
             }

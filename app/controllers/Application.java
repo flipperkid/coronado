@@ -14,6 +14,10 @@ public class Application extends Controller {
         return ok(index.render("Portfolio Analysis"));
     }
 
+    public static Result transactionsView() {
+        return ok(transactions.render("Transactions"));
+    }
+
     public static Result devStart() {
         return ok();
     }

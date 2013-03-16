@@ -71,7 +71,7 @@ Ext.define('Ext.diag.layout.Context', {
 
         if (me.remainingLayouts != expected) {
             Ext.Error.raise({
-                msg: 'Bookkeeping error me.remainingLayouts'
+                msg: 'BookkeepingController error me.remainingLayouts'
             });
         }
     },

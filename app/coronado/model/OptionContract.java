@@ -2,6 +2,8 @@ package coronado.model;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import coronado.api.model.OptionContractResponse;
@@ -38,6 +40,18 @@ public class OptionContract extends Model {
         this.expirationDate = expirationDate;
         this.strikePrice = strikePrice;
         this.optionType = optionType;
+    }
+
+    public OptionContract(final String description) throws ParseException {
+        String[] tokens = description.split("[ ]+");
+        if(tokens.length != 6) {
+            throw new IllegalArgumentException("Malformed option description: " + description);
+        }
+        this.underlyingSymbol = tokens[0];
+        SimpleDateFormat formatter = new SimpleDateFormat("MMM d yyyy");
+        this.expirationDate = formatter.parse(tokens[1] + " " + tokens[2] + " " + tokens[3]);
+        this.strikePrice = new BigDecimal(tokens[4]);
+        this.optionType = OptionType.valueOf(tokens[5].toUpperCase());
     }
 
     public void setFromApi(final OptionContractResponse response) {

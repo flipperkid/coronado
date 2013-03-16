@@ -4,6 +4,7 @@
 
 # Home page
 GET     /                           controllers.Application.index()
+GET     /transactions.html          controllers.Application.transactionsView()
 GET     /start                      controllers.Application.devStart()
 
 # Map static resources from the /public folder to the /assets URL path
@@ -20,3 +21,9 @@ POST    /tags                       controllers.Tags.create
 GET     /tags/:id                   controllers.Tags.read(id: Long)
 PUT     /tags/:id                   controllers.Tags.update(id: Long)
 DELETE  /tags/:id                   controllers.Tags.delete(id: Long)
+
+GET     /bookkeeping                controllers.BookkeepingController.index
+POST    /bookkeeping                controllers.BookkeepingController.create
+GET     /bookkeeping/:id            controllers.BookkeepingController.read(id: Long)
+PUT     /bookkeeping/:id            controllers.BookkeepingController.update(id: Long)
+DELETE  /bookkeeping/:id            controllers.BookkeepingController.delete(id: Long)

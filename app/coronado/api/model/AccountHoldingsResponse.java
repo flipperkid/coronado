@@ -9,6 +9,8 @@ public class AccountHoldingsResponse {
     private double marketvalue;
     private double qty;
     private String cusip;
+    private String sym;
+    private String sectyp;
     private String desc;
 
     @Override
@@ -63,6 +65,22 @@ public class AccountHoldingsResponse {
 
     public void setDesc(String desc) {
         this.desc = desc;
+    }
+
+    public String getSym() {
+        return sym;
+    }
+
+    public void setSym(String sym) {
+        this.sym = sym;
+    }
+
+    public String getSectyp() {
+        return sectyp;
+    }
+
+    public void setSectyp(String sectyp) {
+        this.sectyp = sectyp;
     }
 
     public static class ListOfAccountHoldings {

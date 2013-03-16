@@ -2,6 +2,8 @@ package coronado.analysis;
 
 import com.google.common.collect.Lists;
 import coronado.api.TradeKingProxy;
+import coronado.api.model.StockResponse;
+import coronado.model.Bookkeeping;
 import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import coronado.model.Position;
@@ -11,9 +13,7 @@ import oauth.signpost.exception.OAuthMessageSignerException;
 import play.Logger;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 public class PositionAnalyzer {
     final private TradeKingProxy apiProxy;
@@ -42,10 +42,26 @@ public class PositionAnalyzer {
         });
         final List<Position> positions = Lists.newArrayList();
         for(AccountHistoryResponse transaction : accountHistories) {
+            final boolean processedTransaction = AccountHistoryResponse.find.where()
+                    .eq("date", transaction.getDate())
+                    .eq("amount", transaction.getAmount())
+                    .eq("cusip", transaction.getCusip())
+                    .eq("activity", transaction.getActivity())
+                    .findRowCount() > 0;
+            if(processedTransaction) {
+                continue;
+            }
+
+            boolean handled = false;
             if("Trade".equals(transaction.getActivity()) || "Expired".equals(transaction.getActivity())) {
-                handleTrade(transaction, positions);
-            } else {
-                //System.out.println(transaction);
+                handled = handleTrade(transaction, positions);
+            } else if("Bookkeeping".equals(transaction.getActivity()) && transaction.getQuantity() > 0) {
+                handled = handleBookkeeping(transaction);
+            } else if("Dividend".equals(transaction.getActivity())) {
+                //                System.out.println(transaction);
+            }
+            if(handled) {
+                transaction.save();
             }
         }
         for(Position cPos : positions) {
@@ -53,18 +69,8 @@ public class PositionAnalyzer {
         }
     }
 
-    private void handleTrade(AccountHistoryResponse transaction, List<Position> positions) {
-        final boolean processedTransaction = AccountHistoryResponse.find.where()
-                .eq("date", transaction.getDate())
-                .eq("amount", transaction.getAmount())
-                .eq("cusip", transaction.getCusip())
-                .eq("activity", transaction.getActivity())
-                .findRowCount() > 0;
-        if(processedTransaction) {
-            return;
-        }
-        Logger.info("Handling new transaction: " + transaction);
-
+    private boolean handleTrade(AccountHistoryResponse transaction, List<Position> positions) {
+        Logger.info("Handling new trade: " + transaction);
         if(transaction.getQuantity() > 0) {
             positions.add(new Position(transaction.getQuantity(), -1*transaction.getAmount(), transaction.getDate(),
                     transaction.getSymbol(), transaction.getCusip(), transaction.getDesc(), transaction.getType()));
@@ -93,10 +99,56 @@ public class PositionAnalyzer {
                  * NOTE Don't save if this happens because saving will squash the error (would be easy to miss)
                  * In this case it will constantly re-occur.
                  */
-                return;
+                return false;
             }
         }
-        transaction.save();
+        return true;
+    }
+
+    private boolean handleBookkeeping(AccountHistoryResponse transaction) {
+        Logger.info("Handling new bookkeeping: " + transaction);
+        final Bookkeeping newBookkeeping = new Bookkeeping(transaction);
+        newBookkeeping.save();
+        return true;
+    }
+
+    public boolean resolveBookkeeping(Bookkeeping bookkeeping) {
+        double newSharesRemaining = bookkeeping.getQuantity();
+        final Date date = bookkeeping.getDate();
+        final String cusip = bookkeeping.getCusip();
+        final List<Position> positions = this.loadHistory();
+        final List<Position> alteredPositions = Lists.newArrayList();
+        for(Position cPos : positions) {
+            if(cPos.getOpenDate().before(date) && (!cPos.isClosed() || cPos.getCloseDate().after(date))) {
+                Map.Entry<Position, Double> result = bookkeeping.getResolution().resolve(cPos, cusip);
+                if(result != null) {
+                    final Position newPosition = result.getKey();
+                    final double shareChange = result.getValue();
+                    if(newPosition != null && shareChange != 0) {
+                        Logger.error(
+                                "Resolution unexpectedly created a new position and altered and existing share count");
+                        return false;
+                    } else if(newPosition != null) {
+                        alteredPositions.add(newPosition);
+                        alteredPositions.add(cPos);
+                        newSharesRemaining -= newPosition.getShares();
+                    } else if(result.getValue() != 0) {
+                        alteredPositions.add(cPos);
+                        newSharesRemaining -= shareChange;
+                    }
+                }
+            }
+        }
+
+        if(newSharesRemaining != 0) {
+            Logger.error("Bookkeeping invalid: " + cusip + " " + bookkeeping.getDescription() + " amount off "
+                + newSharesRemaining + " " + bookkeeping.getResolution());
+            return false;
+        }
+        for(Position cPos : alteredPositions) {
+            cPos.save();
+        }
+        return true;
     }
 
     private void rectifyHoldings(List<Position> positions) throws InterruptedException, OAuthExpectationFailedException,
@@ -107,7 +159,15 @@ public class PositionAnalyzer {
         }
         for(Position cPos : positions) {
             if(!cPos.isClosed()) {
-                Logger.error("Position not closed or held: " + cPos.getDescription() + " " + cPos.getCusip());
+                Logger.warn("Position not closed or held: " + cPos.getDescription() + " " + cPos.getCusip());
+                List<StockResponse> currStockValue = apiProxy.getStockPrice(Lists.newArrayList(cPos.getSymbol()));
+                if(currStockValue.size() != 1) {
+                    Logger.error("Unable to get the current value!");
+                    cPos.close(cPos.getCostBasis(), new Date());
+                } else {
+                    Logger.info("Resolving based on current stock price.");
+                    rectifyHolding(currStockValue.get(0), cPos);
+                }
             }
         }
     }
@@ -125,6 +185,10 @@ public class PositionAnalyzer {
             Logger.error("Unmatched holdings: " + remainingQuantity + " " + holding.getDesc() + " "
                     + holding.getCusip());
         }
+    }
+
+    private void rectifyHolding(StockResponse value, Position position) {
+        position.rectifyHolding(value);
     }
 
     private List<Position> loadHistory() {

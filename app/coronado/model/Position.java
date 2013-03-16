@@ -1,13 +1,17 @@
 package coronado.model;
 
+import coronado.api.model.StockResponse;
 import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
+import org.codehaus.jackson.annotate.JsonIgnore;
+import play.Logger;
 import play.db.ebean.Model;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.text.ParseException;
 import java.util.Date;
 
 @Entity
@@ -21,10 +25,10 @@ public class Position extends Model {
     private final Date openDate;
     private Date closeDate;
     private boolean closed;
-    private final String symbol;
+    private String symbol;
     private final String cusip;
-    private final String description;
-    private final String securityType;
+    private String description;
+    private String securityType;
 
     public Position(final double shares, final double costBasis, final Date openDate,
                     final String symbol, final String cusip, final String description, final String securityType) {
@@ -84,6 +88,17 @@ public class Position extends Model {
         return securityType;
     }
 
+    @JsonIgnore
+    public String getQuoteSymbol() throws ParseException {
+      if("CS".equals(getSecurityType())) {
+          return this.getSymbol();
+      } else if("OPT".equals(getSecurityType())) {
+          final OptionContract optionContract = new OptionContract(this.getDescription());
+          return optionContract.getOccSymbol();
+      }
+      throw new IllegalStateException("The security of this position is unrecognized");
+    }
+
     public void close(final double closeValue, final Date closeDate) {
         this.closeValue = closeValue;
         this.closeDate = closeDate;
@@ -105,22 +120,51 @@ public class Position extends Model {
             partialClose.close(partialCloseValue, transaction.getDate());
             return partialClose;
         }
-        closeValue = partialCloseValue;
-        closeDate = transaction.getDate();
-        closed = true;
+        close(partialCloseValue, transaction.getDate());
         return null;
     }
 
-    public double rectifyHolding(AccountHoldingsResponse holding) {
+    public double rectifyHolding(final AccountHoldingsResponse holding) {
         if(isClosed()) {
             return 0;
         }
+
+        if(symbol == null) {
+            Logger.info("Update symbol data: " + holding.getSym());
+            if(description == null) {
+                description = holding.getDesc();
+            }
+            if(securityType == null) {
+                securityType = holding.getSectyp();
+            }
+            symbol = holding.getSym();
+            this.update();
+        }
+
         final double partialQuantity = Math.min(getShares(), holding.getQuantity());
         final double closeValue = holding.getMarketValue() * partialQuantity/holding.getQuantity();
-        this.closeValue = closeValue;
-        closeDate = new Date();
-        closed = true;
+        close(closeValue, new Date());
         return partialQuantity;
+    }
+
+    public void rectifyHolding(final StockResponse quote) {
+        if(isClosed()) {
+            return;
+        }
+        final double value = quote.getPrice().doubleValue();
+        close(value*getShares(), new Date());
+    }
+
+    // TODO Issue will occur if the position has already been closed.
+    public Position split(final String outputCusip, final double splitRatio) {
+        if(outputCusip.equals(this.getCusip())) {
+            shares *= splitRatio;
+            return null;
+        }
+        final double newShares = this.getShares()*splitRatio - this.getShares();
+        final double newCostBasis = this.getCostBasis() * newShares / (this.getShares()*splitRatio);
+        costBasis -= newCostBasis;
+        return new Position(newShares, newCostBasis, getOpenDate(), null, outputCusip, null, null);
     }
 
     @Override

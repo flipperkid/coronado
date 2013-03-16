@@ -49,7 +49,11 @@ Ext.define('Position', {
 Ext.define('PositionTag', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'tag', type: 'string'}
+        {name: 'tag', type: 'string'},
+        {name: 'annualizedReturn', type: 'decimal', persist: false},
+        {name: 'return', type: 'decimal', persist: false},
+        {name: 'costBasis', type: 'decimal', persist: false},
+        {name: 'profitLoss', type: 'decimal', persist: false}
     ],
     hasMany: {model: 'Position', name: 'positions'},
     proxy: {
@@ -64,14 +68,48 @@ Ext.define('PositionTag', {
     }
 });
 
+Ext.define('Bookkeeping', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'symbol', type: 'string'},
+        {name: 'date', type: 'date', dateFormat: 'time', serialize: function(value, record) {
+            return Ext.Date.format(value, 'c');
+        }},
+        {name: 'cusip', type: 'string'},
+        {name: 'description', type: 'string'},
+
+        {name: 'amount', type: 'decimal'},
+        {name: 'quantity', type: 'decimal'}
+    ],
+    hasOne: {model: 'BookkeepingResolution', name: 'resolution', associationKey: 'resolution'},
+    proxy: {
+        type: 'rest',
+        url: '/bookkeeping',
+        reader: {
+            type: 'json'
+        },
+        writer: {
+            type: 'json'
+        }
+    }
+});
+
+Ext.define('BookkeepingResolution', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'type', type: 'string'},
+        {name: 'parentCusip', type: 'string'},
+        {name: 'splitRatio', type: 'decimal'}
+    ]
+});
+
 Ext.onReady(function() {
     defineOverrides();
-
-    //    loadTransactions();
     loadPerformance();
 });
 
 var loadPerformance = function() {
+
     var bodyDiv = Ext.create('Ext.container.Container', {
         renderTo: Ext.getBody()
     });
@@ -85,6 +123,8 @@ var loadPerformance = function() {
     aggrPerfStore = createAggrPerfStore();
     taggedPerfStore = createTagStore();
     performanceStore = createPositionStore();
+    createBookkeepingWindow();
+    bookkeepingStore = createBookkeepingStore();
 
     var perfGrid = Ext.create('Ext.grid.Panel', {
         title: 'Performance',
@@ -129,32 +169,23 @@ var loadPerformance = function() {
         title: 'Aggregate Performance',
         store: taggedPerfStore,
         columns: [{
-            text: 'Symbol', dataIndex: 'symbol', flex: 3,
-                renderer: function(value, metaData, record) {
-                    return record.aggregatePerformance.get('symbol');
-                }
+            text: 'Tag', dataIndex: 'tag', flex: 3
         },{
             text: 'Annualized Return', dataIndex: 'annualizedReturn', flex: 3,
                 renderer: function(value, metaData, record) {
-                    return Ext.util.Format.numberRenderer('0.000')(
-                        (record.aggregatePerformance.get('annualizedReturn') - 1) * 100.0) + '%';
+                    return Ext.util.Format.numberRenderer('0.000')((value - 1) * 100.0) + '%';
                 }
         },{
             text: 'Return', dataIndex: 'return', flex: 2,
                 renderer: function(value, metaData, record) {
-                    return Ext.util.Format.numberRenderer('0.000')(
-                        record.aggregatePerformance.get('return') * 100.0) + '%';
+                    return Ext.util.Format.numberRenderer('0.000')(value * 100.0) + '%';
                 }
         },{
             text: 'Cost Basis', dataIndex: 'costBasis', flex: 2,
-                renderer: function(value, metaData, record) {
-                    return Ext.util.Format.usMoney(record.aggregatePerformance.get('costBasis'));
-                }
+                renderer: Ext.util.Format.usMoney
         },{
             text: 'Profit Loss', dataIndex: 'profitLoss', flex: 2,
-                renderer: function(value, metaData, record) {
-                    return Ext.util.Format.usMoney(record.aggregatePerformance.get('profitLoss'));
-                }
+                renderer: Ext.util.Format.usMoney
         }],
         width: '40%'
     });
@@ -185,7 +216,8 @@ var loadPerformance = function() {
         if(perfGrid.getStore() == performanceStore) {
             perfGrid.getSelectionModel().select(record.positions().getRange());
         } else {
-            perfGrid.getSelectionModel().deselectAll(true);
+            var selected = perfGrid.getSelectionModel().getSelection();
+            perfGrid.getSelectionModel().deselect(selected, true);
             record.positions().each(function(parentRecord) {
                 var matchRow = aggrPerfStore.findRecord('cusip', parentRecord.get('cusip'));
                 perfGrid.getSelectionModel().select(matchRow, true, true);
@@ -249,7 +281,7 @@ var addTagged = function(selected, symbolText) {
         return aggr;
     }, []);
     var newPerf = combinePositionPerformance(selected, symbolText);
-    var recordToUpdate = taggedPerfStore.findRecord('tag', symbolText);
+    var recordToUpdate = taggedPerfStore.findRecord('tag', symbolText, 0, false, false, true);
     var newRecord = false;
     if(!recordToUpdate) {
         recordToUpdate = new PositionTag();
@@ -257,6 +289,10 @@ var addTagged = function(selected, symbolText) {
     }
     recordToUpdate.set('tag', symbolText);
     recordToUpdate.aggregatePerformance = newPerf;
+    recordToUpdate.set('annualizedReturn', newPerf.get('annualizedReturn'));
+    recordToUpdate.set('return', newPerf.get('return'));
+    recordToUpdate.set('profitLoss', newPerf.get('profitLoss'));
+    recordToUpdate.set('costBasis', newPerf.get('costBasis'));
     recordToUpdate.positions().removeAll();
     recordToUpdate.positions().add(newPerf.parents);
     if(newRecord) {
@@ -336,7 +372,7 @@ var createPositionStore = function() {
             direction: 'DESC'
         }]
     });
-    store.on('datachanged', function() {
+    store.on('load', function() {
        taggedPerfStore.load();
     });
     store.load();
@@ -359,14 +395,28 @@ var createAggrPerfStore = function() {
 var createTagStore = function() {
     var store = Ext.create('Ext.data.Store', {
         model: 'PositionTag',
-        autoSync: true
+        autoSync: true,
+        sorters: [{
+            property: 'annualizedReturn',
+            direction: 'DESC'
+        }]
     });
-    store.on('datachanged', function() {
+    store.addListener('load', function() {
         addTagged(performanceStore.getRange(), 'All');
     });
     return store;
 };
 
+var createBookkeepingStore = function() {
+    var store = Ext.create('Ext.data.Store', {
+        model: 'Bookkeeping',
+        autoLoad: true
+    });
+    store.addListener('load', function() {
+        promptUnresolvedBookkeeping();
+    });
+    return store;
+};
 var defineOverrides = function() {
     Ext.override(Ext.data.reader.Json, {
         read: function(response) {
@@ -383,6 +433,10 @@ var defineOverrides = function() {
                         positionStore.add(positions);
                         record.aggregatePerformance =
                             combinePositionPerformance(positions, record.get('tag'));
+                        record.set('annualizedReturn', record.aggregatePerformance.get('annualizedReturn'));
+                        record.set('return', record.aggregatePerformance.get('return'));
+                        record.set('profitLoss', record.aggregatePerformance.get('profitLoss'));
+                        record.set('costBasis', record.aggregatePerformance.get('costBasis'));
                     }
                 });
             }
@@ -411,9 +465,99 @@ var defineOverrides = function() {
                         }
                     };
                     childStore.each(processChild, this);
+                } else if (association.type == 'hasOne') {
+                    var childRecord = record[association.instanceName];
+                    var childData = this.getRecordData.call(this, childRecord, operation);
+                    if (childRecord.dirty | childRecord.phantom | (childData != null)) {
+                        data[association.name] = childData;
+                        record.setDirty();
+                    }
                 }
             }
             return data;
         }
     });
+};
+
+var promptUnresolvedBookkeeping = function() {
+    bookkeepingStore.each(function(record) {
+        if(record.getBookkeepingResolution().get('type') === 'U' && bookkeepingWindow.isHidden()) {
+            bookkeepingForm.loadRecord(record);
+            bookkeepingWindow.show();
+        }
+    });
+};
+
+var createBookkeepingWindow = function() {
+    bookkeepingWindow = Ext.create('Ext.window.Window');
+    bookkeepingForm = Ext.create('Ext.form.Panel');
+
+    bookkeepingForm.add(Ext.create('Ext.form.field.Display', {
+        fieldLabel: 'Symbol',
+        name: 'symbol'
+    }));
+    bookkeepingForm.add(Ext.create('Ext.form.field.Display', {
+        fieldLabel: 'Date',
+        name: 'date'
+    }));
+    bookkeepingForm.add(Ext.create('Ext.form.field.Display', {
+        fieldLabel: 'Cusip',
+        name: 'cusip'
+    }));
+    bookkeepingForm.add(Ext.create('Ext.form.field.Display', {
+        fieldLabel: 'Description',
+        name: 'description'
+    }));
+    bookkeepingForm.add(Ext.create('Ext.form.field.Display', {
+        fieldLabel: 'Amount',
+        name: 'amount'
+    }));
+    bookkeepingForm.add(Ext.create('Ext.form.field.Display', {
+        fieldLabel: 'Quantity',
+        name: 'quantity'
+    }));
+
+    resolutionForm = Ext.create('Ext.form.Panel');
+    resolutionForm.add(Ext.create('Ext.form.field.ComboBox', {
+        fieldLabel: 'Parent Cusip',
+        name: 'parentCusip',
+        allowBlank: false,
+        queryMode: 'local',
+        displayField: 'description',
+        valueField: 'cusip',
+        store: performanceStore
+    }));
+
+    resolutionForm.add(Ext.create('Ext.form.field.Number', {
+        fieldLabel: 'Split Ratio',
+        name: 'splitRatio',
+        allowBlank: false
+    }));
+
+    bookkeepingWindow.add(bookkeepingForm);
+    bookkeepingWindow.add(resolutionForm);
+
+    bookkeepingWindow.addDocked(Ext.create('Ext.toolbar.Toolbar', {
+        dock: 'bottom',
+        items: [ '->',
+            Ext.create('Ext.button.Button', {
+                text: 'Cancel',
+                handler: function() { bookkeepingWindow.close(); }
+            }),
+            Ext.create('Ext.button.Button', {
+                text: 'Resolve',
+                handler: function() {
+                    var cRecord = bookkeepingForm.getRecord()
+                    resolutionForm.getForm().updateRecord(cRecord.getBookkeepingResolution());
+                    cRecord.getBookkeepingResolution().set('type', 'S');
+                    cRecord.save({
+                        success: function() {
+                            location.reload();
+                        }
+                    });
+                    bookkeepingWindow.close();
+                }
+            })
+        ]
+    }));
 };

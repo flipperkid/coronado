@@ -45,6 +45,6 @@ public class SyncRequest {
 		client.SendRequest(request);
 		request.waitForDone();
 		String response = request.getResponseContent();
-		return response;
+        return response;
 	}
 }

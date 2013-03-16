@@ -1,8 +1,11 @@
 package coronado.api;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
+import coronado.model.HistorySequence;
+import coronado.model.QuoteHistory;
 import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import oauth.signpost.exception.OAuthCommunicationException;
@@ -20,6 +23,8 @@ import coronado.api.model.OptionContractResponse;
 import coronado.api.model.StockResponse;
 import coronado.deserializers.JsonDeserializerProvider;
 import coronado.model.OptionContract;
+import org.joda.time.DateTime;
+import play.Logger;
 
 public class TradeKingProxy {
 	private final OAuthHttpClient client;
@@ -114,7 +119,7 @@ public class TradeKingProxy {
 		request.setContent("symbols=" + Joiner.on(",").join(symbols));
 
 		final String response = request.send();
-		StockResponse.ListOfStocks stocks = jsonDeserializer.fromJson(response,
+        StockResponse.ListOfStocks stocks = jsonDeserializer.fromJson(response,
 				StockResponse.ListOfStocks.class);
 		return stocks.get();
 	}
@@ -147,13 +152,18 @@ public class TradeKingProxy {
         return holdings.get();
     }
 
-    public String getHistoricData()
+    public List<QuoteHistory> getHistoricData(final HistorySequence historySeq)
             throws OAuthMessageSignerException,
             OAuthExpectationFailedException, OAuthCommunicationException,
             IOException, InterruptedException {
-        final String url = "market/historical/search.json?symbols=AAPL&interval=daily&startdate=2013-01-01&enddate=2013-02-24";
+        final Date endDate = new DateTime(historySeq.getEndDate()).minusDays(1).toDate();
+        final String url = String.format(
+                "market/historical/search.json?symbols=%1$s&interval=daily&startdate=%2$tY-%2$tm-%2$td&enddate=%3$tY-%3$tm-%3$td",
+                historySeq.getSymbol(), historySeq.getStartDate(), endDate);
         final SyncRequest request = new SyncRequest(url, client);
 
         final String response = request.send();
-        return response;
+        QuoteHistory.ListOfQuoteHistory history = jsonDeserializer
+                .fromJson(response, QuoteHistory.ListOfQuoteHistory.class);
+        return history.get();
     }}
