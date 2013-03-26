@@ -317,12 +317,23 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     newPositionPerf.parents = positions.slice(0);
     var costBasis = 0.0;
     var profitLoss = 0.0;
-    var keyDates = [];
+    var startDate = null;
+    var endDate = null;
     positions.forEach(function(cSel) {
         costBasis += cSel.get('costBasis');
         profitLoss += cSel.get('profitLoss');
-        keyDates.push(Ext.Date.format(cSel.get('openDate'), 'U'));
-        keyDates.push(Ext.Date.format(Ext.Date.add(cSel.get('closeDate'), Ext.Date.DAY, 1), 'U'));
+        var cStartDate = Ext.Date.format(cSel.get('openDate'), 'U');
+        var cEndDate = Ext.Date.format(cSel.get('closeDate'), 'U');
+        if (startDate === null) {
+            startDate = cStartDate;
+        } else {
+            startDate = Math.min(cStartDate, startDate);
+        }
+        if (endDate === null) {
+            endDate = cEndDate;
+        } else {
+            endDate = Math.max(cEndDate, endDate);
+        }
     });
     newPositionPerf.set('costBasis', costBasis);
     newPositionPerf.set('profitLoss', profitLoss);
@@ -338,16 +349,9 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     }
 
     var compoundReturnRate = 1.0;
-    keyDates = Ext.Array.sort(Ext.Array.map(Ext.Array.unique(keyDates), function(val) {
-        return Ext.Date.parse(val, 'U');
-    }), function(val1, val2) {
-        return val1 - val2;
-    });
-    keyDates.forEach(function(cDate, cIdx, cArr) {
-        if(cIdx+1 === cArr.length) {
-            return;
-        }
-        var cTerm = daysBetween(cDate, cArr[cIdx+1]);
+    var cDate = Ext.Date.parse(startDate, 'U');
+    var now = Ext.Date.now();
+    while (Ext.Date.format(cDate, 'time') < now) {
         var aggrReturn = 0.0;
         var aggrCostBasis = 0.0;
         positions.forEach(function(cSel) {
@@ -355,23 +359,24 @@ var combinePositionPerformance = function(positions, includeSymbol) {
                 var priorTerm = daysBetween(cSel.get('openDate'), cDate);
                 var adjCostBasis = cSel.get('costBasis') * Math.pow(cSel.get('annualizedReturn'), priorTerm/365.0);
                 aggrCostBasis += adjCostBasis;
-                aggrReturn += adjCostBasis * Math.pow(cSel.get('annualizedReturn'), cTerm/365.0);
-//                    console.log(cSel.get('symbol') + ' ' + priorTerm + ' ' + adjCostBasis);
+                aggrReturn += adjCostBasis * Math.pow(cSel.get('annualizedReturn'), 1/365.0);
             }
         });
-//            console.log(Ext.Date.format(cDate, 'n-j-y') + ' ' + ((Math.pow(aggrReturn/aggrCostBasis, 365.0/cTerm) - 1.0) * 100) +
-//                ' ' + aggrCostBasis + ' ' + cTerm);
         if(aggrCostBasis > 0) {
             compoundReturnRate *= aggrReturn/aggrCostBasis;
         }
-    });
-    var totalTerm = daysBetween(keyDates[0], keyDates[keyDates.length-1]);
+        if(newPositionPerf.get('symbol') === 'BA') {
+            console.log(aggrCostBasis + ' ' + aggrReturn);
+        }
+        cDate = Ext.Date.add(cDate, Ext.Date.DAY, 1)
+    };
+    var totalTerm = 1 + daysBetween(Ext.Date.parse(startDate, 'U'), Ext.Date.parse(endDate, 'U'));
     newPositionPerf.set('annualizedReturn', Math.pow(compoundReturnRate, 365.0/totalTerm));
     return newPositionPerf;
 };
 
 var daysBetween = function(startDate, endDate) {
-    return parseInt((endDate - startDate) / 86400000);
+    return Math.round((endDate - startDate) / 86400000.0);
 };
 
 var createPositionStore = function() {
