@@ -3,19 +3,20 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext'>/**
+  <pre class="prettyprint lang-js">//@tag foundation,core
+<span id='Ext'>/**
 </span> * @class Ext
  * @singleton
  */
@@ -34,7 +35,11 @@ Ext._startTime = new Date().getTime();
             var method = callOverrideParent.caller.caller; // skip callParent (our caller)
             return method.$owner.prototype[method.$name].apply(this, arguments);
         },
-        i;
+        i,
+        nonWhitespaceRe = /\S/,
+        ExtApp;
+
+    Function.prototype.$extIsFunction = true;
 
     Ext.global = global;
 
@@ -88,8 +93,7 @@ Ext._startTime = new Date().getTime();
     };
 
     Ext.buildSettings = Ext.apply({
-        baseCSSPrefix: 'x-',
-        scopeResetCSS: false
+        baseCSSPrefix: 'x-'
     }, Ext.buildSettings || {});
 
     Ext.apply(Ext, {
@@ -104,9 +108,17 @@ Ext._startTime = new Date().getTime();
         name: Ext.sandboxName || 'Ext',
 
 <span id='Ext-property-emptyFn'>        /**
-</span>         * A reusable empty function
+</span>         * @property {Function}
+         * A reusable empty function
          */
         emptyFn: emptyFn,
+        
+<span id='Ext-method-identityFn'>        /**
+</span>         * A reusable identity function. The function will always return the first argument, unchanged.
+         */
+        identityFn: function(o) {
+            return o;
+        },
 
 <span id='Ext-property-emptyString'>        /**
 </span>         * A zero length string which will pass a truth test. Useful for passing to methods
@@ -143,7 +155,7 @@ Ext._startTime = new Date().getTime();
          * @param {Object/Array} object The object or array to be iterated.
          * @param {Function} fn The function to be called for each iteration. See and {@link Ext.Array#each Ext.Array.each} and
          * {@link Ext.Object#each Ext.Object.each} for detailed lists of arguments passed to this function depending on the given object
-         * securityType that is being iterated.
+         * type that is being iterated.
          * @param {Object} scope (Optional) The scope (`this` reference) in which the specified function is executed.
          * Defaults to the object being iterated itself.
          * @markdown
@@ -311,7 +323,7 @@ Ext._startTime = new Date().getTime();
         }
     });
 
-    // A full set of static methods to do securityType checking
+    // A full set of static methods to do type checking
     Ext.apply(Ext, {
 
 <span id='Ext-method-valueFrom'>        /**
@@ -328,7 +340,7 @@ Ext._startTime = new Date().getTime();
         },
 
 <span id='Ext-method-typeOf'>        /**
-</span>         * Returns the securityType of the given variable in string format. List of possible values are:
+</span>         * Returns the type of the given variable in string format. List of possible values are:
          *
          * - `undefined`: If the given value is `undefined`
          * - `null`: If the given value is `null`
@@ -349,17 +361,17 @@ Ext._startTime = new Date().getTime();
          * @markdown
          */
         typeOf: function(value) {
-            var securityType,
+            var type,
                 typeToString;
             
             if (value === null) {
                 return 'null';
             }
 
-            securityType = typeof value;
+            type = typeof value;
 
-            if (securityType === 'undefined' || securityType === 'string' || securityType === 'number' || securityType === 'boolean') {
-                return securityType;
+            if (type === 'undefined' || type === 'string' || type === 'number' || type === 'boolean') {
+                return type;
             }
 
             typeToString = toString.call(value);
@@ -377,14 +389,14 @@ Ext._startTime = new Date().getTime();
                     return 'regexp';
             }
 
-            if (securityType === 'function') {
+            if (type === 'function') {
                 return 'function';
             }
 
-            if (securityType === 'object') {
+            if (type === 'object') {
                 if (value.nodeType !== undefined) {
                     if (value.nodeType === 3) {
-                        return (/\S/).test(value.nodeValue) ? 'textnode' : 'whitespace';
+                        return (nonWhitespaceRe).test(value.nodeValue) ? 'textnode' : 'whitespace';
                     }
                     else {
                         return 'element';
@@ -398,9 +410,52 @@ Ext._startTime = new Date().getTime();
             Ext.Error.raise({
                 sourceClass: 'Ext',
                 sourceMethod: 'typeOf',
-                msg: 'Failed to determine the securityType of the specified value &quot;' + value + '&quot;. This is most likely a bug.'
+                msg: 'Failed to determine the type of the specified value &quot;' + value + '&quot;. This is most likely a bug.'
             });
             //&lt;/debug&gt;
+        },
+
+<span id='Ext-method-coerce'>        /**
+</span>         * Coerces the first value if possible so that it is comparable to the second value.
+         *
+         * Coercion only works between the basic atomic data types String, Boolean, Number, Date, null and undefined.
+         *
+         * Numbers and numeric strings are coerced to Dates using the value as the millisecond era value.
+         *
+         * Strings are coerced to Dates by parsing using the {@link Ext.Date#defaultFormat defaultFormat}.
+         * 
+         * For example
+         *
+         *     Ext.coerce('false', true);
+         *     
+         * returns the boolean value `false` because the second parameter is of type `Boolean`.
+         * 
+         * @param {Mixed} from The value to coerce
+         * @param {Mixed} to The value it must be compared against
+         * @return The coerced value.
+         */
+        coerce: function(from, to) {
+            var fromType = Ext.typeOf(from),
+                toType = Ext.typeOf(to),
+                isString = typeof from === 'string';
+
+            if (fromType !== toType) {
+                switch (toType) {
+                    case 'string':
+                        return String(from);
+                    case 'number':
+                        return Number(from);
+                    case 'boolean':
+                        return isString &amp;&amp; (!from || from === 'false') ? false : Boolean(from);
+                    case 'null':
+                        return isString &amp;&amp; (!from || from === 'null') ? null : from;
+                    case 'undefined':
+                        return isString &amp;&amp; (!from || from === 'undefined') ? undefined : from;
+                    case 'date':
+                        return isString &amp;&amp; isNaN(from) ? Ext.Date.parse(from, Ext.Date.defaultFormat) : Date(Number(from));
+                }
+            }
+            return from;
         },
 
 <span id='Ext-method-isEmpty'>        /**
@@ -467,9 +522,9 @@ Ext._startTime = new Date().getTime();
          * @return {Boolean}
          */
         isPrimitive: function(value) {
-            var securityType = typeof value;
+            var type = typeof value;
 
-            return securityType === 'string' || securityType === 'number' || securityType === 'boolean';
+            return type === 'string' || type === 'number' || type === 'boolean';
         },
 
 <span id='Ext-method-isFunction'>        /**
@@ -478,13 +533,8 @@ Ext._startTime = new Date().getTime();
          * @return {Boolean}
          * @method
          */
-        isFunction:
-        // Safari 3.x and 4.x returns 'function' for typeof &lt;NodeList&gt;, hence we need to fall back to using
-        // Object.prototype.toString (slower)
-        (typeof document !== 'undefined' &amp;&amp; typeof document.getElementsByTagName('body') === 'function') ? function(value) {
-            return toString.call(value) === '[object Function]';
-        } : function(value) {
-            return typeof value === 'function';
+        isFunction: function(value) {
+            return !!(value &amp;&amp; value.$extIsFunction);
         },
 
 <span id='Ext-method-isNumber'>        /**
@@ -557,11 +607,11 @@ Ext._startTime = new Date().getTime();
          * @return {Boolean}
          */
         isIterable: function(value) {
-            var securityType = typeof value,
+            var type = typeof value,
                 checkLength = false;
-            if (value &amp;&amp; securityType != 'string') {
+            if (value &amp;&amp; type != 'string') {
                 // Functions have a length property, so we need to filter them out
-                if (securityType == 'function') {
+                if (type == 'function') {
                     // In Safari, NodeList/HTMLCollection both return &quot;function&quot; when using typeof, so we need
                     // to explicitly check them here.
                     if (Ext.isSafari) {
@@ -586,7 +636,7 @@ Ext._startTime = new Date().getTime();
          * @return {Object} clone
          */
         clone: function(item) {
-            var securityType,
+            var type,
                 i,
                 j,
                 k,
@@ -604,16 +654,16 @@ Ext._startTime = new Date().getTime();
                 return item.cloneNode(true);
             }
 
-            securityType = toString.call(item);
+            type = toString.call(item);
 
             // Date
-            if (securityType === '[object Date]') {
+            if (type === '[object Date]') {
                 return new Date(item.getTime());
             }
 
 
             // Array
-            if (securityType === '[object Array]') {
+            if (type === '[object Array]') {
                 i = item.length;
 
                 clone = [];
@@ -623,7 +673,7 @@ Ext._startTime = new Date().getTime();
                 }
             }
             // Object
-            else if (securityType === '[object Object]' &amp;&amp; item.constructor === Object) {
+            else if (type === '[object Object]' &amp;&amp; item.constructor === Object) {
                 clone = {};
 
                 for (key in item) {
@@ -723,14 +773,86 @@ Ext._startTime = new Date().getTime();
         }
     });
 
-<span id='Ext-method-securityType'>    /**
+<span id='Ext-method-type'>    /**
 </span>     * Old alias to {@link Ext#typeOf}
      * @deprecated 4.0.0 Use {@link Ext#typeOf} instead
      * @method
      * @inheritdoc Ext#typeOf
      */
-    Ext.securityType = Ext.typeOf;
+    Ext.type = Ext.typeOf;
+    
+    // When using Cmd optimizations, the namespace Ext.app may already be defined
+    // by this point since it's done up front by the tool. Check if app already
+    // exists before overwriting it.
+    ExtApp = Ext.app;
+    if (!ExtApp) {
+        ExtApp = Ext.app = {};
+    }
+    Ext.apply(ExtApp, {
+        namespaces: {},
+        
+<span id='Ext-method-collectNamespaces'>        /**
+</span>        * @private
+        */
+        collectNamespaces: function(paths) {
+            var namespaces = Ext.app.namespaces,
+                path;
+            
+            for (path in paths) {
+                if (paths.hasOwnProperty(path)) {
+                    namespaces[path] = true;
+                }
+            }
+        },
 
+<span id='Ext-method-addNamespaces'>        /**
+</span>        * Adds namespace(s) to known list.
+        *
+        * @param {String/String[]} namespace
+        */
+        addNamespaces: function(ns) {
+            var namespaces = Ext.app.namespaces,
+                i, l;
+
+            if (!Ext.isArray(ns)) {
+                ns = [ns];
+            }
+
+            for (i = 0, l = ns.length; i &lt; l; i++) {
+                namespaces[ns[i]] = true;
+            }
+        },
+
+<span id='Ext-method-clearNamespaces'>        /**
+</span>        * @private Clear all namespaces from known list.
+        */
+        clearNamespaces: function() {
+            Ext.app.namespaces = {};
+        },
+
+<span id='Ext-method-getNamespace'>        /**
+</span>        * Get namespace prefix for a class name.
+        *
+        * @param {String} className
+        *
+        * @return {String} Namespace prefix if it's known, otherwise undefined
+        */
+        getNamespace: function(className) {
+            var namespaces    = Ext.app.namespaces,
+                deepestPrefix = '',
+                prefix;
+
+            for (prefix in namespaces) {
+                if (namespaces.hasOwnProperty(prefix)    &amp;&amp;
+                    prefix.length &gt; deepestPrefix.length &amp;&amp;
+                    (prefix + '.' === className.substring(0, prefix.length + 1))) {
+                    deepestPrefix = prefix;
+                }
+            }
+
+            return deepestPrefix === '' ? undefined : deepestPrefix;
+        }
+    });
 }());
 
 /*
@@ -748,6 +870,10 @@ Ext.globalEval = Ext.global.execScript
         // IMPORTANT: because we use eval we cannot place this in the above function or it
         // will break the compressor's ability to rename local variables...
         (function(){
+            // This var should not be replaced by the compressor. We need to do this so
+            // that Ext refers to the global Ext, if we're sandboxing it may
+            // refer to the local instance inside the closure
+            var Ext = this.Ext;
             eval($$code);
         }());
     };

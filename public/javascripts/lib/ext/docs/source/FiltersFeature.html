@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -72,24 +72,24 @@
  *         // filters may be configured through the plugin,
  *         // or in the column definition within the headers configuration
  *         filters: [{
- *             securityType: 'numeric',
+ *             type: 'numeric',
  *             dataIndex: 'id'
  *         }, {
- *             securityType: 'string',
+ *             type: 'string',
  *             dataIndex: 'name'
  *         }, {
- *             securityType: 'numeric',
+ *             type: 'numeric',
  *             dataIndex: 'price'
  *         }, {
- *             securityType: 'date',
+ *             type: 'date',
  *             dataIndex: 'dateAdded'
  *         }, {
- *             securityType: 'list',
+ *             type: 'list',
  *             dataIndex: 'size',
  *             options: ['extra small', 'small', 'medium', 'large', 'extra large'],
  *             phpMode: true
  *         }, {
- *             securityType: 'boolean',
+ *             type: 'boolean',
  *             dataIndex: 'visible'
  *         }]
  *     };
@@ -116,6 +116,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         'Ext.ux.grid.menu.RangeMenu',
         'Ext.ux.grid.filter.BooleanFilter',
         'Ext.ux.grid.filter.DateFilter',
+        'Ext.ux.grid.filter.DateTimeFilter',
         'Ext.ux.grid.filter.ListFilter',
         'Ext.ux.grid.filter.NumericFilter',
         'Ext.ux.grid.filter.StringFilter'
@@ -136,8 +137,8 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
      */
 <span id='Ext-ux-grid-FiltersFeature-cfg-filters'>    /**
 </span>     * @cfg {Array} filters
-     * An Array of filters config objects. Refer to each filter securityType class for
-     * configuration details specific to each filter securityType. Filters for Strings,
+     * An Array of filters config objects. Refer to each filter type class for
+     * configuration details specific to each filter type. Filters for Strings,
      * Numeric Ranges, Date Ranges, Lists, and Boolean are the standard filters
      * available.
      */
@@ -180,8 +181,8 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
      */
     updateBuffer : 500,
 
-    // doesn't handle grid body events
-    hasFeatureEvent: false,
+<span id='Ext-ux-grid-FiltersFeature-property-hasFeatureEvent'>    // doesn't handle grid body events
+</span>    hasFeatureEvent: false,
 
 
 <span id='Ext-ux-grid-FiltersFeature-method-constructor'>    /** @private */
@@ -198,11 +199,10 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         me.filterConfigs = config.filters;
     },
 
-    attachEvents: function() {
-        var me = this,
+<span id='Ext-ux-grid-FiltersFeature-method-init'>    init: function(grid) {
+</span>        var me = this,
             view = me.view,
-            headerCt = view.headerCt,
-            grid = me.getGridPanel();
+            headerCt = view.headerCt;
 
         me.bindStore(view.getStore(), true);
 
@@ -222,8 +222,8 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         grid.addEvents('filterupdate');
     },
 
-    createFiltersCollection: function () {
-        return Ext.create('Ext.util.MixedCollection', false, function (o) {
+<span id='Ext-ux-grid-FiltersFeature-method-createFiltersCollection'>    createFiltersCollection: function () {
+</span>        return Ext.create('Ext.util.MixedCollection', false, function (o) {
             return o ? o.dataIndex : null;
         });
     },
@@ -252,7 +252,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
                 field = fields.get(dataIndex);
                 filter = {
                     dataIndex: dataIndex,
-                    securityType: (field &amp;&amp; field.securityType &amp;&amp; field.securityType.securityType) || 'auto'
+                    type: (field &amp;&amp; field.type &amp;&amp; field.type.type) || 'auto'
                 };
 
                 if (Ext.isObject(config)) {
@@ -299,7 +299,7 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         for (i = 0; i &lt; filtersLength; i++) {
             filter = filters[i];
             if (filter) {
-                FilterClass = me.getFilterClass(filter.securityType);
+                FilterClass = me.getFilterClass(filter.type);
                 filter = filter.menu ? filter : new FilterClass(filter);
                 me.filters.add(filter);
                 Ext.util.Observable.capture(filter, this.onStateChange, this);
@@ -346,8 +346,8 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
     },
 
 
-    createMenuItem: function(menu) {
-        var me = this;
+<span id='Ext-ux-grid-FiltersFeature-method-createMenuItem'>    createMenuItem: function(menu) {
+</span>        var me = this;
         me.sep  = menu.add('-');
         me.menuItem = menu.add({
             checked: false,
@@ -361,8 +361,8 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         });
     },
 
-    getGridPanel: function() {
-        return this.view.up('gridpanel');
+<span id='Ext-ux-grid-FiltersFeature-method-getGridPanel'>    getGridPanel: function() {
+</span>        return this.view.up('gridpanel');
     },
 
 <span id='Ext-ux-grid-FiltersFeature-method-applyState'>    /**
@@ -665,24 +665,38 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
         });
     },
 
+<span id='Ext-ux-grid-FiltersFeature-method-getFilterItems'>    getFilterItems: function () {
+</span>        var me = this;
+
+        // If there's a locked grid then we must get the filter items for each grid.
+        if (me.lockingPartner) {
+            return me.filters.items.concat(me.lockingPartner.filters.items);
+        }
+
+        return me.filters.items;
+    },
+
 <span id='Ext-ux-grid-FiltersFeature-method-getFilterData'>    /**
 </span>     * Returns an Array of the currently active filters.
      * @return {Array} filters Array of the currently active filters.
      */
     getFilterData : function () {
-        var filters = [], i, len;
+        var items = this.getFilterItems(),
+            filters = [],
+            n, nlen, item, d, i, len;
 
-        this.filters.each(function (f) {
-            if (f.active) {
-                var d = [].concat(f.serialize());
+        for (n = 0, nlen = items.length; n &lt; nlen; n++) {
+            item = items[n];
+            if (item.active) {
+                d = [].concat(item.serialize());
                 for (i = 0, len = d.length; i &lt; len; i++) {
                     filters.push({
-                        field: f.dataIndex,
+                        field: item.dataIndex,
                         data: d[i]
                     });
                 }
             }
-        });
+        }
         return filters;
     },
 
@@ -695,14 +709,14 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
      *
      *         filters[0][field]=&quot;someDataIndex&quot;&amp;
      *         filters[0][data][comparison]=&quot;someValue1&quot;&amp;
-     *         filters[0][data][securityType]=&quot;someValue2&quot;&amp;
+     *         filters[0][data][type]=&quot;someValue2&quot;&amp;
      *         filters[0][data][value]=&quot;someValue3&quot;&amp;
      *
      *
      *   - `true` :
      *     JSON encode the filter data
      *
-     *         {filters:[{&quot;field&quot;:&quot;someDataIndex&quot;,&quot;comparison&quot;:&quot;someValue1&quot;,&quot;securityType&quot;:&quot;someValue2&quot;,&quot;value&quot;:&quot;someValue3&quot;}]}
+     *         {filters:[{&quot;field&quot;:&quot;someDataIndex&quot;,&quot;comparison&quot;:&quot;someValue1&quot;,&quot;type&quot;:&quot;someValue2&quot;,&quot;value&quot;:&quot;someValue3&quot;}]}
      *
      * Override this method to customize the format of the filter query for remote requests.
      *
@@ -768,25 +782,25 @@ Ext.define('Ext.ux.grid.FiltersFeature', {
 <span id='Ext-ux-grid-FiltersFeature-method-getFilterClass'>    /**
 </span>     * Function for locating filter classes, overwrite this with your favorite
      * loader to provide dynamic filter loading.
-     * @param {String} securityType The securityType of filter to load ('Filter' is automatically
-     * appended to the passed securityType; eg, 'string' becomes 'StringFilter').
+     * @param {String} type The type of filter to load ('Filter' is automatically
+     * appended to the passed type; eg, 'string' becomes 'StringFilter').
      * @return {Function} The Ext.ux.grid.filter.Class
      */
-    getFilterClass : function (securityType) {
-        // map the supported Ext.data.Field securityType values into a supported filter
-        switch(securityType) {
+    getFilterClass : function (type) {
+        // map the supported Ext.data.Field type values into a supported filter
+        switch(type) {
             case 'auto':
-              securityType = 'string';
+              type = 'string';
               break;
             case 'int':
             case 'float':
-              securityType = 'numeric';
+              type = 'numeric';
               break;
             case 'bool':
-              securityType = 'boolean';
+              type = 'boolean';
               break;
         }
-        return Ext.ClassManager.getByAlias('gridfilter.' + securityType);
+        return Ext.ClassManager.getByAlias('gridfilter.' + type);
     }
 });
 </pre>

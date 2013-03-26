@@ -33,6 +33,10 @@ public class SyncRequest {
 		request.setURL(baseUri + url);
 	}
 
+    public int getStatus() {
+        return request.getResponseStatus();
+    }
+
 	public void setContent(final String content) {
 		request.setMethod(HttpMethods.POST);
 		request.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");

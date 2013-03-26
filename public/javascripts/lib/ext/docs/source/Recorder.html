@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -101,20 +101,20 @@ Ext.define('Ext.ux.event.Recorder', function () {
                 return false;
             }
 
-            if (rec.securityType == 'mousemove') {
-                if (tail.securityType == 'mousemove' &amp;&amp; rec.ts - tail.ts &lt; 200) {
+            if (rec.type == 'mousemove') {
+                if (tail.type == 'mousemove' &amp;&amp; rec.ts - tail.ts &lt; 200) {
                     rec.ts = tail.ts;
                     events[length-1] = rec;
                     return true;
                 }
-            } else if (rec.securityType == 'click') {
-                if (length &gt;= 2 &amp;&amp; tail.securityType == 'mouseup' &amp;&amp;
-                        (tailPrev = events[length-2]).securityType == 'mousedown') {
+            } else if (rec.type == 'click') {
+                if (length &gt;= 2 &amp;&amp; tail.type == 'mouseup' &amp;&amp;
+                        (tailPrev = events[length-2]).type == 'mousedown') {
                     if (rec.button == tail.button &amp;&amp; rec.button == tailPrev.button &amp;&amp;
                             rec.target == tail.target &amp;&amp; rec.target == tailPrev.target &amp;&amp;
                             samePt(rec, tail) &amp;&amp; samePt(rec, tailPrev) ) {
                         events.pop(); // remove mouseup
-                        tailPrev.securityType = 'mduclick';
+                        tailPrev.type = 'mduclick';
                         return true;
                     }
                 }
@@ -177,11 +177,11 @@ Ext.define('Ext.ux.event.Recorder', function () {
 
         onEvent: function (e) {
             var me = this,
-                info = me.eventsToRecord[e.securityType],
+                info = me.eventsToRecord[e.type],
                 root,
                 modKeys, elXY,
                 rec = {
-                    securityType: e.securityType,
+                    type: e.type,
                     ts: me.getTimestamp(),
                     target: me.getElementXPath(e.target)
                 },

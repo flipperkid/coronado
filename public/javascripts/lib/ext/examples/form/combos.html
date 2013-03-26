@@ -5,18 +5,18 @@
     <title>Combo Boxes</title>
 
     <!-- ExtJS -->
-    <link rel="stylesheet" securityType="text/css" href="../../resources/css/ext-all.css" />
-    <script securityType="text/javascript" src="../../ext-all.js"></script>
+    <script type="text/javascript" src="../../examples/shared/include-ext.js"></script>
+    <script type="text/javascript" src="../../examples/shared/options-toolbar.js"></script>
 
     <!-- Shared -->
-    <link rel="stylesheet" securityType="text/css" href="../shared/example.css" />
+    <link rel="stylesheet" type="text/css" href="../shared/example.css" />
 
     <!-- GC -->
 
 
     <!-- Example -->
-    <script securityType="text/javascript" src="combos.js"></script>
-    <style securityType="text/css">
+    <script type="text/javascript" src="combos.js"></script>
+    <style type="text/css">
         .example {
             width: 600px;
             border: 1px solid #CCC;
@@ -40,7 +40,7 @@
 
 <div class="example">
     <h2>Data Sources</h2>
-    <p>The combo box can use any securityType of Ext.data.Store as its data source.
+    <p>The combo box can use any type of Ext.data.Store as its data source.
     This means your data can be XML, JSON, arrays or any other supported format. It can be loaded using
     Ajax, via script tags or locally. This combo uses local data from a JS array:</p>
 
@@ -49,9 +49,9 @@
     <pre class="code x-hide-display" id="simpleComboCode">// Define the model for a State
 Ext.regModel('State', {
     fields: [
-        {securityType: 'string', name: 'abbr'},
-        {securityType: 'string', name: 'name'},
-        {securityType: 'string', name: 'slogan'}
+        {type: 'string', name: 'abbr'},
+        {type: 'string', name: 'name'},
+        {type: 'string', name: 'slogan'}
     ]
 });
 
@@ -85,9 +85,9 @@ var simpleCombo = Ext.create('Ext.form.field.ComboBox', {
     <pre class="code x-hide-display" id="customTplComboCode">// Define the model for a State
 Ext.regModel('State', {
     fields: [
-        {securityType: 'string', name: 'abbr'},
-        {securityType: 'string', name: 'name'},
-        {securityType: 'string', name: 'slogan'}
+        {type: 'string', name: 'abbr'},
+        {type: 'string', name: 'name'},
+        {type: 'string', name: 'slogan'}
     ]
 });
 
@@ -123,9 +123,9 @@ var customTplCombo = Ext.create('Ext.form.field.ComboBox', {
     <pre class="code x-hide-display" id="multiSelectComboCode">// Define the model for a State
 Ext.regModel('State', {
     fields: [
-        {securityType: 'string', name: 'abbr'},
-        {securityType: 'string', name: 'name'},
-        {securityType: 'string', name: 'slogan'}
+        {type: 'string', name: 'abbr'},
+        {type: 'string', name: 'name'},
+        {type: 'string', name: 'slogan'}
     ]
 });
 

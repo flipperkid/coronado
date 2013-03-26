@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -39,7 +39,7 @@ Ext.define('Ext.state.Stateful', {
      * a {@link #stateId} for state to be managed.
      * 
      * Auto-generated ids are not guaranteed to be stable across page loads and
-     * cannot be relied upon to save and restore the same state for a object.&lt;p&gt;
+     * cannot be relied upon to save and restore the same state for a object.
      *
      * For state saving to work, the state manager's provider must have been
      * set to an implementation of {@link Ext.state.Provider} which overrides the
@@ -96,7 +96,7 @@ Ext.define('Ext.state.Stateful', {
 <span id='Ext-state-Stateful-cfg-stateEvents'>    /**
 </span>     * @cfg {String[]} stateEvents
      * &lt;p&gt;An array of events that, when fired, should trigger this object to
-     * save its state. Defaults to none. &lt;code&gt;stateEvents&lt;/code&gt; may be any securityType
+     * save its state. Defaults to none. &lt;code&gt;stateEvents&lt;/code&gt; may be any type
      * of event supported by this object, including browser or custom events
      * (e.g., &lt;tt&gt;['click', 'customerchange']&lt;/tt&gt;).&lt;/p&gt;
      * &lt;p&gt;See &lt;code&gt;{@link #stateful}&lt;/code&gt; for an explanation of saving and
@@ -109,8 +109,8 @@ Ext.define('Ext.state.Stateful', {
      */
     saveDelay: 100,
 
-    constructor: function(config) {
-        var me = this;
+<span id='Ext-state-Stateful-method-constructor'>    constructor: function(config) {
+</span>        var me = this;
 
         config = config || {};
         if (config.stateful !== undefined) {

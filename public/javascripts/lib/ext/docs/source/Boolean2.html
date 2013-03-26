@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -23,8 +23,8 @@
  *     Ext.create('Ext.data.Store', {
  *        storeId:'sampleStore',
  *        fields:[
- *            {name: 'framework', securityType: 'string'},
- *            {name: 'rocks', securityType: 'boolean'}
+ *            {name: 'framework', type: 'string'},
+ *            {name: 'rocks', type: 'boolean'}
  *        ],
  *        data:{'items':[
  *            { 'framework': &quot;Ext JS 4&quot;,     'rocks': true  },
@@ -33,9 +33,9 @@
  *            { 'framework': &quot;Other Guys&quot;,   'rocks': false } 
  *        ]},
  *        proxy: {
- *            securityType: 'memory',
+ *            type: 'memory',
  *            reader: {
- *                securityType: 'json',
+ *                type: 'json',
  *                root: 'items'
  *            }
  *        }
@@ -87,11 +87,12 @@ Ext.define('Ext.grid.column.Boolean', {
     undefinedText: '&amp;#160;',
 
 <span id='Ext-grid-column-Boolean-cfg-renderer'>    /**
-</span>     * @cfg renderer
+</span>     * @cfg {Object} renderer
      * @hide
      */
+    
 <span id='Ext-grid-column-Boolean-cfg-scope'>    /**
-</span>     * @cfg scope
+</span>     * @cfg {Object} scope
      * @hide
      */
 

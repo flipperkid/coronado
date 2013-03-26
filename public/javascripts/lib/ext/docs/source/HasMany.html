@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -25,22 +25,22 @@
 Ext.define('Product', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id',      securityType: 'int'},
-        {name: 'user_id', securityType: 'int'},
-        {name: 'name',    securityType: 'string'}
+        {name: 'id',      type: 'int'},
+        {name: 'user_id', type: 'int'},
+        {name: 'name',    type: 'string'}
     ]
 });
 
 Ext.define('User', {
     extend: 'Ext.data.Model',
     fields: [
-        {name: 'id',   securityType: 'int'},
-        {name: 'name', securityType: 'string'}
+        {name: 'id',   type: 'int'},
+        {name: 'name', type: 'string'}
     ],
     // we can use the hasMany shortcut on the model to create a hasMany association
     hasMany: {model: 'Product', name: 'products'}
 });
-&lt;/pre&gt;&lt;/code&gt;
+&lt;/code&gt;&lt;/pre&gt;
 * 
  * &lt;p&gt;Above we created Product and User models, and linked them by saying that a User hasMany Products. This gives
  * us a new function on every User instance, in this case the function is called 'products' because that is the name
@@ -186,12 +186,12 @@ console.log(group.getUserList());
      * Defaults to &lt;tt&gt;false&lt;/tt&gt;.
      */
     
-<span id='Ext-data-association-HasMany-cfg-securityType'>    /**
-</span>     * @cfg {String} securityType The securityType configuration can be used when creating associations using a configuration object.
+<span id='Ext-data-association-HasMany-cfg-type'>    /**
+</span>     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
      * Use 'hasMany' to create a HasMany association
      * &lt;pre&gt;&lt;code&gt;
 associations: [{
-    securityType: 'hasMany',
+    type: 'hasMany',
     model: 'User'
 }]
      * &lt;/code&gt;&lt;/pre&gt;
@@ -290,7 +290,7 @@ associations: [{
         //now that we've added the related records to the hasMany association, set the inverse belongsTo
         //association on each of them if it exists
         inverse = this.associatedModel.prototype.associations.findBy(function(assoc){
-            return assoc.securityType === 'belongsTo' &amp;&amp; assoc.associatedName === record.$className;
+            return assoc.type === 'belongsTo' &amp;&amp; assoc.associatedName === record.$className;
         });
     
         //if the inverse association was found, set it now on each record we've just created

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -25,7 +25,7 @@ __Creating Model Instances__
 
 Model instances can be created by using the {@link Ext#create Ext.create} method. Ext.create replaces
 the deprecated {@link #create Ext.ModelManager.create} method. It is also possible to create a model instance
-this by using the Model securityType directly. The following 3 snippets are equivalent:
+this by using the Model type directly. The following 3 snippets are equivalent:
 
     Ext.define('User', {
         extend: 'Ext.data.Model',
@@ -44,7 +44,7 @@ this by using the Model securityType directly. The following 3 snippets are equi
         last: 'Spencer'
     }, 'User');
 
-    // method 3, create on the securityType directly
+    // method 3, create on the type directly
     new User({
         first: 'Ed',
         last: 'Spencer'
@@ -52,18 +52,18 @@ this by using the Model securityType directly. The following 3 snippets are equi
 
 __Accessing Model Types__
 
-A reference to a Model securityType can be obtained by using the {@link #getModel} function. Since models types
-are normal classes, you can access the securityType directly. The following snippets are equivalent:
+A reference to a Model type can be obtained by using the {@link #getModel} function. Since models types
+are normal classes, you can access the type directly. The following snippets are equivalent:
 
     Ext.define('User', {
         extend: 'Ext.data.Model',
         fields: ['first', 'last']
     });
 
-    // method 1, access model securityType through the manager
+    // method 1, access model type through the manager
     var UserType = Ext.ModelManager.getModel('User');
 
-    // method 2, reference the securityType directly
+    // method 2, reference the type directly
     var UserType = User;
 
  * @markdown
@@ -76,8 +76,8 @@ Ext.define('Ext.ModelManager', {
     
     singleton: true,
 
-    typeName: 'mtype',
-
+<span id='Ext-ModelManager-property-typeName'>    typeName: 'mtype',
+</span>
 <span id='Ext-ModelManager-property-associationStack'>    /**
 </span>     * Private stack of associations that must be created once their associated model has been defined
      * @property {Ext.data.association.Association[]} associationStack
@@ -145,8 +145,8 @@ Ext.define('Ext.ModelManager', {
     },
 
 <span id='Ext-ModelManager-method-getModel'>    /**
-</span>     * Returns the {@link Ext.data.Model} for a given model name
-     * @param {String/Object} id The id of the model or the model instance.
+</span>     * Returns the {@link Ext.data.Model} class for a given model name
+     * @param {String/Object} id The classname of the model or the model class itself.
      * @return {Ext.data.Model} a model class.
      */
     getModel: function(id) {

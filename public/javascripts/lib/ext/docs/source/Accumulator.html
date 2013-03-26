@@ -3,19 +3,22 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-perf-Accumulator'>/**
+  <pre class="prettyprint lang-js">//@tag extras,core
+//@require ../util/TaskManager.js
+
+<span id='Ext-perf-Accumulator'>/**
 </span> * @class Ext.perf.Accumulator
  * @private
  */
@@ -150,7 +153,7 @@ Ext.define('Ext.perf.Accumulator', (function () {
                                 ' ({depth} deep)',
                             '&lt;/tpl&gt;',
                             '&lt;tpl for=&quot;times&quot;&gt;',
-                                ', {securityType}: {[this.time(values.sum)]} msec (',
+                                ', {type}: {[this.time(values.sum)]} msec (',
                                      //'min={[this.time(values.min)]}, ',
                                      'avg={[this.time(values.sum / parent.count)]}',
                                      //', max={[this.time(values.max)]}',
@@ -166,8 +169,8 @@ Ext.define('Ext.perf.Accumulator', (function () {
 
             var data = this.getData(calibration);
             data.name = this.name;
-            data.pure.securityType = 'Pure';
-            data.total.securityType = 'Total';
+            data.pure.type = 'Pure';
+            data.total.type = 'Total';
             data.times = [data.pure, data.total];
             return formatTpl.apply(data);
         },

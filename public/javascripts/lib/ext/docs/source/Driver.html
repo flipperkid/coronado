@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -19,13 +19,13 @@
 </span> * This is the base class for {@link Ext.ux.event.Recorder} and {@link Ext.ux.event.Player}.
  */
 Ext.define('Ext.ux.event.Driver', {
-    active: null,
-    mixins: {
+<span id='Ext-ux-event-Driver-property-active'>    active: null,
+</span>    mixins: {
         observable: 'Ext.util.Observable'
     },
 
-    constructor: function (config) {
-        var me = this;
+<span id='Ext-ux-event-Driver-method-constructor'>    constructor: function (config) {
+</span>        var me = this;
 
         me.mixins.observable.constructor.apply(this, arguments);
 
@@ -46,8 +46,8 @@ Ext.define('Ext.ux.event.Driver', {
         );
     },
 
-    getTime: function () {
-        return new Date().getTime();
+<span id='Ext-ux-event-Driver-method-getTime'>    getTime: function () {
+</span>        return new Date().getTime();
     },
 
 <span id='Ext-ux-event-Driver-method-getTimestamp'>    /**
@@ -58,10 +58,10 @@ Ext.define('Ext.ux.event.Driver', {
         return d - this.startTime;
     },
 
-    onStart: function () {},
-
-    onStop: function () {},
-
+<span id='Ext-ux-event-Driver-method-onStart'>    onStart: function () {},
+</span>
+<span id='Ext-ux-event-Driver-method-onStop'>    onStop: function () {},
+</span>
 <span id='Ext-ux-event-Driver-method-start'>    /**
 </span>     * Starts this object. If this object is already started, nothing happens.
      */

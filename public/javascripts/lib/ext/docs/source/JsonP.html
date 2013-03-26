@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -43,7 +43,7 @@ Ext.define('Ext.data.JsonP', {
 
 <span id='Ext-data-JsonP-property-timeout'>    /**
 </span>     * @property timeout
-     * @securityType Number
+     * @type Number
      * A default timeout for any JsonP requests. If the request has not completed in this time the
      * failure callback will be fired. The timeout is in ms. Defaults to &lt;tt&gt;30000&lt;/tt&gt;.
      */
@@ -51,21 +51,21 @@ Ext.define('Ext.data.JsonP', {
 
 <span id='Ext-data-JsonP-property-disableCaching'>    /**
 </span>     * @property disableCaching
-     * @securityType Boolean
+     * @type Boolean
      * True to add a unique cache-buster param to requests. Defaults to &lt;tt&gt;true&lt;/tt&gt;.
      */
     disableCaching: true,
 
 <span id='Ext-data-JsonP-property-disableCachingParam'>    /**
 </span>     * @property disableCachingParam
-     * @securityType String
+     * @type String
      * Change the parameter which is sent went disabling caching through a cache buster. Defaults to &lt;tt&gt;'_dc'&lt;/tt&gt;.
      */
     disableCachingParam: '_dc',
 
 <span id='Ext-data-JsonP-property-callbackKey'>    /**
 </span>     * @property callbackKey
-     * @securityType String
+     * @type String
      * Specifies the GET parameter that will be sent to the server containing the function name to be executed when
      * the request completes. Defaults to &lt;tt&gt;callback&lt;/tt&gt;. Thus, a common request will be in the form of
      * url?callback=Ext.data.JsonP.callback1
@@ -77,28 +77,28 @@ Ext.define('Ext.data.JsonP', {
      * @param {Object} options An object which may contain the following properties. Note that options will
      * take priority over any defaults that are specified in the class.
      * &lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;url&lt;/b&gt; : String &lt;div class=&quot;sub-description&quot;&gt;The URL to request.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;params&lt;/b&gt; : Object (Optional)&lt;div class=&quot;sub-description&quot;&gt;An object containing a series of
+     * &lt;li&gt;&lt;b&gt;url&lt;/b&gt; : String &lt;div class=&quot;sub-desc&quot;&gt;The URL to request.&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;params&lt;/b&gt; : Object (Optional)&lt;div class=&quot;sub-desc&quot;&gt;An object containing a series of
      * key value pairs that will be sent along with the request.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;timeout&lt;/b&gt; : Number (Optional) &lt;div class=&quot;sub-description&quot;&gt;See {@link #timeout}&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;callbackKey&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-description&quot;&gt;See {@link #callbackKey}&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;callbackName&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-description&quot;&gt;The function name to use for this request.
+     * &lt;li&gt;&lt;b&gt;timeout&lt;/b&gt; : Number (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #timeout}&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;callbackKey&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #callbackKey}&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;callbackName&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-desc&quot;&gt;The function name to use for this request.
      * By default this name will be auto-generated: Ext.data.JsonP.callback1, Ext.data.JsonP.callback2, etc.
      * Setting this option to &quot;my_name&quot; will force the function name to be Ext.data.JsonP.my_name.
      * Use this if you want deterministic behavior, but be careful - the callbackName should be different
      * in each JsonP request that you make.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;disableCaching&lt;/b&gt; : Boolean (Optional) &lt;div class=&quot;sub-description&quot;&gt;See {@link #disableCaching}&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;disableCachingParam&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-description&quot;&gt;See {@link #disableCachingParam}&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;success&lt;/b&gt; : Function (Optional) &lt;div class=&quot;sub-description&quot;&gt;A function to execute if the request succeeds.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;failure&lt;/b&gt; : Function (Optional) &lt;div class=&quot;sub-description&quot;&gt;A function to execute if the request fails.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;callback&lt;/b&gt; : Function (Optional) &lt;div class=&quot;sub-description&quot;&gt;A function to execute when the request
+     * &lt;li&gt;&lt;b&gt;disableCaching&lt;/b&gt; : Boolean (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #disableCaching}&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;disableCachingParam&lt;/b&gt; : String (Optional) &lt;div class=&quot;sub-desc&quot;&gt;See {@link #disableCachingParam}&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;success&lt;/b&gt; : Function (Optional) &lt;div class=&quot;sub-desc&quot;&gt;A function to execute if the request succeeds.&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;failure&lt;/b&gt; : Function (Optional) &lt;div class=&quot;sub-desc&quot;&gt;A function to execute if the request fails.&lt;/div&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;callback&lt;/b&gt; : Function (Optional) &lt;div class=&quot;sub-desc&quot;&gt;A function to execute when the request
      * completes, whether it is a success or failure.&lt;/div&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;scope&lt;/b&gt; : Object (Optional)&lt;div class=&quot;sub-description&quot;&gt;The scope in
+     * &lt;li&gt;&lt;b&gt;scope&lt;/b&gt; : Object (Optional)&lt;div class=&quot;sub-desc&quot;&gt;The scope in
      * which to execute the callbacks: The &quot;this&quot; object for the callback function. Defaults to the browser window.&lt;/div&gt;&lt;/li&gt;
      * &lt;/ul&gt;
      * @return {Object} request An object containing the request details.
      */
-    request: function(options){
+    request: function(options) {
         options = Ext.apply({}, options);
 
         //&lt;debug&gt;
@@ -114,17 +114,21 @@ Ext.define('Ext.data.JsonP', {
             callbackName = options.callbackName || 'callback' + id,
             callbackKey = options.callbackKey || me.callbackKey,
             timeout = Ext.isDefined(options.timeout) ? options.timeout : me.timeout,
-            params = Ext.apply({}, options.params),
+            params = options.params || {},
             url = options.url,
             name = Ext.name,
             request,
             script;
 
-        params[callbackKey] = name + '.data.JsonP.' + callbackName;
-        if (disableCaching) {
+
+        // Add cachebuster param unless it has already been done
+        if (disableCaching &amp;&amp; !params[cacheParam]) {
             params[cacheParam] = new Date().getTime();
+        } else {
+            params = options.params;
         }
 
+        params[callbackKey] = name + '.data.JsonP.' + callbackName;
         script = me.createScript(url, params, options);
 
         me.requests[id] = request = {
@@ -247,6 +251,7 @@ Ext.define('Ext.data.JsonP', {
             Ext.callback(request.success, request.scope, [result]);
         }
         Ext.callback(request.callback, request.scope, [success, result, request.errorType]);
+        Ext.EventManager.idleEvent.fire();
     },
 
 <span id='Ext-data-JsonP-method-createScript'>    /**
@@ -261,7 +266,7 @@ Ext.define('Ext.data.JsonP', {
         var script = document.createElement('script');
         script.setAttribute(&quot;src&quot;, Ext.urlAppend(url, Ext.Object.toQueryString(params)));
         script.setAttribute(&quot;async&quot;, true);
-        script.setAttribute(&quot;securityType&quot;, &quot;text/javascript&quot;);
+        script.setAttribute(&quot;type&quot;, &quot;text/javascript&quot;);
         return script;
     },
 

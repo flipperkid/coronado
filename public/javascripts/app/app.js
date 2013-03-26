@@ -7,6 +7,17 @@ Ext.syncRequire('Ext.data.proxy.Rest');
 Ext.syncRequire('Ext.data.writer.Json');
 Ext.syncRequire('Ext.window.MessageBox');
 
+Ext.define('Quote', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'symbol', type: 'string'},
+        {name: 'close', type: 'decimal'},
+        {name: 'date', type: 'date', dateFormat: 'time', serialize: function(value, record) {
+            return Ext.Date.format(value, 'c');
+        }}
+    ]
+});
+
 Ext.define('Position', {
     extend: 'Ext.data.Model',
     fields: [
@@ -37,6 +48,7 @@ Ext.define('Position', {
             return value || Math.pow(1 + record.get('return'), 365/record.get('termLength'));
         }}
     ],
+    hasMany: {model: 'Quote', name: 'quotes'},
     proxy: {
         type: 'ajax',
         url: '/positions',
@@ -117,7 +129,10 @@ var loadPerformance = function() {
         layout: 'hbox'
     });
     var viewDiv = Ext.create('Ext.container.Container', {
-        layout: 'column'
+        layout: 'hbox',
+        defaults: {
+            flex: 1
+        }
     });
 
     aggrPerfStore = createAggrPerfStore();
@@ -163,7 +178,6 @@ var loadPerformance = function() {
             mode: 'SIMPLE'
         }
     });
-    viewDiv.add(perfGrid);
 
     var aggrGrid = Ext.create('Ext.grid.Panel', {
         title: 'Aggregate Performance',
@@ -189,7 +203,6 @@ var loadPerformance = function() {
         }],
         width: '40%'
     });
-    viewDiv.add(aggrGrid);
 
 
     // --- Listeners ---
@@ -213,6 +226,7 @@ var loadPerformance = function() {
     });
 
     aggrGrid.addListener('beforeselect', function(self, record) {
+        lastSelectedTagName = record.get('tag');
         if(perfGrid.getStore() == performanceStore) {
             perfGrid.getSelectionModel().select(record.positions().getRange());
         } else {
@@ -227,12 +241,6 @@ var loadPerformance = function() {
     });
 
     // --- Buttons ---
-    btnDiv.add(Ext.create('Ext.button.Button', {
-        text: 'Select All',
-        handler: function() {
-            perfGrid.getSelectionModel().selectAll();
-        }
-    }));
     btnDiv.add(Ext.create('Ext.button.Button', {
         text: 'Select None',
         handler: function() {
@@ -257,7 +265,7 @@ var loadPerformance = function() {
                 if (btn == 'ok'){
                     addTagged(perfGrid.getSelectionModel().getSelection(), text);
                 }
-            });
+            }, window, false, lastSelectedTagName);
         }
     }));
     btnDiv.add(Ext.create('Ext.button.Button', {
@@ -268,6 +276,8 @@ var loadPerformance = function() {
     }));
     bodyDiv.add(btnDiv);
     bodyDiv.add(viewDiv);
+    viewDiv.add(perfGrid);
+    viewDiv.add(aggrGrid);
 };
 
 // --- Methods ---

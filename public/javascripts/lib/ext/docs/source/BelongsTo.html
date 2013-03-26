@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -25,21 +25,21 @@
  *     Ext.define('Category', {
  *         extend: 'Ext.data.Model',
  *         fields: [
- *             { name: 'id',   securityType: 'int' },
- *             { name: 'name', securityType: 'string' }
+ *             { name: 'id',   type: 'int' },
+ *             { name: 'name', type: 'string' }
  *         ]
  *     });
  *
  *     Ext.define('Product', {
  *         extend: 'Ext.data.Model',
  *         fields: [
- *             { name: 'id',          securityType: 'int' },
- *             { name: 'category_id', securityType: 'int' },
- *             { name: 'name',        securityType: 'string' }
+ *             { name: 'id',          type: 'int' },
+ *             { name: 'category_id', type: 'int' },
+ *             { name: 'name',        type: 'string' }
  *         ],
  *         // we can use the belongsTo shortcut on the model to create a belongsTo association
  *         associations: [
- *             { securityType: 'belongsTo', model: 'Category' }
+ *             { type: 'belongsTo', model: 'Category' }
  *         ]
  *     });
  *
@@ -123,7 +123,7 @@
  *         fields: [...],
  *
  *         associations: [
- *             { securityType: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id' }
+ *             { type: 'belongsTo', model: 'Category', primaryKey: 'unique_id', foreignKey: 'cat_id' }
  *         ]
  *     });
  *
@@ -170,12 +170,12 @@ Ext.define('Ext.data.association.BelongsTo', {
      * Defaults to 'set' + the name of the foreign model, e.g. setCategory
      */
 
-<span id='Ext-data-association-BelongsTo-cfg-securityType'>    /**
-</span>     * @cfg {String} securityType The securityType configuration can be used when creating associations using a configuration object.
+<span id='Ext-data-association-BelongsTo-cfg-type'>    /**
+</span>     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
      * Use 'belongsTo' to create a BelongsTo association.
      *
      *     associations: [{
-     *         securityType: 'belongsTo',
+     *         type: 'belongsTo',
      *         model: 'User'
      *     }]
      */
@@ -206,15 +206,27 @@ Ext.define('Ext.data.association.BelongsTo', {
      */
     createSetter: function() {
         var me = this,
-            foreignKey = me.foreignKey;
+            foreignKey = me.foreignKey,
+            instanceName = me.instanceName;
 
         //'this' refers to the Model instance inside this function
         return function(value, options, scope) {
-            // If we pass in an instance, pull the id out
-            if (value &amp;&amp; value.isModel) {
-                value = value.getId();
+            // If we were passed a record, the value to set is the key of that record.
+            var setByRecord = value &amp;&amp; value.isModel,
+                valueToSet = setByRecord ? value.getId() : value;
+
+            // Setter was passed a record.
+            if (setByRecord) {
+                this[instanceName] = value;
             }
-            this.set(foreignKey, value);
+
+            // Otherwise, if the key of foreign record !== passed value, delete the cached foreign record
+            else if (this[instanceName] instanceof Ext.data.Model &amp;&amp; !this.isEqual(this.get(foreignKey), valueToSet)) {
+                delete this[instanceName];
+            }
+
+            // Set the forign key value
+            this.set(foreignKey, valueToSet);
 
             if (Ext.isFunction(options)) {
                 options = {

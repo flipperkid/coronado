@@ -3,19 +3,23 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-EventObject'>/**
+  <pre class="prettyprint lang-js">//@tag dom,core
+//@require EventManager.js
+//@define Ext.EventObject
+
+<span id='Ext-EventObject'>/**
 </span> * @class Ext.EventObject
 
 Just as {@link Ext.Element} wraps around a native DOM node, Ext.EventObject
@@ -47,179 +51,179 @@ For example:
 Ext.define('Ext.EventObjectImpl', {
     uses: ['Ext.util.Point'],
 
-<span id='Ext-EventObject-property-BACKSPACE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-BACKSPACE'>    /** Key constant @type Number */
 </span>    BACKSPACE: 8,
-<span id='Ext-EventObject-property-TAB'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-TAB'>    /** Key constant @type Number */
 </span>    TAB: 9,
-<span id='Ext-EventObject-property-NUM_CENTER'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_CENTER'>    /** Key constant @type Number */
 </span>    NUM_CENTER: 12,
-<span id='Ext-EventObject-property-ENTER'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-ENTER'>    /** Key constant @type Number */
 </span>    ENTER: 13,
-<span id='Ext-EventObject-property-RETURN'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-RETURN'>    /** Key constant @type Number */
 </span>    RETURN: 13,
-<span id='Ext-EventObject-property-SHIFT'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-SHIFT'>    /** Key constant @type Number */
 </span>    SHIFT: 16,
-<span id='Ext-EventObject-property-CTRL'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-CTRL'>    /** Key constant @type Number */
 </span>    CTRL: 17,
-<span id='Ext-EventObject-property-ALT'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-ALT'>    /** Key constant @type Number */
 </span>    ALT: 18,
-<span id='Ext-EventObject-property-PAUSE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-PAUSE'>    /** Key constant @type Number */
 </span>    PAUSE: 19,
-<span id='Ext-EventObject-property-CAPS_LOCK'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-CAPS_LOCK'>    /** Key constant @type Number */
 </span>    CAPS_LOCK: 20,
-<span id='Ext-EventObject-property-ESC'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-ESC'>    /** Key constant @type Number */
 </span>    ESC: 27,
-<span id='Ext-EventObject-property-SPACE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-SPACE'>    /** Key constant @type Number */
 </span>    SPACE: 32,
-<span id='Ext-EventObject-property-PAGE_UP'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-PAGE_UP'>    /** Key constant @type Number */
 </span>    PAGE_UP: 33,
-<span id='Ext-EventObject-property-PAGE_DOWN'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-PAGE_DOWN'>    /** Key constant @type Number */
 </span>    PAGE_DOWN: 34,
-<span id='Ext-EventObject-property-END'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-END'>    /** Key constant @type Number */
 </span>    END: 35,
-<span id='Ext-EventObject-property-HOME'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-HOME'>    /** Key constant @type Number */
 </span>    HOME: 36,
-<span id='Ext-EventObject-property-LEFT'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-LEFT'>    /** Key constant @type Number */
 </span>    LEFT: 37,
-<span id='Ext-EventObject-property-UP'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-UP'>    /** Key constant @type Number */
 </span>    UP: 38,
-<span id='Ext-EventObject-property-RIGHT'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-RIGHT'>    /** Key constant @type Number */
 </span>    RIGHT: 39,
-<span id='Ext-EventObject-property-DOWN'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-DOWN'>    /** Key constant @type Number */
 </span>    DOWN: 40,
-<span id='Ext-EventObject-property-PRINT_SCREEN'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-PRINT_SCREEN'>    /** Key constant @type Number */
 </span>    PRINT_SCREEN: 44,
-<span id='Ext-EventObject-property-INSERT'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-INSERT'>    /** Key constant @type Number */
 </span>    INSERT: 45,
-<span id='Ext-EventObject-property-DELETE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-DELETE'>    /** Key constant @type Number */
 </span>    DELETE: 46,
-<span id='Ext-EventObject-property-ZERO'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-ZERO'>    /** Key constant @type Number */
 </span>    ZERO: 48,
-<span id='Ext-EventObject-property-ONE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-ONE'>    /** Key constant @type Number */
 </span>    ONE: 49,
-<span id='Ext-EventObject-property-TWO'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-TWO'>    /** Key constant @type Number */
 </span>    TWO: 50,
-<span id='Ext-EventObject-property-THREE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-THREE'>    /** Key constant @type Number */
 </span>    THREE: 51,
-<span id='Ext-EventObject-property-FOUR'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-FOUR'>    /** Key constant @type Number */
 </span>    FOUR: 52,
-<span id='Ext-EventObject-property-FIVE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-FIVE'>    /** Key constant @type Number */
 </span>    FIVE: 53,
-<span id='Ext-EventObject-property-SIX'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-SIX'>    /** Key constant @type Number */
 </span>    SIX: 54,
-<span id='Ext-EventObject-property-SEVEN'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-SEVEN'>    /** Key constant @type Number */
 </span>    SEVEN: 55,
-<span id='Ext-EventObject-property-EIGHT'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-EIGHT'>    /** Key constant @type Number */
 </span>    EIGHT: 56,
-<span id='Ext-EventObject-property-NINE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NINE'>    /** Key constant @type Number */
 </span>    NINE: 57,
-<span id='Ext-EventObject-property-A'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-A'>    /** Key constant @type Number */
 </span>    A: 65,
-<span id='Ext-EventObject-property-B'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-B'>    /** Key constant @type Number */
 </span>    B: 66,
-<span id='Ext-EventObject-property-C'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-C'>    /** Key constant @type Number */
 </span>    C: 67,
-<span id='Ext-EventObject-property-D'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-D'>    /** Key constant @type Number */
 </span>    D: 68,
-<span id='Ext-EventObject-property-E'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-E'>    /** Key constant @type Number */
 </span>    E: 69,
-<span id='Ext-EventObject-property-F'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F'>    /** Key constant @type Number */
 </span>    F: 70,
-<span id='Ext-EventObject-property-G'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-G'>    /** Key constant @type Number */
 </span>    G: 71,
-<span id='Ext-EventObject-property-H'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-H'>    /** Key constant @type Number */
 </span>    H: 72,
-<span id='Ext-EventObject-property-I'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-I'>    /** Key constant @type Number */
 </span>    I: 73,
-<span id='Ext-EventObject-property-J'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-J'>    /** Key constant @type Number */
 </span>    J: 74,
-<span id='Ext-EventObject-property-K'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-K'>    /** Key constant @type Number */
 </span>    K: 75,
-<span id='Ext-EventObject-property-L'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-L'>    /** Key constant @type Number */
 </span>    L: 76,
-<span id='Ext-EventObject-property-M'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-M'>    /** Key constant @type Number */
 </span>    M: 77,
-<span id='Ext-EventObject-property-N'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-N'>    /** Key constant @type Number */
 </span>    N: 78,
-<span id='Ext-EventObject-property-O'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-O'>    /** Key constant @type Number */
 </span>    O: 79,
-<span id='Ext-EventObject-property-P'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-P'>    /** Key constant @type Number */
 </span>    P: 80,
-<span id='Ext-EventObject-property-Q'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-Q'>    /** Key constant @type Number */
 </span>    Q: 81,
-<span id='Ext-EventObject-property-R'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-R'>    /** Key constant @type Number */
 </span>    R: 82,
-<span id='Ext-EventObject-property-S'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-S'>    /** Key constant @type Number */
 </span>    S: 83,
-<span id='Ext-EventObject-property-T'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-T'>    /** Key constant @type Number */
 </span>    T: 84,
-<span id='Ext-EventObject-property-U'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-U'>    /** Key constant @type Number */
 </span>    U: 85,
-<span id='Ext-EventObject-property-V'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-V'>    /** Key constant @type Number */
 </span>    V: 86,
-<span id='Ext-EventObject-property-W'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-W'>    /** Key constant @type Number */
 </span>    W: 87,
-<span id='Ext-EventObject-property-X'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-X'>    /** Key constant @type Number */
 </span>    X: 88,
-<span id='Ext-EventObject-property-Y'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-Y'>    /** Key constant @type Number */
 </span>    Y: 89,
-<span id='Ext-EventObject-property-Z'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-Z'>    /** Key constant @type Number */
 </span>    Z: 90,
-<span id='Ext-EventObject-property-CONTEXT_MENU'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-CONTEXT_MENU'>    /** Key constant @type Number */
 </span>    CONTEXT_MENU: 93,
-<span id='Ext-EventObject-property-NUM_ZERO'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_ZERO'>    /** Key constant @type Number */
 </span>    NUM_ZERO: 96,
-<span id='Ext-EventObject-property-NUM_ONE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_ONE'>    /** Key constant @type Number */
 </span>    NUM_ONE: 97,
-<span id='Ext-EventObject-property-NUM_TWO'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_TWO'>    /** Key constant @type Number */
 </span>    NUM_TWO: 98,
-<span id='Ext-EventObject-property-NUM_THREE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_THREE'>    /** Key constant @type Number */
 </span>    NUM_THREE: 99,
-<span id='Ext-EventObject-property-NUM_FOUR'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_FOUR'>    /** Key constant @type Number */
 </span>    NUM_FOUR: 100,
-<span id='Ext-EventObject-property-NUM_FIVE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_FIVE'>    /** Key constant @type Number */
 </span>    NUM_FIVE: 101,
-<span id='Ext-EventObject-property-NUM_SIX'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_SIX'>    /** Key constant @type Number */
 </span>    NUM_SIX: 102,
-<span id='Ext-EventObject-property-NUM_SEVEN'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_SEVEN'>    /** Key constant @type Number */
 </span>    NUM_SEVEN: 103,
-<span id='Ext-EventObject-property-NUM_EIGHT'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_EIGHT'>    /** Key constant @type Number */
 </span>    NUM_EIGHT: 104,
-<span id='Ext-EventObject-property-NUM_NINE'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_NINE'>    /** Key constant @type Number */
 </span>    NUM_NINE: 105,
-<span id='Ext-EventObject-property-NUM_MULTIPLY'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_MULTIPLY'>    /** Key constant @type Number */
 </span>    NUM_MULTIPLY: 106,
-<span id='Ext-EventObject-property-NUM_PLUS'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_PLUS'>    /** Key constant @type Number */
 </span>    NUM_PLUS: 107,
-<span id='Ext-EventObject-property-NUM_MINUS'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_MINUS'>    /** Key constant @type Number */
 </span>    NUM_MINUS: 109,
-<span id='Ext-EventObject-property-NUM_PERIOD'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_PERIOD'>    /** Key constant @type Number */
 </span>    NUM_PERIOD: 110,
-<span id='Ext-EventObject-property-NUM_DIVISION'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-NUM_DIVISION'>    /** Key constant @type Number */
 </span>    NUM_DIVISION: 111,
-<span id='Ext-EventObject-property-F1'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F1'>    /** Key constant @type Number */
 </span>    F1: 112,
-<span id='Ext-EventObject-property-F2'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F2'>    /** Key constant @type Number */
 </span>    F2: 113,
-<span id='Ext-EventObject-property-F3'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F3'>    /** Key constant @type Number */
 </span>    F3: 114,
-<span id='Ext-EventObject-property-F4'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F4'>    /** Key constant @type Number */
 </span>    F4: 115,
-<span id='Ext-EventObject-property-F5'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F5'>    /** Key constant @type Number */
 </span>    F5: 116,
-<span id='Ext-EventObject-property-F6'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F6'>    /** Key constant @type Number */
 </span>    F6: 117,
-<span id='Ext-EventObject-property-F7'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F7'>    /** Key constant @type Number */
 </span>    F7: 118,
-<span id='Ext-EventObject-property-F8'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F8'>    /** Key constant @type Number */
 </span>    F8: 119,
-<span id='Ext-EventObject-property-F9'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F9'>    /** Key constant @type Number */
 </span>    F9: 120,
-<span id='Ext-EventObject-property-F10'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F10'>    /** Key constant @type Number */
 </span>    F10: 121,
-<span id='Ext-EventObject-property-F11'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F11'>    /** Key constant @type Number */
 </span>    F11: 122,
-<span id='Ext-EventObject-property-F12'>    /** Key constant @securityType Number */
+<span id='Ext-EventObject-property-F12'>    /** Key constant @type Number */
 </span>    F12: 123,
 <span id='Ext-EventObject-property-WHEEL_SCALE'>    /**
 </span>     * The mouse wheel delta scaling factor. This value depends on browser version and OS and
@@ -229,7 +233,7 @@ Ext.define('Ext.EventObjectImpl', {
      *
      *      Ext.EventObjectImpl.prototype.WHEEL_SCALE = 72;
      *
-     * @securityType Number
+     * @type Number
      * @markdown
      */
     WHEEL_SCALE: (function () {
@@ -260,7 +264,7 @@ Ext.define('Ext.EventObjectImpl', {
             // Momentum scrolling produces very fast scrolling, so increase the scale factor
             // to help produce similar results cross platform. This could be even larger and
             // it would help those mice, but other mice would become almost unusable as a
-            // result (since we cannot tell which device securityType is in use).
+            // result (since we cannot tell which device type is in use).
             scale *= 3;
         } else {
             // IE, Opera and other Windows browsers use 120.
@@ -275,8 +279,8 @@ Ext.define('Ext.EventObjectImpl', {
      * @private
      */
     clickRe: /(dbl)?click/,
-    // safari keypress events for special keys return bad keycodes
-    safariKeys: {
+<span id='Ext-EventObject-property-safariKeys'>    // safari keypress events for special keys return bad keycodes
+</span>    safariKeys: {
         3: 13, // enter
         63234: 37, // left
         63235: 39, // right
@@ -288,8 +292,8 @@ Ext.define('Ext.EventObjectImpl', {
         63273: 36, // home
         63275: 35 // end
     },
-    // normalize button clicks, don't see any way to feature detect this.
-    btnMap: Ext.isIE ? {
+<span id='Ext-EventObject-property-btnMap'>    // normalize button clicks, don't see any way to feature detect this.
+</span>    btnMap: Ext.isIE ? {
         1: 0,
         4: 1,
         2: 2
@@ -319,21 +323,21 @@ Ext.define('Ext.EventObjectImpl', {
         }
     },
 
-    setEvent: function(event, freezeEvent){
-        var me = this, button, options;
+<span id='Ext-EventObject-method-setEvent'>    setEvent: function(event, freezeEvent){
+</span>        var me = this, button, options;
 
-        if (event == me || (event &amp;&amp; event.browserEvent)) { // already wrapped
+        if (event === me || (event &amp;&amp; event.browserEvent)) { // already wrapped
             return event;
         }
         me.browserEvent = event;
         if (event) {
             // normalize buttons
             button = event.button ? me.btnMap[event.button] : (event.which ? event.which - 1 : -1);
-            if (me.clickRe.test(event.securityType) &amp;&amp; button == -1) {
+            if (me.clickRe.test(event.type) &amp;&amp; button == -1) {
                 button = 0;
             }
             options = {
-                securityType: event.securityType,
+                type: event.type,
                 button: button,
                 shiftKey: event.shiftKey,
                 // mac metaKey behaves like ctrlKey
@@ -388,7 +392,7 @@ Ext.define('Ext.EventObjectImpl', {
         var browserEvent = this.browserEvent;
 
         if (browserEvent) {
-            if (browserEvent.securityType == 'mousedown') {
+            if (browserEvent.type == 'mousedown') {
                 Ext.EventManager.stoppedMouseDownEvent.fire(this);
             }
             Ext.EventManager.stopPropagation(browserEvent);
@@ -490,7 +494,7 @@ Ext.define('Ext.EventObjectImpl', {
      * @return {HTMLElement}
      */
     getRelatedTarget : function(selector, maxDepth, returnEl){
-        if (selector) {
+        if (selector &amp;&amp; this.relatedTarget) {
             return Ext.fly(this.relatedTarget).findParent(selector, maxDepth, returnEl);
         }
         return returnEl ? Ext.get(this.relatedTarget) : this.relatedTarget;
@@ -619,7 +623,7 @@ Ext.getBody().on('click', function(e,t){
      */
     isSpecialKey : function(){
         var k = this.normalizeKey(this.keyCode);
-        return (this.securityType == 'keypress' &amp;&amp; this.ctrlKey) ||
+        return (this.type == 'keypress' &amp;&amp; this.ctrlKey) ||
         this.isNavKeyPress() ||
         (k == this.BACKSPACE) || // Backspace
         (k &gt;= 16 &amp;&amp; k &lt;= 20) || // Shift, Ctrl, Alt, Pause, Caps Lock
@@ -682,7 +686,7 @@ Ext.getBody().on('click', function(e,t){
      */
     injectEvent: (function () {
         var API,
-            dispatchers = {}, // keyed by event securityType (e.g., 'mousedown')
+            dispatchers = {}, // keyed by event type (e.g., 'mousedown')
             crazyIEButtons;
 
         // Good reference: http://developer.yahoo.com/yui/docs/UserAction.js.html
@@ -692,26 +696,26 @@ Ext.getBody().on('click', function(e,t){
 
         if (!Ext.isIE &amp;&amp; document.createEvent) { // if (DOM compliant)
             API = {
-                createHtmlEvent: function (doc, securityType, bubbles, cancelable) {
+                createHtmlEvent: function (doc, type, bubbles, cancelable) {
                     var event = doc.createEvent('HTMLEvents');
 
-                    event.initEvent(securityType, bubbles, cancelable);
+                    event.initEvent(type, bubbles, cancelable);
                     return event;
                 },
 
-                createMouseEvent: function (doc, securityType, bubbles, cancelable, detail,
+                createMouseEvent: function (doc, type, bubbles, cancelable, detail,
                                             clientX, clientY, ctrlKey, altKey, shiftKey, metaKey,
                                             button, relatedTarget) {
                     var event = doc.createEvent('MouseEvents'),
                         view = doc.defaultView || window;
 
                     if (event.initMouseEvent) {
-                        event.initMouseEvent(securityType, bubbles, cancelable, view, detail,
+                        event.initMouseEvent(type, bubbles, cancelable, view, detail,
                                     clientX, clientY, clientX, clientY, ctrlKey, altKey,
                                     shiftKey, metaKey, button, relatedTarget);
                     } else { // old Safari
                         event = doc.createEvent('UIEvents');
-                        event.initEvent(securityType, bubbles, cancelable);
+                        event.initEvent(type, bubbles, cancelable);
                         event.view = view;
                         event.detail = detail;
                         event.screenX = clientX;
@@ -729,15 +733,15 @@ Ext.getBody().on('click', function(e,t){
                     return event;
                 },
 
-                createUIEvent: function (doc, securityType, bubbles, cancelable, detail) {
+                createUIEvent: function (doc, type, bubbles, cancelable, detail) {
                     var event = doc.createEvent('UIEvents'),
                         view = doc.defaultView || window;
 
-                    event.initUIEvent(securityType, bubbles, cancelable, view, detail);
+                    event.initUIEvent(type, bubbles, cancelable, view, detail);
                     return event;
                 },
 
-                fireEvent: function (target, securityType, event) {
+                fireEvent: function (target, type, event) {
                     target.dispatchEvent(event);
                 },
 
@@ -754,14 +758,14 @@ Ext.getBody().on('click', function(e,t){
             crazyIEButtons = { 0: 1, 1: 4, 2: 2 };
 
             API = {
-                createHtmlEvent: function (doc, securityType, bubbles, cancelable) {
+                createHtmlEvent: function (doc, type, bubbles, cancelable) {
                     var event = doc.createEventObject();
                     event.bubbles = bubbles;
                     event.cancelable = cancelable;
                     return event;
                 },
 
-                createMouseEvent: function (doc, securityType, bubbles, cancelable, detail,
+                createMouseEvent: function (doc, type, bubbles, cancelable, detail,
                                             clientX, clientY, ctrlKey, altKey, shiftKey, metaKey,
                                             button, relatedTarget) {
                     var event = doc.createEventObject();
@@ -781,15 +785,15 @@ Ext.getBody().on('click', function(e,t){
                     return event;
                 },
 
-                createUIEvent: function (doc, securityType, bubbles, cancelable, detail) {
+                createUIEvent: function (doc, type, bubbles, cancelable, detail) {
                     var event = doc.createEventObject();
                     event.bubbles = bubbles;
                     event.cancelable = cancelable;
                     return event;
                 },
 
-                fireEvent: function (target, securityType, event) {
-                    target.fireEvent('on' + securityType, event);
+                fireEvent: function (target, type, event) {
+                    target.fireEvent('on' + type, event);
                 },
 
                 fixTarget: function (target) {
@@ -828,15 +832,15 @@ Ext.getBody().on('click', function(e,t){
         //----------------
         // MouseEvents
 
-        function createMouseEventDispatcher (securityType, detail) {
-            var cancelable = (securityType != 'mousemove');
+        function createMouseEventDispatcher (type, detail) {
+            var cancelable = (type != 'mousemove');
             return function (targetEl, srcEvent) {
                 var xy = srcEvent.getXY(),
-                    e = API.createMouseEvent(targetEl.ownerDocument, securityType, true, cancelable,
+                    e = API.createMouseEvent(targetEl.ownerDocument, type, true, cancelable,
                                 detail, xy[0], xy[1], srcEvent.ctrlKey, srcEvent.altKey,
                                 srcEvent.shiftKey, srcEvent.metaKey, srcEvent.button,
                                 srcEvent.relatedTarget);
-                API.fireEvent(targetEl, securityType, e);
+                API.fireEvent(targetEl, type, e);
             };
         }
 
@@ -870,9 +874,7 @@ Ext.getBody().on('click', function(e,t){
             dispatchers = {}; // never mind all those we just built :P
 
             API = {
-                fixTarget: function (t) {
-                    return t;
-                }
+                fixTarget: Ext.identityFn
             };
         }
 
@@ -884,7 +886,7 @@ Ext.getBody().on('click', function(e,t){
 
         return function (target) {
             var me = this,
-                dispatcher = dispatchers[me.securityType] || cannotInject,
+                dispatcher = dispatchers[me.type] || cannotInject,
                 t = target ? (target.dom || target) : me.getTarget();
 
             t = API.fixTarget(t);

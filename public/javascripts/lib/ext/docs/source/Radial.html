@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -22,19 +22,30 @@ Ext.define('Ext.chart.axis.Radial', {
 
     /* Begin Definitions */
 
-    extend: 'Ext.chart.axis.Abstract',
+    extend: 'Ext.chart.axis.Numeric',
 
-    /* End Definitions */
-
+<span id='Ext-chart-axis-Radial-cfg-position'>    /* End Definitions */
+</span>
     position: 'radial',
 
     alias: 'axis.radial',
+
+<span id='Ext-chart-axis-Radial-cfg-maximum'>    /**
+</span>     * @cfg {Number} maximum
+     * The maximum value drawn by the axis. If not set explicitly, the axis
+     * maximum will be calculated automatically.
+     */
+
+<span id='Ext-chart-axis-Radial-cfg-steps'>    /**
+</span>     * @cfg {Number} [steps=10]
+     * The number of circles to draw outward from the center.
+     */
 
     drawAxis: function(init) {
         var chart = this.chart,
             surface = chart.surface,
             bbox = chart.chartBBox,
-            store = chart.store,
+            store = chart.getChartStore(),
             l = store.getCount(),
             centerX = bbox.x + (bbox.width / 2),
             centerY = bbox.y + (bbox.height / 2),
@@ -53,7 +64,7 @@ Ext.define('Ext.chart.axis.Radial', {
             //draw circles
             for (i = 1; i &lt;= steps; i++) {
                 sprite = surface.add({
-                    securityType: 'circle',
+                    type: 'circle',
                     x: centerX,
                     y: centerY,
                     radius: Math.max(rho * i / steps, 0),
@@ -67,7 +78,7 @@ Ext.define('Ext.chart.axis.Radial', {
             //draw lines
             for (i = 0; i &lt; l; i++) {
                 sprite = surface.add({
-                    securityType: 'path',
+                    type: 'path',
                     path: ['M', centerX, centerY, 'L', centerX + rho * cos(i / l * pi2), centerY + rho * sin(i / l * pi2), 'Z'],
                     stroke: '#ccc'
                 });
@@ -100,13 +111,13 @@ Ext.define('Ext.chart.axis.Radial', {
         this.drawLabel();
     },
 
-    drawLabel: function() {
-        var chart = this.chart,
+<span id='Ext-chart-axis-Radial-method-drawLabel'>    drawLabel: function() {
+</span>        var chart = this.chart,
             seriesItems = chart.series.items,
             series,
             surface = chart.surface,
             bbox = chart.chartBBox,
-            store = chart.store,
+            store = chart.getChartStore(),
             data = store.data.items,
             ln, record,
             centerX = bbox.x + (bbox.width / 2),
@@ -139,19 +150,20 @@ Ext.define('Ext.chart.axis.Radial', {
         //get maxValue to interpolate
         for (j = 0, ln = data.length; j &lt; ln; j++) {
             record = data[j];
+            categories.push(record.get(xField));
+
             if (aggregate) {
                 for (i = 0, nfields = fields.length; i &lt; nfields; i++) {
                     maxValue = max(+record.get(fields[i]), maxValue);
                 }
             }
-            categories.push(record.get(xField));
         }
         if (!this.labelArray) {
             if (display != 'categories') {
                 //draw scale
                 for (i = 1; i &lt;= steps; i++) {
                     label = surface.add({
-                        securityType: 'text',
+                        type: 'text',
                         text: round(i / steps * maxValue),
                         x: centerX,
                         y: centerY - rho * i / steps,
@@ -171,7 +183,7 @@ Ext.define('Ext.chart.axis.Radial', {
                     dx = cos(j / steps * pi2) * (rho + margin);
                     dy = sin(j / steps * pi2) * (rho + margin);
                     label = surface.add({
-                        securityType: 'text',
+                        type: 'text',
                         text: categories[j],
                         x: centerX + dx,
                         y: centerY + dy,
@@ -206,7 +218,7 @@ Ext.define('Ext.chart.axis.Radial', {
                     dy = sin(j / steps * pi2) * (rho + margin);
                     if (labelArray[i + j]) {
                         labelArray[i + j].setAttributes({
-                            securityType: 'text',
+                            type: 'text',
                             text: categories[j],
                             x: centerX + dx,
                             y: centerY + dy,
@@ -217,6 +229,28 @@ Ext.define('Ext.chart.axis.Radial', {
             }
         }
         this.labelArray = labelArray;
+    },
+
+<span id='Ext-chart-axis-Radial-method-getRange'>    getRange: function () {
+</span>        var range = this.callParent();
+        range.min = 0;  // Radial charts currently assume that the origin is always 0.
+        return range;
+    },
+
+<span id='Ext-chart-axis-Radial-method-processView'>    processView: function() {
+</span>        var me = this,
+            seriesItems = me.chart.series.items,
+            i, ln, series, ends, fields = [];
+
+        for (i = 0, ln = seriesItems.length; i &lt; ln; i++) {
+            series = seriesItems[i];
+            fields.push(series.yField);
+        }
+        me.fields = fields;
+
+        ends = me.calcEnds();
+        me.maximum = ends.to;
+        me.steps = ends.steps;
     }
 });</pre>
 </body>

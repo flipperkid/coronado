@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -72,8 +72,8 @@ Ext.define('Ext.ComponentLoader', {
     extend: 'Ext.ElementLoader',
 
     statics: {
-        Renderer: {
-            Data: function(loader, response, active){
+<span id='Ext-ComponentLoader-property-Renderer'>        Renderer: {
+</span>            Data: function(loader, response, active){
                 var success = true;
                 try {
                     loader.getTarget().update(Ext.decode(response.responseText));
@@ -137,7 +137,7 @@ Ext.define('Ext.ComponentLoader', {
 <span id='Ext-ComponentLoader-cfg-renderer'>    /**
 </span>     * @cfg {String/Function} renderer
 
-The securityType of content that is to be loaded into, which can be one of 3 types:
+The type of content that is to be loaded into, which can be one of 3 types:
 
 + **html** : Loads raw html content, see {@link Ext.Component#html}
 + **data** : Loads raw html content, see {@link Ext.Component#data}
@@ -183,8 +183,8 @@ The function must return false is loading is not successful. Below is a sample o
         me.target = target;
     },
 
-    // inherit docs
-    removeMask: function(){
+<span id='Ext-ComponentLoader-method-removeMask'>    // inherit docs
+</span>    removeMask: function(){
         this.target.setLoading(false);
     },
 
@@ -198,8 +198,8 @@ The function must return false is loading is not successful. Below is a sample o
     },
 
 
-    setOptions: function(active, options){
-        active.removeAll = Ext.isDefined(options.removeAll) ? options.removeAll : this.removeAll;
+<span id='Ext-ComponentLoader-method-setOptions'>    setOptions: function(active, options){
+</span>        active.removeAll = Ext.isDefined(options.removeAll) ? options.removeAll : this.removeAll;
     },
 
 <span id='Ext-ComponentLoader-method-getRenderer'>    /**

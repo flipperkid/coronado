@@ -4,19 +4,23 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
     <title>GroupTabs Example</title>
     <!-- Ext -->
-    <link rel="stylesheet" securityType="text/css" href="../../resources/css/ext-all.css" />
-    <link rel="stylesheet" securityType="text/css" href="../shared/example.css" />
-    <link rel="stylesheet" securityType="text/css" href="../portal/portal.css" />
-    <link rel="stylesheet" securityType="text/css" href="../ux/css/GroupTabPanel.css" />
+
+    <link rel="stylesheet" type="text/css" href="../shared/example.css" />
+    <link rel="stylesheet" type="text/css" href="../portal/portal.css" />
+    <link rel="stylesheet" type="text/css" href="../ux/css/GroupTabPanel.css" />
 
     <!-- GC -->
 
-    <script securityType="text/javascript" src="../../ext.js"></script>
-    <script securityType="text/javascript" src="all-classes.js"></script>
+    <!-- <x-compile> -->
+    <!-- <x-bootstrap> -->
+    <script type="text/javascript" src="../../examples/shared/include-ext.js"></script>
+    <script type="text/javascript" src="../../examples/shared/options-toolbar.js"></script>
+    <!-- </x-bootstrap> -->
+    <script type="text/javascript" src="all-classes.js"></script>
 
     <!-- shared example code -->
-    <script securityType="text/javascript" src="../shared/examples.js"></script>
-    <script securityType="text/javascript">
+    <script type="text/javascript" src="../shared/examples.js"></script>
+    <script type="text/javascript">
         Ext.Loader.setPath({
             'Ext.ux': '../ux/',
             'Ext.app': '../portal/classes/'
@@ -37,10 +41,11 @@
             'Ext.app.ChartPortlet'
         ]);
     </script>
-    <script securityType="text/javascript" src="grouptabs.js"></script>
+    <script type="text/javascript" src="grouptabs.js"></script>
+    <!-- </x-compile> -->
 
     <!-- page specific -->
-    <style securityType="text/css">
+    <style type="text/css">
         /* styles for iconCls */
         .x-icon-tickets {
             background-image: url('images/tickets.png');

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -71,15 +71,15 @@ Ext.define('Ext.draw.Text', {
      */
 
     focusable: false,
-    viewBox: false,
-    autoSize: true,
-    baseCls: Ext.baseCSSPrefix + 'surface ' + Ext.baseCSSPrefix + 'draw-text',
-
-    initComponent: function() {
-        var me = this;
+<span id='Ext-draw-Text-cfg-viewBox'>    viewBox: false,
+</span><span id='Ext-draw-Text-cfg-autoSize'>    autoSize: true,
+</span><span id='Ext-draw-Text-cfg-baseCls'>    baseCls: Ext.baseCSSPrefix + 'surface ' + Ext.baseCSSPrefix + 'draw-text',
+</span>
+<span id='Ext-draw-Text-method-initComponent'>    initComponent: function() {
+</span>        var me = this;
 
         me.textConfig = Ext.apply({
-            securityType: 'text',
+            type: 'text',
             text: me.text,
             rotate: {
                 degrees: me.degrees || 0
@@ -169,7 +169,7 @@ Ext.define('Ext.draw.Text', {
 
             me.text = text || '';
             surface.remove(sprite);
-            me.textConfig.securityType = 'text';
+            me.textConfig.type = 'text';
             me.textConfig.text = me.text;
             sprite = surface.add(me.textConfig);
             sprite.setAttributes({

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -87,18 +87,18 @@ Ext.define('Ext.form.RadioGroup', {
     blankText : 'You must select one item in this group',
     //&lt;/locale&gt;
 
-    // private
-    defaultType : 'radiofield',
+<span id='Ext-form-RadioGroup-cfg-defaultType'>    // private
+</span>    defaultType : 'radiofield',
 
-    // private
-    groupCls : Ext.baseCSSPrefix + 'form-radio-group',
+<span id='Ext-form-RadioGroup-property-groupCls'>    // private
+</span>    groupCls : Ext.baseCSSPrefix + 'form-radio-group',
 
-    getBoxes: function(query) {
-        return this.query('[isRadio]' + (query||''));
+<span id='Ext-form-RadioGroup-method-getBoxes'>    getBoxes: function(query) {
+</span>        return this.query('[isRadio]' + (query||''));
     },
     
-    checkChange: function() {
-        var value = this.getValue(),
+<span id='Ext-form-RadioGroup-method-checkChange'>    checkChange: function() {
+</span>        var value = this.getValue(),
             key = Ext.Object.getKeys(value)[0];
             
         // If the value is an array we skip out here because it's during a change

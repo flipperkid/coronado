@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -47,7 +47,7 @@
  *         bodyPadding: 10,
  *         renderTo: Ext.getBody(),
  *         layout: {
- *             securityType: 'hbox',
+ *             type: 'hbox',
  *             align: 'middle'
  *         },
  *         items: [{
@@ -67,8 +67,8 @@ Ext.define('Ext.form.Label', {
     alias: 'widget.label',
     requires: ['Ext.util.Format'],
 
-    autoEl: 'label',
-
+<span id='Ext-form-Label-cfg-autoEl'>    autoEl: 'label',
+</span>
 <span id='Ext-form-Label-cfg-text'>    /**
 </span>     * @cfg {String} [text='']
      * The plain text to display within the label. If you need to include HTML
@@ -89,8 +89,8 @@ Ext.define('Ext.form.Label', {
     
     maskOnDisable: false,
 
-    getElConfig: function(){
-        var me = this;
+<span id='Ext-form-Label-method-getElConfig'>    getElConfig: function(){
+</span>        var me = this;
 
         me.html = me.text ? Ext.util.Format.htmlEncode(me.text) : (me.html || '');
         return Ext.apply(me.callParent(), {

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -23,18 +23,18 @@ Ext.define('Ext.ShadowPool', {
     singleton: true,
     requires: ['Ext.DomHelper'],
 
-    markup: (function() {
-        return Ext.String.format(
+<span id='Ext-ShadowPool-property-markup'>    markup: (function() {
+</span>        return Ext.String.format(
             '&lt;div class=&quot;{0}{1}-shadow&quot; role=&quot;presentation&quot;&gt;&lt;/div&gt;',
             Ext.baseCSSPrefix,
             Ext.isIE &amp;&amp; !Ext.supports.CSS3BoxShadow ? 'ie' : 'css'
         );
     }()),
 
-    shadows: [],
-
-    pull: function() {
-        var sh = this.shadows.shift();
+<span id='Ext-ShadowPool-property-shadows'>    shadows: [],
+</span>
+<span id='Ext-ShadowPool-method-pull'>    pull: function() {
+</span>        var sh = this.shadows.shift();
         if (!sh) {
             sh = Ext.get(Ext.DomHelper.insertHtml(&quot;beforeBegin&quot;, document.body.firstChild, this.markup));
             sh.autoBoxAdjust = false;
@@ -42,12 +42,12 @@ Ext.define('Ext.ShadowPool', {
         return sh;
     },
 
-    push: function(sh) {
-        this.shadows.push(sh);
+<span id='Ext-ShadowPool-method-push'>    push: function(sh) {
+</span>        this.shadows.push(sh);
     },
     
-    reset: function() {
-        var shadows = [].concat(this.shadows),
+<span id='Ext-ShadowPool-method-reset'>    reset: function() {
+</span>        var shadows = [].concat(this.shadows),
             s,
             sLen    = shadows.length;
 

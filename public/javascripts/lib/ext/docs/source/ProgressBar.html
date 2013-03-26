@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -26,12 +26,12 @@ Ext.define('Ext.layout.component.ProgressBar', {
 
     extend: 'Ext.layout.component.Auto',
 
-    /* End Definitions */
+<span id='Ext-layout-component-ProgressBar-property-type'>    /* End Definitions */
+</span>
+    type: 'progressbar',
 
-    securityType: 'progressbar',
-
-    beginLayout: function (ownerContext) {
-        var me = this,
+<span id='Ext-layout-component-ProgressBar-method-beginLayout'>    beginLayout: function (ownerContext) {
+</span>        var me = this,
             i, textEls;
 
         me.callParent(arguments);
@@ -51,8 +51,8 @@ Ext.define('Ext.layout.component.ProgressBar', {
         }
     },
 
-    calculate: function(ownerContext) {
-        var me = this,
+<span id='Ext-layout-component-ProgressBar-method-calculate'>    calculate: function(ownerContext) {
+</span>        var me = this,
             i, textEls, width;
 
         me.callParent(arguments);

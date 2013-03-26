@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -102,7 +102,7 @@
  * Here is an example of configuring an HTML element to display a tooltip from markup:
  *
  *     // Add a quick tip to an HTML button
- *     &lt;input securityType=&quot;button&quot; value=&quot;OK&quot; data-qtitle=&quot;OK Button&quot; data-qwidth=&quot;100&quot;
+ *     &lt;input type=&quot;button&quot; value=&quot;OK&quot; data-qtitle=&quot;OK Button&quot; data-qwidth=&quot;100&quot;
  *          data-qtip=&quot;This is a quick tip from markup!&quot;&gt;&lt;/input&gt;
  *
  * @singleton
@@ -160,6 +160,10 @@ Ext.define('Ext.tip.QuickTipManager', (function() {
                 }
 
                 tip = Ext.create(className || 'Ext.tip.QuickTip', tipConfig);
+
+                // private.
+                // Need a globally accessble way of testing whether QuickTipsManager is both loaded AND initialized.
+                Ext.quickTipsActive = true;
             }
         },
 
@@ -175,7 +179,7 @@ Ext.define('Ext.tip.QuickTipManager', (function() {
         },
 
         // Protected method called by the dd classes
-        ddDisable : function(){
+        ddDisable : function() {
             // don't disable it if we don't need to
             if(tip &amp;&amp; !disabled){
                 tip.disable();
@@ -183,7 +187,7 @@ Ext.define('Ext.tip.QuickTipManager', (function() {
         },
 
         // Protected method called by the dd classes
-        ddEnable : function(){
+        ddEnable : function() {
             // only enable it if it hasn't been disabled
             if(tip &amp;&amp; !disabled){
                 tip.enable();

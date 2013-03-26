@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -21,14 +21,14 @@
  */
 Ext.define('Ext.dd.Registry', {
     singleton: true,
-    constructor: function() {
-        this.elements = {}; 
+<span id='Ext-dd-Registry-method-constructor'>    constructor: function() {
+</span>        this.elements = {}; 
         this.handles = {}; 
         this.autoIdSeed = 0;
     },
     
-    getId: function(el, autogen){
-        if(typeof el == &quot;string&quot;){
+<span id='Ext-dd-Registry-method-getId'>    getId: function(el, autogen){
+</span>        if(typeof el == &quot;string&quot;){
             return el;
         }
         var id = el.id;

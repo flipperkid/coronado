@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -16,16 +16,14 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-ux-grid-filter-BooleanFilter'>/**
-</span> * @class Ext.ux.grid.filter.BooleanFilter
- * @extends Ext.ux.grid.filter.Filter
- * Boolean filters use unique radio group IDs (so you can have more than one!)
+</span> * Boolean filters use unique radio group IDs (so you can have more than one!)
  * &lt;p&gt;&lt;b&gt;&lt;u&gt;Example Usage:&lt;/u&gt;&lt;/b&gt;&lt;/p&gt;
  * &lt;pre&gt;&lt;code&gt;
 var filters = Ext.create('Ext.ux.grid.GridFilters', {
     ...
     filters: [{
         // required configs
-        securityType: 'boolean',
+        type: 'boolean',
         dataIndex: 'visible'
 
         // optional configs
@@ -100,7 +98,7 @@ Ext.define('Ext.ux.grid.filter.BooleanFilter', {
      * key value pairs representing the current configuration of the filter.
      */
     getSerialArgs : function () {
-		var args = {securityType: 'boolean', value: this.getValue()};
+		var args = {type: 'boolean', value: this.getValue()};
 		return args;
 	},
 

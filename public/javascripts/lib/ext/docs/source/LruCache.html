@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -36,8 +36,8 @@ Ext.define('Ext.util.LruCache', {
         this.callParent([config]);
     },
 
-    /*
-     * @inheritdoc
+<span id='Ext-util-LruCache-method-add'>    /*
+</span>     * @inheritdoc
      */
     add: function(key, newValue) {
         var me = this,
@@ -74,8 +74,8 @@ Ext.define('Ext.util.LruCache', {
         return newValue;
     },
 
-    // @private
-    insertBefore: function(key, newValue, sibling) {
+<span id='Ext-util-LruCache-method-insertBefore'>    // @private
+</span>    insertBefore: function(key, newValue, sibling) {
         var me = this,
             existingKey,
             entry;
@@ -115,8 +115,8 @@ Ext.define('Ext.util.LruCache', {
         }
     },
 
-    /*
-     * @inheritdoc
+<span id='Ext-util-LruCache-method-get'>    /*
+</span>     * @inheritdoc
      */
     get: function(key) {
         var entry = this.map[key];
@@ -130,24 +130,24 @@ Ext.define('Ext.util.LruCache', {
         }
     },
 
-    /*
-     * @private
+<span id='Ext-util-LruCache-method-removeAtKey'>    /*
+</span>     * @private
      */
     removeAtKey: function(key) {
         this.unlinkEntry(this.map[key]);
         return this.callParent(arguments);
     },
 
-    /*
-     * @inheritdoc
+<span id='Ext-util-LruCache-method-clear'>    /*
+</span>     * @inheritdoc
      */
     clear: function(/* private */ initial) {
         this.first = this.last = null;
         return this.callParent(arguments);
     },
 
-    // private. Only used by internal methods.
-    unlinkEntry: function(entry) {
+<span id='Ext-util-LruCache-method-unlinkEntry'>    // private. Only used by internal methods.
+</span>    unlinkEntry: function(entry) {
         // Stitch the list back up.
         if (entry) {
             if (entry.next) {
@@ -164,8 +164,8 @@ Ext.define('Ext.util.LruCache', {
         }
     },
 
-    // private. Only used by internal methods.
-    moveToEnd: function(entry) {
+<span id='Ext-util-LruCache-method-moveToEnd'>    // private. Only used by internal methods.
+</span>    moveToEnd: function(entry) {
         this.unlinkEntry(entry);
 
         // NOT an assignment.
@@ -180,8 +180,8 @@ Ext.define('Ext.util.LruCache', {
         this.last = entry;
     },
 
-    /*
-     * @private
+<span id='Ext-util-LruCache-method-getArray'>    /*
+</span>     * @private
      */
     getArray: function(isKey) {
         var arr = [],
@@ -202,9 +202,9 @@ Ext.define('Ext.util.LruCache', {
      *
      * The paramaters passed to the function are:
      * &lt;div class=&quot;mdetail-params&quot;&gt;&lt;ul&gt;
-     * &lt;li&gt;&lt;b&gt;key&lt;/b&gt; : String&lt;p class=&quot;sub-description&quot;&gt;The key of the item&lt;/p&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;value&lt;/b&gt; : Number&lt;p class=&quot;sub-description&quot;&gt;The value of the item&lt;/p&gt;&lt;/li&gt;
-     * &lt;li&gt;&lt;b&gt;length&lt;/b&gt; : Number&lt;p class=&quot;sub-description&quot;&gt;The total number of items in the hash&lt;/p&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;key&lt;/b&gt; : String&lt;p class=&quot;sub-desc&quot;&gt;The key of the item&lt;/p&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;value&lt;/b&gt; : Number&lt;p class=&quot;sub-desc&quot;&gt;The value of the item&lt;/p&gt;&lt;/li&gt;
+     * &lt;li&gt;&lt;b&gt;length&lt;/b&gt; : Number&lt;p class=&quot;sub-desc&quot;&gt;The total number of items in the hash&lt;/p&gt;&lt;/li&gt;
      * &lt;/ul&gt;&lt;/div&gt;
      * @param {Function} fn The function to execute.
      * @param {Object} scope The scope (&lt;code&gt;this&lt;/code&gt; reference) to execute in. Defaults to this LruCache.
@@ -234,11 +234,32 @@ Ext.define('Ext.util.LruCache', {
             map = this.map;
 
         for (key in map) {
+            // Attention. Differs from subclass in that this compares the value property
+            // of the entry.
             if (map.hasOwnProperty(key) &amp;&amp; map[key].value === value) {
                 return key;
             }
         }
         return undefined;
+    },
+
+<span id='Ext-util-LruCache-method-clone'>    /**
+</span>     * Performs a shallow copy on this haLruCachesh.
+     * @return {Ext.util.HashMap} The new hash object.
+     */
+    clone: function() {
+        var newCache = new this.self(this.initialConfig),
+            map = this.map,
+            key;
+
+        newCache.suspendEvents();
+        for (key in map) {
+            if (map.hasOwnProperty(key)) {
+                newCache.add(key, map[key].value);
+            }
+        }
+        newCache.resumeEvents();
+        return newCache;
     },
 
 <span id='Ext-util-LruCache-method-prune'>    /**

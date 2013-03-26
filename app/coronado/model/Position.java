@@ -1,5 +1,6 @@
 package coronado.model;
 
+import com.google.common.collect.Lists;
 import coronado.api.model.StockResponse;
 import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
@@ -7,12 +8,10 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 import play.Logger;
 import play.db.ebean.Model;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.text.ParseException;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 public class Position extends Model {
@@ -29,6 +28,8 @@ public class Position extends Model {
     private final String cusip;
     private String description;
     private String securityType;
+    private List<QuoteHistory> quotes;
+
 
     public Position(final double shares, final double costBasis, final Date openDate,
                     final String symbol, final String cusip, final String description, final String securityType) {
@@ -46,6 +47,10 @@ public class Position extends Model {
 
     public Long getId() {
         return id;
+    }
+
+    public List<QuoteHistory> getQuotes() {
+        return quotes;
     }
 
     public double getShares() {
@@ -86,6 +91,14 @@ public class Position extends Model {
 
     public String getSecurityType() {
         return securityType;
+    }
+
+    public void loadQuotes() {
+        if("CS".equals(getSecurityType())) {
+            quotes = Lists.newArrayList();
+            quotes.addAll(QuoteHistory.find.where().eq("symbol", getSymbol())
+                    .between("date", getOpenDate(), getCloseDate()).orderBy("date").findList());
+        }
     }
 
     @JsonIgnore

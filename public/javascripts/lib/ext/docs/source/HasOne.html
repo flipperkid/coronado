@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -24,23 +24,23 @@
  *     Ext.define('Address', {
  *         extend: 'Ext.data.Model',
  *         fields: [
- *             { name: 'id',          securityType: 'int' },
- *             { name: 'number', securityType: 'string' },
- *             { name: 'street', securityType: 'string' },
- *             { name: 'city', securityType: 'string' },
- *             { name: 'zip', securityType: 'string' },
+ *             { name: 'id',          type: 'int' },
+ *             { name: 'number', type: 'string' },
+ *             { name: 'street', type: 'string' },
+ *             { name: 'city', type: 'string' },
+ *             { name: 'zip', type: 'string' },
  *         ]
  *     });
  *
  *     Ext.define('Person', {
  *         extend: 'Ext.data.Model',
  *         fields: [
- *             { name: 'id',   securityType: 'int' },
- *             { name: 'name', securityType: 'string' },
- *             { name: 'address_id', securityType: 'int'}
+ *             { name: 'id',   type: 'int' },
+ *             { name: 'name', type: 'string' },
+ *             { name: 'address_id', type: 'int'}
  *         ],
  *         // we can use the hasOne shortcut on the model to create a hasOne association
- *         associations: [{ securityType: 'hasOne', model: 'Address' }]
+ *         associations: [{ type: 'hasOne', model: 'Address' }]
  *     });
  *
  * In the example above we have created models for People and Addresses, and linked them together
@@ -123,7 +123,7 @@
  *         fields: [...],
  *
  *         associations: [
- *             { securityType: 'hasOne', model: 'Address', primaryKey: 'unique_id', foreignKey: 'addr_id' }
+ *             { type: 'hasOne', model: 'Address', primaryKey: 'unique_id', foreignKey: 'addr_id' }
  *         ]
  *     });
  *
@@ -171,12 +171,12 @@ Ext.define('Ext.data.association.HasOne', {
      * Defaults to 'set' + the name of the foreign model, e.g. setAddress
      */
 
-<span id='Ext-data-association-HasOne-cfg-securityType'>    /**
-</span>     * @cfg {String} securityType The securityType configuration can be used when creating associations using a configuration object.
+<span id='Ext-data-association-HasOne-cfg-type'>    /**
+</span>     * @cfg {String} type The type configuration can be used when creating associations using a configuration object.
      * Use 'hasOne' to create a HasOne association.
      *
      *     associations: [{
-     *         securityType: 'hasOne',
+     *         type: 'hasOne',
      *         model: 'Address'
      *     }]
      */
@@ -208,16 +208,27 @@ Ext.define('Ext.data.association.HasOne', {
      */
     createSetter: function() {
         var me              = this,
-            ownerModel      = me.ownerModel,
-            foreignKey      = me.foreignKey;
+            foreignKey      = me.foreignKey,
+            instanceName = me.instanceName;
 
         //'this' refers to the Model instance inside this function
         return function(value, options, scope) {
-            if (value &amp;&amp; value.isModel) {
-                value = value.getId();
+            // If we were passed a record, the value to set is the key of that record.
+            var setByRecord = value &amp;&amp; value.isModel,
+                valueToSet = setByRecord ? value.getId() : value;
+
+            // Setter was passed a record.
+            if (setByRecord) {
+                this[instanceName] = value;
             }
-            
-            this.set(foreignKey, value);
+
+            // Otherwise, if the key of foreign record !== passed value, delete the cached foreign record
+            else if (this[instanceName] instanceof Ext.data.Model &amp;&amp; !this.isEqual(this.get(foreignKey), valueToSet)) {
+                delete this[instanceName];
+            }
+
+            // Set the forign key value
+            this.set(foreignKey, valueToSet);
 
             if (Ext.isFunction(options)) {
                 options = {
@@ -308,7 +319,7 @@ Ext.define('Ext.data.association.HasOne', {
      */
     read: function(record, reader, associationData){
         var inverse = this.associatedModel.prototype.associations.findBy(function(assoc){
-            return assoc.securityType === 'belongsTo' &amp;&amp; assoc.associatedName === record.$className;
+            return assoc.type === 'belongsTo' &amp;&amp; assoc.associatedName === record.$className;
         }), newRecord = reader.read([associationData]).records[0];
         
         record[this.instanceName] = newRecord;

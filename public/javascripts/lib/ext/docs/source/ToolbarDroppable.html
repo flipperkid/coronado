@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -16,9 +16,7 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-ux-ToolbarDroppable'>/**
-</span> * @class Ext.ux.ToolbarDroppable
- * @extends Object
- * Plugin which allows items to be dropped onto a toolbar and be turned into new Toolbar items.
+</span> * Plugin which allows items to be dropped onto a toolbar and be turned into new Toolbar items.
  * To use the plugin, you just need to provide a createItem implementation that takes the drop
  * data as an argument and returns an object that can be placed onto the toolbar. Example:
  * &lt;pre&gt;
@@ -33,10 +31,10 @@
  * the item has been created.
  */
  Ext.define('Ext.ux.ToolbarDroppable', {
-    extend: 'Object',
 
 <span id='Ext-ux-ToolbarDroppable-method-constructor'>    /**
-</span>     * @constructor
+</span>     * Creates new ToolbarDroppable.
+     * @param {Object} config Config options.
      */
     constructor: function(config) {
       Ext.apply(this, config);
@@ -49,7 +47,7 @@
     init: function(toolbar) {
 <span id='Ext-ux-ToolbarDroppable-property-toolbar'>      /**
 </span>       * @property toolbar
-       * @securityType Ext.toolbar.Toolbar
+       * @type Ext.toolbar.Toolbar
        * The toolbar instance that this plugin is tied to
        */
       this.toolbar = toolbar;
@@ -66,7 +64,7 @@
     createDropTarget: function() {
 <span id='Ext-ux-ToolbarDroppable-property-dropTarget'>        /**
 </span>         * @property dropTarget
-         * @securityType Ext.dd.DropTarget
+         * @type Ext.dd.DropTarget
          * The drop target attached to the toolbar instance
          */
         this.dropTarget = Ext.create('Ext.dd.DropTarget', this.toolbar.getEl(), {

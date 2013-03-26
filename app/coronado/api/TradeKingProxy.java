@@ -119,6 +119,9 @@ public class TradeKingProxy {
 		request.setContent("symbols=" + Joiner.on(",").join(symbols));
 
 		final String response = request.send();
+        if(request.getStatus() != 200) {
+            return Lists.newArrayList();
+        }
         StockResponse.ListOfStocks stocks = jsonDeserializer.fromJson(response,
 				StockResponse.ListOfStocks.class);
 		return stocks.get();

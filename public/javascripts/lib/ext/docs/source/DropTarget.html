@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -61,11 +61,11 @@ Ext.define('Ext.dd.DropTarget', {
      */
     dropNotAllowed : Ext.baseCSSPrefix + 'dd-drop-nodrop',
 
-    // private
-    isTarget : true,
+<span id='Ext-dd-DropTarget-property-isTarget'>    // private
+</span>    isTarget : true,
 
-    // private
-    isNotifyTarget : true,
+<span id='Ext-dd-DropTarget-property-isNotifyTarget'>    // private
+</span>    isNotifyTarget : true,
 
 <span id='Ext-dd-DropTarget-method-notifyEnter'>    /**
 </span>     * The function a {@link Ext.dd.DragSource} calls once to notify this drop target that the source is now over the
@@ -130,8 +130,8 @@ Ext.define('Ext.dd.DropTarget', {
         return false;
     },
 
-    destroy : function(){
-        this.callParent();
+<span id='Ext-dd-DropTarget-method-destroy'>    destroy : function(){
+</span>        this.callParent();
         if(this.containerScroll){
             Ext.dd.ScrollManager.unregister(this.el);
         }

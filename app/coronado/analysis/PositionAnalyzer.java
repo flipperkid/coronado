@@ -40,7 +40,7 @@ public class PositionAnalyzer {
                 return o1.getDate().compareTo(o2.getDate());
             }
         });
-        final List<Position> positions = Lists.newArrayList();
+        final List<Position> positions = loadHistory();
         for(AccountHistoryResponse transaction : accountHistories) {
             final boolean processedTransaction = AccountHistoryResponse.find.where()
                     .eq("date", transaction.getDate())
@@ -151,8 +151,7 @@ public class PositionAnalyzer {
         return true;
     }
 
-    private void rectifyHoldings(List<Position> positions) throws InterruptedException, OAuthExpectationFailedException,
-            OAuthCommunicationException, OAuthMessageSignerException, IOException {
+    private void rectifyHoldings(List<Position> positions) throws InterruptedException, OAuthExpectationFailedException, OAuthCommunicationException, OAuthMessageSignerException, IOException {
         final List<AccountHoldingsResponse> holdings = apiProxy.getHoldings();
         for(AccountHoldingsResponse holding : holdings) {
             rectifyHolding(holding, positions);
@@ -160,15 +159,38 @@ public class PositionAnalyzer {
         for(Position cPos : positions) {
             if(!cPos.isClosed()) {
                 Logger.warn("Position not closed or held: " + cPos.getDescription() + " " + cPos.getCusip());
-                List<StockResponse> currStockValue = apiProxy.getStockPrice(Lists.newArrayList(cPos.getSymbol()));
-                if(currStockValue.size() != 1) {
+                try {
+                    List<StockResponse> currStockValue = apiProxy.getStockPrice(Lists.newArrayList(cPos.getSymbol()));
+                    if(currStockValue.size() != 1) {
+                        Logger.error("Unable to get the current value!");
+                        cPos.close(cPos.getCostBasis(), new Date());
+                    } else {
+                        Logger.info("Resolving based on current stock price.");
+                        rectifyHolding(currStockValue.get(0), cPos);
+                    }
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                     Logger.error("Unable to get the current value!");
                     cPos.close(cPos.getCostBasis(), new Date());
-                } else {
-                    Logger.info("Resolving based on current stock price.");
-                    rectifyHolding(currStockValue.get(0), cPos);
+                } catch (OAuthExpectationFailedException e) {
+                    e.printStackTrace();
+                    Logger.error("Unable to get the current value!");
+                    cPos.close(cPos.getCostBasis(), new Date());
+                } catch (OAuthCommunicationException e) {
+                    e.printStackTrace();
+                    Logger.error("Unable to get the current value!");
+                    cPos.close(cPos.getCostBasis(), new Date());
+                } catch (OAuthMessageSignerException e) {
+                    e.printStackTrace();
+                    Logger.error("Unable to get the current value!");
+                    cPos.close(cPos.getCostBasis(), new Date());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Logger.error("Unable to get the current value!");
+                    cPos.close(cPos.getCostBasis(), new Date());
                 }
             }
+            cPos.loadQuotes();
         }
     }
 

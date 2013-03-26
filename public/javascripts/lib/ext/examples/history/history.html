@@ -2,19 +2,19 @@
 <html>
 <head>
     <title>History Example</title>
-    <link rel="stylesheet" securityType="text/css" href="../../resources/css/ext-all.css"/>
-    <link rel="stylesheet" securityType="text/css" href="../shared/example.css"/>
+    <link rel="stylesheet" type="text/css" href="../shared/example.css"/>
 
     <!-- GC -->
 
 
-    <script securityType="text/javascript" src="../../ext-all.js"></script>
+    <script type="text/javascript" src="../../examples/shared/include-ext.js"></script>
+    <script type="text/javascript" src="../../examples/shared/options-toolbar.js"></script>
 </head>
 <body>
 
     <h1>History Example</h1>
 
-    <script securityType="text/javascript">
+    <script type="text/javascript">
       // Ensure we're not inside an iframe
       if (window != window.top) {
           document.write('<p>History example doesn\'t work inside an iframe.</p>');
@@ -34,7 +34,7 @@
 
     <!-- Fields required for history management -->
     <form id="history-form" class="x-hide-display">
-        <input securityType="hidden" id="x-history-field" />
+        <input type="hidden" id="x-history-field" />
         <iframe id="x-history-frame"></iframe>
     </form>
 </body>

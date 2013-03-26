@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -21,7 +21,7 @@
  * `String` is a global object that may be used to construct String instances.
  *
  * String objects may be created by calling the constructor `new String()`. The `String` object wraps
- * JavaScript's string primitive data securityType with the methods described below. The global function
+ * JavaScript's string primitive data type with the methods described below. The global function
  * `String()` can also be called without new in front to create a primitive string. String literals in
  * JavaScript are primitive strings.
  *
@@ -966,7 +966,7 @@
  *
  * The following example displays the string &quot;sencha&quot;:
  *
- *     var upperText=&quot;sencha&quot;;
+ *     var upperText=&quot;SENCHA&quot;;
  *     document.write(upperText.toLocaleLowerCase());
  *
  * @return {String} Returns value of the string in lowercase.
@@ -1042,7 +1042,7 @@
  * Returns the primitive value of the specified object. Overrides the `Object.valueOf` method.
  *
  * The `valueOf` method of String returns the primitive value of a `String` object as a string data
- * securityType. This value is equivalent to `String.toString`.
+ * type. This value is equivalent to `String.toString`.
  *
  * This method is usually called internally by JavaScript and not explicitly in code.
  *
@@ -1050,6 +1050,25 @@
  *     alert(x.valueOf())          // Displays &quot;Hello world&quot;
  *
  * @return {String} Returns value of string.
- */</pre>
+ */
+
+// ECMAScript 5 methods
+
+<span id='String-method-trim'>/**
+</span> * @method trim
+ * Removes whitespace from both ends of the string.
+ *
+ * Does not affect the value of the string itself.
+ *
+ * The following example displays the lowercase string `&quot;foo&quot;`:
+ *
+ *     var orig = &quot;   foo  &quot;;
+ *     alert(orig.trim());
+ *
+ * **NOTE:** This method is part of the ECMAScript 5 standard.
+ *
+ * @return {String} A string stripped of whitespace on both ends.
+ */
+</pre>
 </body>
 </html>

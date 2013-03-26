@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<?xml-stylesheet securityType="text/xsl" media="screen" href="/~d/styles/rss2full.xsl"?><?xml-stylesheet securityType="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:admin="http://webns.net/mvcb/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" version="2.0">
+<?xml-stylesheet type="text/xsl" media="screen" href="/~d/styles/rss2full.xsl"?><?xml-stylesheet type="text/css" media="screen" href="http://feeds.feedburner.com/~d/styles/itemcontent.css"?><rss xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:sy="http://purl.org/rss/1.0/modules/syndication/" xmlns:admin="http://webns.net/mvcb/" xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:content="http://purl.org/rss/1.0/modules/content/" xmlns:atom="http://www.w3.org/2005/Atom" xmlns:feedburner="http://rssnamespace.org/feedburner/ext/1.0" version="2.0">
 
     <channel>
         <title>Sencha Blog</title>
@@ -15,7 +15,7 @@
         
 
         
-        <atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" securityType="application/rss+xml" href="http://feeds.feedburner.com/extblog" /><feedburner:info uri="extblog" /><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" /><item>
+        <atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="self" type="application/rss+xml" href="http://feeds.feedburner.com/extblog" /><feedburner:info uri="extblog" /><atom10:link xmlns:atom10="http://www.w3.org/2005/Atom" rel="hub" href="http://pubsubhubbub.appspot.com/" /><item>
         <title>Sencha.io Src Update</title>
         <author>James Pearce</author>
         <description>
@@ -504,7 +504,7 @@ Click through to view these Sencha Touch apps in the App Gallery.</figcaption>
     </ul>
 
     <ul>
-        <li><strong>HTML5 form fields are supported</strong>, including number, range, and date picker. This is great for an HTML5 developer because iOS now opens the appropriate on-screen keyboard based on the input tag securityType.</li>
+        <li><strong>HTML5 form fields are supported</strong>, including number, range, and date picker. This is great for an HTML5 developer because iOS now opens the appropriate on-screen keyboard based on the input tag type.</li>
     </ul>
 
     <ul>
@@ -903,7 +903,7 @@ A screen-sharing application to allow games such as Charades and Pictionary on m
 
     <p>When you visit the live documentation, the first thing you will notice are comment icons on the <span class="caps">API</span> index page. This lets you know how many comments are on both the class introduction and any members within that class (methods, config options, events, etc). Note that comments on parent class members are carried through to child classes. For example, comments on the &#8216;border&#8217; config option of Ext.AbstractComponent will be shown on sub-classes such as Ext.button.Button.</p>
 
-    <p>Individual class documentation pages have a new toolbar icon indicating the number of comments on the main class. You can also see the number of comments on members&#8217; items in the shortcut links that pop up when you hover over member securityType in the toolbar:</p>
+    <p>Individual class documentation pages have a new toolbar icon indicating the number of comments on the main class. You can also see the number of comments on members&#8217; items in the shortcut links that pop up when you hover over member type in the toolbar:</p>
 
     <p><img src="http://img1.sencha.com/files/misc/docs-comments.png" alt="Comments highlighted in new Sencha Documentation" height="250" width="636"></p>
 
@@ -1082,7 +1082,7 @@ A screen-sharing application to allow games such as Charades and Pictionary on m
 <span class="sc3"><span class="re1">&lt;html<span class="re2">&gt;</span></span></span>
 <span class="sc3"><span class="re1">&lt;head<span class="re2">&gt;</span></span></span>
 <span class="sc3"><span class="re1">&lt;title<span class="re2">&gt;</span></span></span>Ext GWT Explorer Demo - $&#123;build.description&#125;<span class="sc3"><span class="re1">&lt;/title<span class="re2">&gt;</span></span></span>
-<span class="sc3"><span class="re1">&lt;link</span> <span class="re0">rel</span>=<span class="st0">&quot;stylesheet&quot;</span> <span class="re0">securityType</span>=<span class="st0">&quot;text/css&quot;</span> <span class="re0">href</span>=<span class="st0">&quot;explorer/reset.css&quot;</span> <span class="re2">/&gt;</span></span>
+<span class="sc3"><span class="re1">&lt;link</span> <span class="re0">rel</span>=<span class="st0">&quot;stylesheet&quot;</span> <span class="re0">type</span>=<span class="st0">&quot;text/css&quot;</span> <span class="re0">href</span>=<span class="st0">&quot;explorer/reset.css&quot;</span> <span class="re2">/&gt;</span></span>
 <span class="sc3"><span class="re1">&lt;/head<span class="re2">&gt;</span></span></span>
 <span class="sc3"><span class="re1">&lt;body<span class="re2">&gt;</span></span></span>
 <span class="sc3"><span class="re1">&lt;script</span> <span class="re0">language</span>=<span class="st0">'javascript'</span> <span class="re0">src</span>=<span class="st0">'explorer/explorer.nocache.js'</span><span class="re2">&gt;</span><span class="re1">&lt;/script<span class="re2">&gt;</span></span></span>
@@ -1090,7 +1090,7 @@ A screen-sharing application to allow games such as Charades and Pictionary on m
 <span class="sc3"><span class="re1">&lt;/body<span class="re2">&gt;</span></span></span>
 <span class="sc3"><span class="re1">&lt;/html<span class="re2">&gt;</span></span></span></pre></div>
 
-<p>Also note the first line - the HTML document securityType declaration. Ext GWT 3.0 works only in strict mode, which is activated in browsers when an appropriate declaration is placed at the beginning of the document. The <a href="http://dev.w3.org/html5/spec/Overview.html#the-doctype">HTML5 doctype</a> can also be used to trigger strict mode:</p>
+<p>Also note the first line - the HTML document type declaration. Ext GWT 3.0 works only in strict mode, which is activated in browsers when an appropriate declaration is placed at the beginning of the document. The <a href="http://dev.w3.org/html5/spec/Overview.html#the-doctype">HTML5 doctype</a> can also be used to trigger strict mode:</p>
 
 <p><style>/**
  * GeSHi (C) 2004 - 2007 Nigel McNie, 2007 - 2008 Benny Baumann
@@ -1235,7 +1235,7 @@ A screen-sharing application to allow games such as Charades and Pictionary on m
 
 <p>Previously, Ext GWT used the introspection-like features of ModelData to allow access to the data within an object. With 3.0, ValueProvider instances can be used to generically refer to individual nested properties, and GWT&#8217;s AutoBean functionality can be used to turn bean interfaces into and from data loaded from the server. The HttpProxy and ScriptTagProxy classes can both be asked to generated XML or JSON for the objects sent to the server. Alternatively, they can also generate simple url-encoded data. Furthermore, readers are available to easily map JSON properties or simple XML x-paths to bean properties.</p>
 
-<p>Loaders and Proxies now use specific generics to avoid confusion about the securityType of model or data that is expected or that will be produced by any particular object. This avoids many common problems, such as class cast exceptions, that occur when less stringent typing is used. These additional securityType parameters can make object declarations more verbose, but also more precise. These changes result in better static code checking from your IDE or compiler and will point out the error instead of waiting for someone to use every single service. The Explorer demo shows how to turn both XML and JSON into trees or lists to be consumed by their appropriate Stores.</p>
+<p>Loaders and Proxies now use specific generics to avoid confusion about the type of model or data that is expected or that will be produced by any particular object. This avoids many common problems, such as class cast exceptions, that occur when less stringent typing is used. These additional type parameters can make object declarations more verbose, but also more precise. These changes result in better static code checking from your IDE or compiler and will point out the error instead of waiting for someone to use every single service. The Explorer demo shows how to turn both XML and JSON into trees or lists to be consumed by their appropriate Stores.</p>
 
 <h3>New Examples</h3>
 
@@ -1889,15 +1889,15 @@ text.<span class="me1">setLabel</span><span class="br0">&#40;</span><span class=
 */
 Ext.regModel("Contact", &#123;
    fields: [
-       &#123;name: "id", securityType: "string"&#125;,
-       &#123;name: "firstName", securityType: "string"&#125;,
-       &#123;name: "lastName", securityType: "string"&#125;,
-       &#123;name: "email", securityType: "string"&#125;,
+       &#123;name: "id", type: "string"&#125;,
+       &#123;name: "firstName", type: "string"&#125;,
+       &#123;name: "lastName", type: "string"&#125;,
+       &#123;name: "email", type: "string"&#125;,
    ],
 
    proxy: &#123;
                 id: 'contacts',
-                securityType: 'syncstorage',
+                type: 'syncstorage',
                 key: 'yoursenchaidname'
    &#125;
 &#125;);

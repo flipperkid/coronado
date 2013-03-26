@@ -3,19 +3,20 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
   </script>
 </head>
 <body onload="prettyPrint(); highlight();">
-  <pre class="prettyprint lang-js"><span id='Ext-dom-CompositeElement'>/**
+  <pre class="prettyprint lang-js">//@tag dom,core
+<span id='Ext-dom-CompositeElement'>/**
 </span> * @class Ext.dom.CompositeElement
  * &lt;p&gt;This class encapsulates a &lt;i&gt;collection&lt;/i&gt; of DOM elements, providing methods to filter
  * members, or to perform collective actions upon the whole set.&lt;/p&gt;
@@ -40,14 +41,14 @@ Ext.define('Ext.dom.CompositeElement', {
 
     extend: 'Ext.dom.CompositeElementLite',
 
-    // private
-    getElement: function(el) {
+<span id='Ext-dom-CompositeElement-method-getElement'>    // private
+</span>    getElement: function(el) {
         // In this case just return it, since we already have a reference to it
         return el;
     },
 
-    // private
-    transformElement: function(el) {
+<span id='Ext-dom-CompositeElement-method-transformElement'>    // private
+</span>    transformElement: function(el) {
         return Ext.get(el);
     }
 

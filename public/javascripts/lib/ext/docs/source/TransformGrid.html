@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -24,7 +24,7 @@ Ext.define('Ext.ux.grid.TransformGrid', {
 <span id='Ext-ux-grid-TransformGrid-method-constructor'>    /**
 </span>     * Creates the grid from HTML table element.
      * @param {String/HTMLElement/Ext.Element} table The table element from which this grid will be created -
-     * The table MUST have some securityType of size defined for the grid to fill. The container will be
+     * The table MUST have some type of size defined for the grid to fill. The container will be
      * automatically set to position relative if it isn't already.
      * @param {Object} [config] A config object that sets properties on this grid and has two additional (optional)
      * properties: fields and columns which allow for customizing data fields and columns for this grid.
@@ -83,10 +83,10 @@ Ext.define('Ext.ux.grid.TransformGrid', {
                 data: data,
                 fields: fields,
                 proxy: {
-                    securityType: 'memory',
+                    type: 'memory',
                     reader: {
                         record: 'tbody tr',
-                        securityType: 'xml'
+                        type: 'xml'
                     }
                 }
             },
@@ -103,8 +103,8 @@ Ext.define('Ext.ux.grid.TransformGrid', {
         }
     },
 
-    onDestroy: function() {
-        this.callParent();
+<span id='Ext-ux-grid-TransformGrid-method-onDestroy'>    onDestroy: function() {
+</span>        this.callParent();
         this.table.remove();
         delete this.table;
     }

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -53,6 +53,11 @@ Ext.define('Ext.data.proxy.Proxy', {
     alias: 'proxy.proxy',
     alternateClassName: ['Ext.data.DataProxy', 'Ext.data.Proxy'],
 
+    requires: [
+        'Ext.data.reader.Json',
+        'Ext.data.writer.Json'
+    ],
+
     uses: [
         'Ext.data.Batch',
         'Ext.data.Operation',
@@ -72,20 +77,20 @@ Ext.define('Ext.data.proxy.Proxy', {
 
 <span id='Ext-data-proxy-Proxy-cfg-batchActions'>    /**
 </span>     * @cfg {Boolean} batchActions
-     * True to batch actions of a particular securityType when synchronizing the store. Defaults to true.
+     * True to batch actions of a particular type when synchronizing the store. Defaults to true.
      */
     batchActions: true,
 
 <span id='Ext-data-proxy-Proxy-cfg-defaultReaderType'>    /**
 </span>     * @cfg {String} defaultReaderType
-     * The default registered reader securityType. Defaults to 'json'.
+     * The default registered reader type. Defaults to 'json'.
      * @private
      */
     defaultReaderType: 'json',
 
 <span id='Ext-data-proxy-Proxy-cfg-defaultWriterType'>    /**
 </span>     * @cfg {String} defaultWriterType
-     * The default registered writer securityType. Defaults to 'json'.
+     * The default registered writer type. Defaults to 'json'.
      * @private
      */
     defaultWriterType: 'json',
@@ -99,13 +104,13 @@ Ext.define('Ext.data.proxy.Proxy', {
 <span id='Ext-data-proxy-Proxy-cfg-reader'>    /**
 </span>     * @cfg {Object/String/Ext.data.reader.Reader} reader
      * The Ext.data.reader.Reader to use to decode the server's response or data read from client. This can either be a
-     * Reader instance, a config object or just a valid Reader securityType name (e.g. 'json', 'xml').
+     * Reader instance, a config object or just a valid Reader type name (e.g. 'json', 'xml').
      */
 
 <span id='Ext-data-proxy-Proxy-cfg-writer'>    /**
 </span>     * @cfg {Object/String/Ext.data.writer.Writer} writer
      * The Ext.data.writer.Writer to use to encode any request sent to the server or saved to client. This can either be
-     * a Writer instance, a config object or just a valid Writer securityType name (e.g. 'json', 'xml').
+     * a Writer instance, a config object or just a valid Writer type name (e.g. 'json', 'xml').
      */
 
 <span id='Ext-data-proxy-Proxy-property-isProxy'>    /**
@@ -119,16 +124,23 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Object} config (optional) Config object.
      */
     constructor: function(config) {
+        var me = this;
+
         config = config || {};
+        me.proxyConfig = config;
 
-        if (config.model === undefined) {
-            delete config.model;
-        }
+        me.mixins.observable.constructor.call(me, config);
 
-        this.mixins.observable.constructor.call(this, config);
-
-        if (this.model !== undefined &amp;&amp; !(this.model instanceof Ext.data.Model)) {
-            this.setModel(this.model);
+        if (me.model !== undefined &amp;&amp; !(me.model instanceof Ext.data.Model)) {
+            me.setModel(me.model);
+        } else {
+            if (me.reader) {
+                me.setReader(me.reader);
+            }
+            
+            if (me.writer) {
+                me.setWriter(me.writer);
+            }
         }
 
 <span id='Ext-data-proxy-Proxy-event-metachange'>        /**
@@ -151,16 +163,15 @@ Ext.define('Ext.data.proxy.Proxy', {
      * @param {Boolean} setOnStore Sets the new model on the associated Store, if one is present
      */
     setModel: function(model, setOnStore) {
-        this.model = Ext.ModelManager.getModel(model);
+        var me = this;
+        
+        me.model = Ext.ModelManager.getModel(model);
 
-        var reader = this.reader,
-            writer = this.writer;
+        me.setReader(this.reader);
+        me.setWriter(this.writer);
 
-        this.setReader(reader);
-        this.setWriter(writer);
-
-        if (setOnStore &amp;&amp; this.store) {
-            this.store.setModel(this.model);
+        if (setOnStore &amp;&amp; me.store) {
+            me.store.setModel(me.model);
         }
     },
 
@@ -175,17 +186,18 @@ Ext.define('Ext.data.proxy.Proxy', {
 <span id='Ext-data-proxy-Proxy-method-setReader'>    /**
 </span>     * Sets the Proxy's Reader by string, config object or Reader instance
      *
-     * @param {String/Object/Ext.data.reader.Reader} reader The new Reader, which can be either a securityType string,
+     * @param {String/Object/Ext.data.reader.Reader} reader The new Reader, which can be either a type string,
      * a configuration object or an Ext.data.reader.Reader instance
      * @return {Ext.data.reader.Reader} The attached Reader object
      */
     setReader: function(reader) {
         var me = this,
-            needsCopy = true;
+            needsCopy = true,
+            current = me.reader;
 
         if (reader === undefined || typeof reader == 'string') {
             reader = {
-                securityType: reader
+                type: reader
             };
             needsCopy = false;
         }
@@ -199,13 +211,13 @@ Ext.define('Ext.data.proxy.Proxy', {
             Ext.applyIf(reader, {
                 proxy: me,
                 model: me.model,
-                securityType : me.defaultReaderType
+                type : me.defaultReaderType
             });
 
-            reader = Ext.createByAlias('reader.' + reader.securityType, reader);
+            reader = Ext.createByAlias('reader.' + reader.type, reader);
         }
 
-        if (reader.onMetaChange) {
+        if (reader !== current &amp;&amp; reader.onMetaChange) {
             reader.onMetaChange = Ext.Function.createSequence(reader.onMetaChange, this.onMetaChange, this);
         }
 
@@ -232,7 +244,7 @@ Ext.define('Ext.data.proxy.Proxy', {
 <span id='Ext-data-proxy-Proxy-method-setWriter'>    /**
 </span>     * Sets the Proxy's Writer by string, config object or Writer instance
      *
-     * @param {String/Object/Ext.data.writer.Writer} writer The new Writer, which can be either a securityType string,
+     * @param {String/Object/Ext.data.writer.Writer} writer The new Writer, which can be either a type string,
      * a configuration object or an Ext.data.writer.Writer instance
      * @return {Ext.data.writer.Writer} The attached Writer object
      */
@@ -242,7 +254,7 @@ Ext.define('Ext.data.proxy.Proxy', {
             
         if (writer === undefined || typeof writer == 'string') {
             writer = {
-                securityType: writer
+                type: writer
             };
             needsCopy = false;
         }
@@ -253,10 +265,10 @@ Ext.define('Ext.data.proxy.Proxy', {
             }
             Ext.applyIf(writer, {
                 model: me.model,
-                securityType : me.defaultWriterType
+                type : me.defaultWriterType
             });
 
-            writer = Ext.createByAlias('writer.' + writer.securityType, writer);
+            writer = Ext.createByAlias('writer.' + writer.type, writer);
         }
 
         me.writer = writer;
@@ -454,10 +466,11 @@ Ext.define('Ext.data.proxy.Proxy', {
         if (Ext.isFunction(batchOptions.callback)) {
             Ext.callback(batchOptions.callback, scope, [batch, batchOptions]);
         }
+    },
+
+<span id='Ext-data-proxy-Proxy-method-clone'>    clone: function() {
+</span>        return new this.self(this.proxyConfig);
     }
-}, function() {
-    //backwards compatibility
-    Ext.data.DataProxy = this;
 });
 </pre>
 </body>

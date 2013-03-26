@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -16,9 +16,7 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-ux-DataView-Draggable'>/**
-</span> * @class Ext.ux.DataView.Draggable
- * @extends Object
- * @author Ed Spencer
+</span> * @author Ed Spencer
  *
 &lt;pre&gt;&lt;code&gt;
 Ext.create('Ext.view.View', {
@@ -68,7 +66,7 @@ Ext.define('Ext.ux.DataView.Draggable', {
     init: function(dataview, config) {
 <span id='Ext-ux-DataView-Draggable-property-dataview'>        /**
 </span>         * @property dataview
-         * @securityType Ext.view.View
+         * @type Ext.view.View
          * The Ext.view.View instance that this DragZone is attached to
          */
         this.dataview = dataview;
@@ -103,14 +101,14 @@ Ext.define('Ext.ux.DataView.Draggable', {
 
 <span id='Ext-ux-DataView-Draggable-property-dragZone'>        /**
 </span>         * @property dragZone
-         * @securityType Ext.dd.DragZone
+         * @type Ext.dd.DragZone
          * The attached DragZone instane
          */
         this.dragZone = Ext.create('Ext.dd.DragZone', this.dataview.getEl(), config);
     },
 
-    getDragData: function(e) {
-        var draggable = this.dvDraggable,
+<span id='Ext-ux-DataView-Draggable-method-getDragData'>    getDragData: function(e) {
+</span>        var draggable = this.dvDraggable,
             dataview  = this.dataview,
             selModel  = dataview.getSelectionModel(),
             target    = e.getTarget(draggable.itemSelector),
@@ -143,12 +141,12 @@ Ext.define('Ext.ux.DataView.Draggable', {
         return false;
     },
 
-    getTreeNode: function() {
-        // console.log('test');
+<span id='Ext-ux-DataView-Draggable-method-getTreeNode'>    getTreeNode: function() {
+</span>        // console.log('test');
     },
 
-    afterRepair: function() {
-        this.dragging = false;
+<span id='Ext-ux-DataView-Draggable-method-afterRepair'>    afterRepair: function() {
+</span>        this.dragging = false;
 
         var nodes  = this.dragData.nodes,
             length = nodes.length,

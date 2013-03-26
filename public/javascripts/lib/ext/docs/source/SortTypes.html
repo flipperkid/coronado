@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -19,8 +19,8 @@
 </span> * @class Ext.data.SortTypes
  * This class defines a series of static methods that are used on a
  * {@link Ext.data.Field} for performing sorting. The methods cast the 
- * underlying values into a data securityType that is appropriate for sorting on
- * that particular field.  If a {@link Ext.data.Field#securityType} is specified,
+ * underlying values into a data type that is appropriate for sorting on
+ * that particular field.  If a {@link Ext.data.Field#type} is specified, 
  * the sortType will be set to a sane default if the sortType is not 
  * explicitly defined on the field. The sortType will make any necessary
  * modifications to the value and return it.
@@ -50,7 +50,7 @@ Ext.define('Employee', {
         sortType: 'asPerson'
     }, {
         name: 'salary',
-        securityType: 'float' // sortType set to asFloat
+        type: 'float' // sortType set to asFloat
     }]
 });
  * &lt;/code&gt;&lt;/pre&gt;
@@ -67,13 +67,11 @@ Ext.define('Ext.data.SortTypes', {
      * @param {Object} s The value being converted
      * @return {Object} The comparison value
      */
-    none : function(s) {
-        return s;
-    },
+    none : Ext.identityFn,
 
 <span id='Ext-data-SortTypes-property-stripTagsRE'>    /**
 </span>     * The regular expression used to strip tags
-     * @securityType {RegExp}
+     * @type {RegExp}
      * @property
      */
     stripTagsRE : /&lt;\/?[^&gt;]+&gt;/gi,

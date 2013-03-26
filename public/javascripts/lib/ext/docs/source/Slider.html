@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -26,20 +26,20 @@ Ext.define('Ext.layout.component.field.Slider', {
 
     extend: 'Ext.layout.component.field.Field',
 
-    /* End Definitions */
+<span id='Ext-layout-component-field-Slider-property-type'>    /* End Definitions */
+</span>
+    type: 'sliderfield',
 
-    securityType: 'sliderfield',
-
-    beginLayout: function(ownerContext) {
-        this.callParent(arguments);
+<span id='Ext-layout-component-field-Slider-method-beginLayout'>    beginLayout: function(ownerContext) {
+</span>        this.callParent(arguments);
 
         ownerContext.endElContext   = ownerContext.getEl('endEl');
         ownerContext.innerElContext = ownerContext.getEl('innerEl');
         ownerContext.bodyElContext  = ownerContext.getEl('bodyEl');
     },
 
-    publishInnerHeight: function (ownerContext, height) {
-        var innerHeight = height - this.measureLabelErrorHeight(ownerContext),
+<span id='Ext-layout-component-field-Slider-method-publishInnerHeight'>    publishInnerHeight: function (ownerContext, height) {
+</span>        var innerHeight = height - this.measureLabelErrorHeight(ownerContext),
             endElPad,
             inputPad;
         if (this.owner.vertical) {
@@ -51,8 +51,8 @@ Ext.define('Ext.layout.component.field.Slider', {
         }
     },
 
-    publishInnerWidth: function (ownerContext, width) {
-        if (!this.owner.vertical) {
+<span id='Ext-layout-component-field-Slider-method-publishInnerWidth'>    publishInnerWidth: function (ownerContext, width) {
+</span>        if (!this.owner.vertical) {
             var endElPad = ownerContext.endElContext.getPaddingInfo(),
                 inputPad = ownerContext.inputContext.getPaddingInfo();
 
@@ -60,8 +60,8 @@ Ext.define('Ext.layout.component.field.Slider', {
         }
     },
 
-    beginLayoutFixed: function(ownerContext, width, suffix) {
-        var me = this,
+<span id='Ext-layout-component-field-Slider-method-beginLayoutFixed'>    beginLayoutFixed: function(ownerContext, width, suffix) {
+</span>        var me = this,
             ieInputWidthAdjustment = me.ieInputWidthAdjustment;
 
         if (ieInputWidthAdjustment) {

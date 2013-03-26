@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -66,7 +66,7 @@
  * The data packet sent to the server will resemble something like:
  *
  *     {
- *         &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;updateBasicInfo&quot;,&quot;securityType&quot;:&quot;rpc&quot;,&quot;tid&quot;:&quot;6&quot;,
+ *         &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;updateBasicInfo&quot;,&quot;type&quot;:&quot;rpc&quot;,&quot;tid&quot;:&quot;6&quot;,
  *         &quot;result&quot;:{
  *             &quot;success&quot;:true,
  *             &quot;id&quot;:{
@@ -82,7 +82,7 @@
  *     // sample success packet (batched requests)
  *     [
  *         {
- *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;updateBasicInfo&quot;,&quot;securityType&quot;:&quot;rpc&quot;,&quot;tid&quot;:3,
+ *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;updateBasicInfo&quot;,&quot;type&quot;:&quot;rpc&quot;,&quot;tid&quot;:3,
  *             &quot;result&quot;:{
  *                 &quot;success&quot;:true
  *             }
@@ -91,7 +91,7 @@
  *
  *     // sample failure packet (one request)
  *     {
- *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;updateBasicInfo&quot;,&quot;securityType&quot;:&quot;rpc&quot;,&quot;tid&quot;:&quot;6&quot;,
+ *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;updateBasicInfo&quot;,&quot;type&quot;:&quot;rpc&quot;,&quot;tid&quot;:&quot;6&quot;,
  *             &quot;result&quot;:{
  *                 &quot;errors&quot;:{
  *                     &quot;email&quot;:&quot;already taken&quot;
@@ -109,25 +109,26 @@ Ext.define('Ext.form.action.DirectSubmit', {
     alternateClassName: 'Ext.form.Action.DirectSubmit',
     alias: 'formaction.directsubmit',
 
-    securityType: 'directsubmit',
-
-    doSubmit: function() {
-        var me = this,
+<span id='Ext-form-action-DirectSubmit-property-type'>    type: 'directsubmit',
+</span>
+<span id='Ext-form-action-DirectSubmit-method-doSubmit'>    doSubmit: function() {
+</span>        var me = this,
             callback = Ext.Function.bind(me.onComplete, me),
-            formEl = me.buildForm();
-        me.form.api.submit(formEl, callback, me);
-        Ext.removeNode(formEl);
+            formInfo = me.buildForm();
+            
+        me.form.api.submit(formInfo.formEl, callback, me);
+        me.cleanup(formInfo);
     },
 
-    // Direct actions have already been processed and therefore
-    // we can directly set the result; Direct Actions do not have
+<span id='Ext-form-action-DirectSubmit-method-processResponse'>    // Direct actions have already been processed and therefore
+</span>    // we can directly set the result; Direct Actions do not have
     // a this.response property.
     processResponse: function(result) {
         return (this.result = result);
     },
     
-    onComplete: function(data, response){
-        if (data) {
+<span id='Ext-form-action-DirectSubmit-method-onComplete'>    onComplete: function(data, response){
+</span>        if (data) {
             this.onSuccess(data);
         } else {
             this.onFailure(null);

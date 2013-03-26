@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -36,6 +36,18 @@ Ext.define('Ext.data.proxy.WebStorage', {
      */
     id: undefined,
 
+<span id='Ext-data-proxy-WebStorage-cfg-reader'>    /**
+</span>     * @cfg {Object} reader
+     * Not used by web storage proxy.
+     * @hide
+     */
+
+<span id='Ext-data-proxy-WebStorage-cfg-writer'>    /**
+</span>     * @cfg {Object} writer
+     * Not used by web storage proxy.
+     * @hide
+     */
+
 <span id='Ext-data-proxy-WebStorage-method-constructor'>    /**
 </span>     * Creates the proxy, throws an error if local storage is not supported in the current browser.
      * @param {Object} config (optional) Config object.
@@ -51,7 +63,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
 
         //&lt;debug&gt;
         if (this.getStorageObject() === undefined) {
-            Ext.Error.raise(&quot;Local Storage is not supported in this browser, please use another securityType of data proxy&quot;);
+            Ext.Error.raise(&quot;Local Storage is not supported in this browser, please use another type of data proxy&quot;);
         }
         //&lt;/debug&gt;
 
@@ -67,8 +79,8 @@ Ext.define('Ext.data.proxy.WebStorage', {
         this.initialize();
     },
 
-    //inherit docs
-    create: function(operation, callback, scope) {
+<span id='Ext-data-proxy-WebStorage-method-create'>    //inherit docs
+</span>    create: function(operation, callback, scope) {
         var me = this,
             records = operation.records,
             length = records.length,
@@ -111,8 +123,8 @@ Ext.define('Ext.data.proxy.WebStorage', {
         }
     },
 
-    //inherit docs
-    read: function(operation, callback, scope) {
+<span id='Ext-data-proxy-WebStorage-method-read'>    //inherit docs
+</span>    read: function(operation, callback, scope) {
         //TODO: respect sorters, filters, start and limit options on the Operation
 
         var me = this,
@@ -168,8 +180,8 @@ Ext.define('Ext.data.proxy.WebStorage', {
         }
     },
 
-    //inherit docs
-    update: function(operation, callback, scope) {
+<span id='Ext-data-proxy-WebStorage-method-update'>    //inherit docs
+</span>    update: function(operation, callback, scope) {
         var records = operation.records,
             length  = records.length,
             ids     = this.getIds(),
@@ -199,8 +211,8 @@ Ext.define('Ext.data.proxy.WebStorage', {
         }
     },
 
-    //inherit
-    destroy: function(operation, callback, scope) {
+<span id='Ext-data-proxy-WebStorage-method-destroy'>    //inherit
+</span>    destroy: function(operation, callback, scope) {
         var me = this,
             records = operation.records,
             ids = me.getIds(),
@@ -373,7 +385,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
             ids = (me.getStorageObject().getItem(me.id) || &quot;&quot;).split(&quot;,&quot;),
             model = me.model,
             length = ids.length,
-            isString = model.prototype.fields.get(model.prototype.idProperty).securityType.securityType === 'string',
+            isString = model.prototype.fields.get(model.prototype.idProperty).type.type === 'string',
             i;
 
         if (length == 1 &amp;&amp; ids[0] === &quot;&quot;) {
@@ -414,7 +426,7 @@ Ext.define('Ext.data.proxy.WebStorage', {
             obj = me.getStorageObject(),
             key = me.getRecordCounterKey(),
             model = me.model,
-            isString = model.prototype.fields.get(model.prototype.idProperty).securityType.securityType === 'string',
+            isString = model.prototype.fields.get(model.prototype.idProperty).type.type === 'string',
             id;
 
         id = me.idGenerator.generate();

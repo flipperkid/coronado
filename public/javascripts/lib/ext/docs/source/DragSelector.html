@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -16,10 +16,7 @@
 </head>
 <body onload="prettyPrint(); highlight();">
   <pre class="prettyprint lang-js"><span id='Ext-ux-DataView-DragSelector'>/**
-</span> * @class Ext.ux.DataView.DragSelector
- * @extends Object
- * @author Ed Spencer
- * 
+</span> * @author Ed Spencer
  */
 Ext.define('Ext.ux.DataView.DragSelector', {
     requires: ['Ext.dd.DragTracker', 'Ext.util.Region'],
@@ -30,7 +27,7 @@ Ext.define('Ext.ux.DataView.DragSelector', {
     init: function(dataview) {
 <span id='Ext-ux-DataView-DragSelector-property-dataview'>        /**
 </span>         * @property dataview
-         * @securityType Ext.view.View
+         * @type Ext.view.View
          * The DataView bound to this instance
          */
         this.dataview = dataview;
@@ -53,7 +50,7 @@ Ext.define('Ext.ux.DataView.DragSelector', {
     onRender: function() {
 <span id='Ext-ux-DataView-DragSelector-property-tracker'>        /**
 </span>         * @property tracker
-         * @securityType Ext.dd.DragTracker
+         * @type Ext.dd.DragTracker
          * The DragTracker attached to this instance. Note that the 4 on* functions are called in the scope of the 
          * DragTracker ('this' refers to the DragTracker inside those functions), so we pass a reference to the 
          * DragSelector so that we can call this class's functions.
@@ -70,7 +67,7 @@ Ext.define('Ext.ux.DataView.DragSelector', {
 
 <span id='Ext-ux-DataView-DragSelector-property-dragRegion'>        /**
 </span>         * @property dragRegion
-         * @securityType Ext.util.Region
+         * @type Ext.util.Region
          * Represents the region currently dragged out by the user. This is used to figure out which dataview nodes are
          * in the selected area and to set the size of the Proxy element used to highlight the current drag area
          */

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -25,7 +25,7 @@
  *
  * + width: The width of the image
  * + height: The height of the image
- * + securityType: The image securityType to save as, see {@link #supportedTypes}
+ * + type: The image type to save as, see {@link #supportedTypes}
  * + svg: The svg string for the surface
  *
  * # The response
@@ -39,6 +39,7 @@
  * **Important**: By default, chart data is sent to a server operated
  * by Sencha to do data processing. You may change this default by
  * setting the {@link #defaultUrl} of this class.
+ * In addition, please note that this service only creates PNG images.
  */
 Ext.define('Ext.draw.engine.ImageExporter', {
     singleton: true,
@@ -70,11 +71,11 @@ Ext.define('Ext.draw.engine.ImageExporter', {
     heightParam: 'height',
 
 <span id='Ext-draw-engine-ImageExporter-property-typeParam'>    /**
-</span>     * @property {String} [typeParam=&quot;securityType&quot;]
-     * The name of the securityType parameter to be sent to the server.
+</span>     * @property {String} [typeParam=&quot;type&quot;]
+     * The name of the type parameter to be sent to the server.
      * The Sencha IO server expects it to be the default value.
      */
-    typeParam: 'securityType',
+    typeParam: 'type',
 
 <span id='Ext-draw-engine-ImageExporter-property-svgParam'>    /**
 </span>     * @property {String} [svgParam=&quot;svg&quot;]
@@ -83,8 +84,8 @@ Ext.define('Ext.draw.engine.ImageExporter', {
      */
     svgParam: 'svg',
 
-    formCls: Ext.baseCSSPrefix + 'hide-display',
-
+<span id='Ext-draw-engine-ImageExporter-property-formCls'>    formCls: Ext.baseCSSPrefix + 'hide-display',
+</span>
 <span id='Ext-draw-engine-ImageExporter-method-generate'>    /**
 </span>     * Exports the surface to an image
      * @param {Ext.draw.Surface} surface The surface to export
@@ -99,7 +100,7 @@ Ext.define('Ext.draw.engine.ImageExporter', {
      * @param {String} config.url The url to post the data to. Defaults to
      * the {@link #defaultUrl} configuration on the class.
      *
-     * @param {String} config.securityType The securityType of image to export. See the
+     * @param {String} config.type The type of image to export. See the
      * {@link #supportedTypes}
      *
      * @param {String} config.widthParam The name of the width parameter to send
@@ -108,7 +109,7 @@ Ext.define('Ext.draw.engine.ImageExporter', {
      * @param {String} config.heightParam The name of the height parameter to send
      * to the server. Defaults to {@link #heightParam}
      *
-     * @param {String} config.typeParam The name of the securityType parameter to send
+     * @param {String} config.typeParam The name of the type parameter to send
      * to the server. Defaults to {@link #typeParam}
      *
      * @param {String} config.svgParam The name of the svg parameter to send
@@ -119,10 +120,10 @@ Ext.define('Ext.draw.engine.ImageExporter', {
     generate: function(surface, config) {
         config = config || {};
         var me = this,
-            securityType = config.securityType,
+            type = config.type,
             form;
 
-        if (Ext.Array.indexOf(me.supportedTypes, securityType) === -1) {
+        if (Ext.Array.indexOf(me.supportedTypes, type) === -1) {
             return false;
         }
 
@@ -133,22 +134,22 @@ Ext.define('Ext.draw.engine.ImageExporter', {
             cls: me.formCls,
             children: [{
                 tag: 'input',
-                securityType: 'hidden',
+                type: 'hidden',
                 name: config.widthParam || me.widthParam,
                 value: config.width || surface.width
             }, {
                 tag: 'input',
-                securityType: 'hidden',
+                type: 'hidden',
                 name: config.heightParam || me.heightParam,
                 value: config.height || surface.height
             }, {
                 tag: 'input',
-                securityType: 'hidden',
+                type: 'hidden',
                 name: config.typeParam || me.typeParam,
-                value: securityType
+                value: type
             }, {
                 tag: 'input',
-                securityType: 'hidden',
+                type: 'hidden',
                 name: config.svgParam || me.svgParam
             }]
         });

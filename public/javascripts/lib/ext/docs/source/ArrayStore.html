@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -29,10 +29,10 @@
  *         // reader configs
  *         fields: [
  *            'company',
- *            {name: 'price', securityType: 'float'},
- *            {name: 'change', securityType: 'float'},
- *            {name: 'pctChange', securityType: 'float'},
- *            {name: 'lastChange', securityType: 'date', dateFormat: 'n/j h:ia'}
+ *            {name: 'price', type: 'float'},
+ *            {name: 'change', type: 'float'},
+ *            {name: 'pctChange', type: 'float'},
+ *            {name: 'lastChange', type: 'date', dateFormat: 'n/j h:ia'}
  *         ]
  *     });
  *
@@ -57,18 +57,18 @@ Ext.define('Ext.data.ArrayStore', {
         'Ext.data.reader.Array'
     ],
 
-    constructor: function(config) {
-        config = Ext.apply({
+<span id='Ext-data-ArrayStore-method-constructor'>    constructor: function(config) {
+</span>        config = Ext.apply({
             proxy: {
-                securityType: 'memory',
+                type: 'memory',
                 reader: 'array'
             }
         }, config);
         this.callParent([config]);
     },
 
-    loadData: function(data, append) {
-        if (this.expandData === true) {
+<span id='Ext-data-ArrayStore-method-loadData'>    loadData: function(data, append) {
+</span>        if (this.expandData === true) {
             var r = [],
                 i = 0,
                 ln = data.length;

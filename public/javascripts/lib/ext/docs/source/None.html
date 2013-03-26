@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -24,21 +24,20 @@
 Ext.define('Ext.layout.container.boxOverflow.None', {
     alternateClassName: 'Ext.layout.boxOverflow.None',
     
-    constructor: function(layout, config) {
-        this.layout = layout;
+<span id='Ext-layout-container-boxOverflow-None-method-constructor'>    constructor: function(layout, config) {
+</span>        this.layout = layout;
         Ext.apply(this, config);
     },
 
-    handleOverflow: Ext.emptyFn,
-
-    clearOverflow: Ext.emptyFn,
-
-    beginLayout: Ext.emptyFn,
-    beginLayoutCycle: Ext.emptyFn,
-    finishedLayout: Ext.emptyFn,
-
-    completeLayout: function (ownerContext) {
-        var me = this,
+<span id='Ext-layout-container-boxOverflow-None-method-handleOverflow'>    handleOverflow: Ext.emptyFn,
+</span>
+<span id='Ext-layout-container-boxOverflow-None-method-clearOverflow'>    clearOverflow: Ext.emptyFn,
+</span>
+<span id='Ext-layout-container-boxOverflow-None-method-beginLayout'>    beginLayout: Ext.emptyFn,
+</span><span id='Ext-layout-container-boxOverflow-None-method-beginLayoutCycle'>    beginLayoutCycle: Ext.emptyFn,
+</span>
+<span id='Ext-layout-container-boxOverflow-None-method-calculate'>    calculate: function(ownerContext) {
+</span>        var me = this,
             plan = ownerContext.state.boxPlan,
             overflow;
 
@@ -66,8 +65,27 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
         }
     },
 
-    onRemove: Ext.emptyFn,
+<span id='Ext-layout-container-boxOverflow-None-method-completeLayout'>    completeLayout: Ext.emptyFn,
+</span>
+<span id='Ext-layout-container-boxOverflow-None-method-finishedLayout'>    finishedLayout: function (ownerContext) {
+</span>        var me = this,
+            owner = me.layout.owner,
+            hiddens,
+            hiddenCount;
 
+        // Only count hidden children if someone is interested when the overflow state changes
+        if (owner.hasListeners.overflowchange) {
+            hiddens = owner.query('&gt;[hidden]');
+            hiddenCount = hiddens.length;
+            if (hiddenCount !== me.lastHiddenCount) {
+                owner.fireEvent('overflowchange', me.lastHiddenCount, hiddenCount, hiddens);
+                me.lastHiddenCount = hiddenCount;
+            }
+        }
+    },
+
+<span id='Ext-layout-container-boxOverflow-None-method-onRemove'>    onRemove: Ext.emptyFn,
+</span>
 <span id='Ext-layout-container-boxOverflow-None-method-getItem'>    /**
 </span>     * @private
      * Normalizes an item reference, string id or numerical index into a reference to the item
@@ -78,25 +96,25 @@ Ext.define('Ext.layout.container.boxOverflow.None', {
         return this.layout.owner.getComponent(item);
     },
     
-    getOwnerType: function(owner){
-        var securityType;
+<span id='Ext-layout-container-boxOverflow-None-method-getOwnerType'>    getOwnerType: function(owner){
+</span>        var type;
         if (owner.isToolbar) {
-            securityType = 'toolbar';
+            type = 'toolbar';
         } else if (owner.isTabBar) {
-            securityType = 'tabbar';
+            type = 'tabbar';
         } else if (owner.isMenu) {
-            securityType = 'menu';
+            type = 'menu';
         } else {
-            securityType = owner.getXType();
+            type = owner.getXType();
         }
         
-        return securityType;
+        return type;
     },
 
-    getPrefixConfig: Ext.emptyFn,
-    getSuffixConfig: Ext.emptyFn,
-    getOverflowCls: function() {
-        return '';
+<span id='Ext-layout-container-boxOverflow-None-method-getPrefixConfig'>    getPrefixConfig: Ext.emptyFn,
+</span><span id='Ext-layout-container-boxOverflow-None-method-getSuffixConfig'>    getSuffixConfig: Ext.emptyFn,
+</span><span id='Ext-layout-container-boxOverflow-None-method-getOverflowCls'>    getOverflowCls: function() {
+</span>        return '';
     }
 });</pre>
 </body>

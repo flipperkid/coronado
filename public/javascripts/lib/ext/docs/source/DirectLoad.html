@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -65,7 +65,7 @@
  *
  *     [
  *         {
- *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;getBasicInfo&quot;,&quot;securityType&quot;:&quot;rpc&quot;,&quot;tid&quot;:2,
+ *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;getBasicInfo&quot;,&quot;type&quot;:&quot;rpc&quot;,&quot;tid&quot;:2,
  *             &quot;data&quot;:[34,&quot;bar&quot;] // note the order of the params
  *         }
  *     ]
@@ -74,7 +74,7 @@
  *
  *     [
  *         {
- *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;getBasicInfo&quot;,&quot;securityType&quot;:&quot;rpc&quot;,&quot;tid&quot;:2,
+ *             &quot;action&quot;:&quot;Profile&quot;,&quot;method&quot;:&quot;getBasicInfo&quot;,&quot;type&quot;:&quot;rpc&quot;,&quot;tid&quot;:2,
  *             &quot;result&quot;:{
  *                 &quot;success&quot;:true,
  *                 &quot;data&quot;:{
@@ -92,10 +92,10 @@ Ext.define('Ext.form.action.DirectLoad', {
     alternateClassName: 'Ext.form.Action.DirectLoad',
     alias: 'formaction.directload',
 
-    securityType: 'directload',
-
-    run: function() {
-        var me = this,
+<span id='Ext-form-action-DirectLoad-property-type'>    type: 'directload',
+</span>
+<span id='Ext-form-action-DirectLoad-method-run'>    run: function() {
+</span>        var me = this,
             form = me.form,
             fn = form.api.load,
             method = fn.directCfg.method,
@@ -105,15 +105,15 @@ Ext.define('Ext.form.action.DirectLoad', {
         fn.apply(window, args);
     },
 
-    // Direct actions have already been processed and therefore
-    // we can directly set the result; Direct Actions do not have
+<span id='Ext-form-action-DirectLoad-method-processResponse'>    // Direct actions have already been processed and therefore
+</span>    // we can directly set the result; Direct Actions do not have
     // a this.response property.
     processResponse: function(result) {
         return (this.result = result);
     },
 
-    onComplete: function(data, response) {
-        if (data) {
+<span id='Ext-form-action-DirectLoad-method-onComplete'>    onComplete: function(data, response) {
+</span>        if (data) {
             this.onSuccess(data);
         } else {
             this.onFailure(null);

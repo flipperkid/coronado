@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -35,19 +35,29 @@
  *   - `disable` : The base implementation just sets the plugin's `disabled` flag to `true`
  */
 Ext.define('Ext.AbstractPlugin', {
-    disabled: false,
+<span id='Ext-AbstractPlugin-property-disabled'>    disabled: false,
+</span>
+<span id='Ext-AbstractPlugin-property-isPlugin'>    /**
+</span>     * @property {Boolean} isPlugin
+     * `true` in this class to identify an object as an instantiated Plugin, or subclass thereof.
+     */
+    isPlugin: true,
 
-    constructor: function(config) {
-        this.initialConfig = config;
+<span id='Ext-AbstractPlugin-method-constructor'>    constructor: function(config) {
+</span>        this.pluginConfig = config;
         Ext.apply(this, config);
     },
 
-    clone: function() {
-        return new this.self(this.initialConfig);
+<span id='Ext-AbstractPlugin-method-clonePlugin'>    clonePlugin: function(overrideCfg) {
+</span>        return new this.self(Ext.apply({}, overrideCfg, this.pluginConfig));
+    },
+    
+<span id='Ext-AbstractPlugin-method-setCmp'>    setCmp: function(cmp) {
+</span>        this.cmp = cmp;
     },
 
-    getCmp: function() {
-        return this.cmp;
+<span id='Ext-AbstractPlugin-method-getCmp'>    getCmp: function() {
+</span>        return this.cmp;
     },
 
 <span id='Ext-AbstractPlugin-cfg-pluginId'>    /**

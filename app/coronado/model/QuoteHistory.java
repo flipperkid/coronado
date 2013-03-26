@@ -56,6 +56,10 @@ public class QuoteHistory extends Model {
         return date;
     }
 
+    public static Finder<Long,QuoteHistory> find = new Finder<Long,QuoteHistory>(
+            Long.class, QuoteHistory.class
+    );
+
     public static class ListOfQuoteHistory {
         private final List<QuoteHistory> history;
 

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -102,8 +102,8 @@ Ext.define('Ext.fx.Animator', {
      */
     delay: 0,
 
-    /* private used to track a delayed starting time */
-    delayStart: 0,
+<span id='Ext-fx-Animator-property-delayStart'>    /* private used to track a delayed starting time */
+</span>    delayStart: 0,
 
 <span id='Ext-fx-Animator-cfg-dynamic'>    /**
 </span>     * @cfg {Boolean} dynamic
@@ -140,7 +140,7 @@ Ext.define('Ext.fx.Animator', {
 <span id='Ext-fx-Animator-property-running'>    /**
 </span>     * Flag to determine if the animation has started
      * @property running
-     * @securityType Boolean
+     * @type Boolean
      */
     running: false,
 
@@ -148,7 +148,7 @@ Ext.define('Ext.fx.Animator', {
 </span>     * Flag to determine if the animation is paused. Only set this to true if you need to
      * keep the Anim instance around to be unpaused later; otherwise call {@link #end}.
      * @property paused
-     * @securityType Boolean
+     * @type Boolean
      */
     paused: false,
 
@@ -166,14 +166,14 @@ Ext.define('Ext.fx.Animator', {
 <span id='Ext-fx-Animator-property-currentIteration'>    /**
 </span>     * Current iteration the animation is running.
      * @property currentIteration
-     * @securityType Number
+     * @type Number
      */
     currentIteration: 0,
 
 <span id='Ext-fx-Animator-property-keyframeStep'>    /**
 </span>     * Current keyframe step of the animation.
      * @property keyframeStep
-     * @securityType Number
+     * @type Number
      */
     keyframeStep: 0,
 
@@ -265,7 +265,7 @@ keyframes : {
             attrs = [],
             to = me.to || {},
             duration = me.duration,
-            prevMs, ms, i, ln, pct, anim, nextAnim, attr;
+            prevMs, ms, i, ln, pct, attr;
 
         for (pct in keyframes) {
             if (keyframes.hasOwnProperty(pct) &amp;&amp; me.animKeyFramesRE.test(pct)) {
@@ -304,15 +304,14 @@ keyframes : {
 </span>     * Applies animation to the Ext.fx.target
      * @private
      * @param target
-     * @securityType String/Object
+     * @type String/Object
      */
     applyAnimator: function(target) {
         var me = this,
             anims = [],
             timeline = me.timeline,
-            reverse = me.reverse,
             ln = timeline.length,
-            anim, easing, damper, initial, attrs, lastAttrs, i;
+            anim, easing, damper, attrs, i;
 
         if (me.fireEvent('beforeanimate', me) !== false) {
             for (i = 0; i &lt; ln; i++) {
@@ -416,12 +415,12 @@ keyframes : {
         me.fireEvent('afteranimate', me, me.startTime, new Date() - me.startTime);
     },
     
-    isReady: function() {
-        return this.paused === false &amp;&amp; this.running === false &amp;&amp; this.iterations &gt; 0;
+<span id='Ext-fx-Animator-method-isReady'>    isReady: function() {
+</span>        return this.paused === false &amp;&amp; this.running === false &amp;&amp; this.iterations &gt; 0;
     },
     
-    isRunning: function() {
-        // Explicitly return false, we don't want to be run continuously by the manager
+<span id='Ext-fx-Animator-method-isRunning'>    isRunning: function() {
+</span>        // Explicitly return false, we don't want to be run continuously by the manager
         return false;
     }
 });</pre>

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -35,7 +35,7 @@ Ext.define('Ext.util.Region', {
          * @returns {Ext.util.Region} region
          */
         getRegion: function(el) {
-            return Ext.fly(el).getPageBox(true);
+            return Ext.fly(el).getRegion();
         },
 
 <span id='Ext-util-Region-static-method-from'>        /**
@@ -351,8 +351,8 @@ Ext.define('Ext.util.Region', {
         return this;
     },
 
-    /*
-     * Dump this to an eye-friendly string, great for debugging
+<span id='Ext-util-Region-method-toString'>    /*
+</span>     * Dump this to an eye-friendly string, great for debugging
      * @return {String}
      */
     toString: function() {

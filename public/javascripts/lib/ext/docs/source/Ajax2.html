@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -32,7 +32,7 @@
  *     var store = Ext.create('Ext.data.Store', {
  *         model: 'User',
  *         proxy: {
- *             securityType: 'ajax',
+ *             type: 'ajax',
  *             url : 'users.json'
  *         }
  *     });
@@ -74,7 +74,7 @@
  *
  * # Readers and Writers
  *
- * AjaxProxy can be configured to use any securityType of {@link Ext.data.reader.Reader Reader} to decode the server's response.
+ * AjaxProxy can be configured to use any type of {@link Ext.data.reader.Reader Reader} to decode the server's response.
  * If no Reader is supplied, AjaxProxy will default to using a {@link Ext.data.reader.Json JsonReader}. Reader
  * configuration can be passed in as a simple object, which the Proxy automatically turns into a {@link
  * Ext.data.reader.Reader Reader} instance:
@@ -82,7 +82,7 @@
  *     var proxy = new Ext.data.proxy.Ajax({
  *         model: 'User',
  *         reader: {
- *             securityType: 'xml',
+ *             type: 'xml',
  *             root: 'users'
  *         }
  *     });
@@ -172,7 +172,7 @@
  *         ]
  *     });
  *
- * This is the securityType of object that is generated internally when loading a {@link Ext.data.Store Store} with sorters and
+ * This is the type of object that is generated internally when loading a {@link Ext.data.Store Store} with sorters and
  * filters defined. By default the AjaxProxy will JSON encode the sorters and filters, resulting in something like this
  * (note that the url is escaped before sending the request, but is left unescaped here for clarity):
  *
@@ -237,6 +237,13 @@ Ext.define('Ext.data.proxy.Ajax', {
         update : 'POST',
         destroy: 'POST'
     },
+
+<span id='Ext-data-proxy-Ajax-cfg-binary'>    /**
+</span>     * @cfg {Boolean} binary
+     * True to request binary data from the server.  This feature requires
+     * the use of a binary reader such as {@link Ext.data.amf.Reader AMF Reader}
+     */
+    binary: false,
     
 <span id='Ext-data-proxy-Ajax-cfg-headers'>    /**
 </span>     * @cfg {Object} headers
@@ -245,13 +252,14 @@ Ext.define('Ext.data.proxy.Ajax', {
     
     doRequest: function(operation, callback, scope) {
         var writer  = this.getWriter(),
-            request = this.buildRequest(operation, callback, scope);
+            request = this.buildRequest(operation);
             
         if (operation.allowWrite()) {
             request = writer.write(request);
         }
         
         Ext.apply(request, {
+            binary        : this.binary,
             headers       : this.headers,
             timeout       : this.timeout,
             scope         : this,

@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -26,7 +26,7 @@
  * when creating a full, nested config object for a complete Ext page.&lt;/p&gt;
  * &lt;p&gt;A child Component may be specified simply as a &lt;i&gt;config object&lt;/i&gt;
  * as long as the correct &lt;code&gt;{@link Ext.Component#xtype xtype}&lt;/code&gt; is specified so that if and when the Component
- * needs rendering, the correct securityType can be looked up for lazy instantiation.&lt;/p&gt;
+ * needs rendering, the correct type can be looked up for lazy instantiation.&lt;/p&gt;
  * &lt;p&gt;For a list of all available &lt;code&gt;{@link Ext.Component#xtype xtypes}&lt;/code&gt;, see {@link Ext.Component}.&lt;/p&gt;
  * @singleton
  */
@@ -36,8 +36,8 @@ Ext.define('Ext.ComponentManager', {
     
     singleton: true,
     
-    typeName: 'xtype',
-    
+<span id='Ext-ComponentManager-property-typeName'>    typeName: 'xtype',
+</span>    
 <span id='Ext-ComponentManager-method-create'>    /**
 </span>     * Creates a new Component from the specified config object using the
      * config object's xtype to determine the class to instantiate.
@@ -56,11 +56,26 @@ Ext.define('Ext.ComponentManager', {
         return Ext.widget(component.xtype || defaultType, component);
     },
 
-    registerType: function(securityType, cls) {
-        this.types[securityType] = cls;
-        cls[this.typeName] = securityType;
-        cls.prototype[this.typeName] = securityType;
+<span id='Ext-ComponentManager-method-registerType'>    registerType: function(type, cls) {
+</span>        this.types[type] = cls;
+        cls[this.typeName] = type;
+        cls.prototype[this.typeName] = type;
     }
-});</pre>
+},
+function () {
+<span id='Ext-method-getCmp'>    /**
+</span>     * This is shorthand reference to {@link Ext.ComponentManager#get}.
+     * Looks up an existing {@link Ext.Component Component} by {@link Ext.Component#id id}
+     *
+     * @param {String} id The component {@link Ext.Component#id id}
+     * @return Ext.Component The Component, `undefined` if not found, or `null` if a
+     * Class was found.
+     * @member Ext
+    */
+    Ext.getCmp = function(id) {
+        return Ext.ComponentManager.get(id);
+    };
+});
+</pre>
 </body>
 </html>

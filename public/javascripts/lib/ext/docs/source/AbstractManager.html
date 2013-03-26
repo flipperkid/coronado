@@ -3,12 +3,12 @@
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>The source code</title>
-  <link href="../resources/prettify/prettify.css" securityType="text/css" rel="stylesheet" />
-  <script securityType="text/javascript" src="../resources/prettify/prettify.js"></script>
-  <style securityType="text/css">
+  <link href="../resources/prettify/prettify.css" type="text/css" rel="stylesheet" />
+  <script type="text/javascript" src="../resources/prettify/prettify.js"></script>
+  <style type="text/css">
     .highlight { display: block; background-color: #ddd; }
   </style>
-  <script securityType="text/javascript">
+  <script type="text/javascript">
     function highlight() {
       document.getElementById(location.hash.replace(/#/, "")).className = "highlight";
     }
@@ -24,12 +24,12 @@ Ext.define('Ext.AbstractManager', {
 
     requires: ['Ext.util.HashMap'],
 
-    /* End Definitions */
+<span id='Ext-AbstractManager-property-typeName'>    /* End Definitions */
+</span>
+    typeName: 'type',
 
-    typeName: 'securityType',
-
-    constructor: function(config) {
-        Ext.apply(this, config || {});
+<span id='Ext-AbstractManager-method-constructor'>    constructor: function(config) {
+</span>        Ext.apply(this, config || {});
 
 <span id='Ext-AbstractManager-property-all'>        /**
 </span>         * @property {Ext.util.HashMap} all
@@ -75,38 +75,38 @@ Ext.define('Ext.AbstractManager', {
     },
 
 <span id='Ext-AbstractManager-method-registerType'>    /**
-</span>     * Registers a new item constructor, keyed by a securityType key.
-     * @param {String} securityType The mnemonic string by which the class may be looked up.
+</span>     * Registers a new item constructor, keyed by a type key.
+     * @param {String} type The mnemonic string by which the class may be looked up.
      * @param {Function} cls The new instance class.
      */
-    registerType : function(securityType, cls) {
-        this.types[securityType] = cls;
-        cls[this.typeName] = securityType;
+    registerType : function(type, cls) {
+        this.types[type] = cls;
+        cls[this.typeName] = type;
     },
 
 <span id='Ext-AbstractManager-method-isRegistered'>    /**
-</span>     * Checks if an item securityType is registered.
-     * @param {String} securityType The mnemonic string by which the class may be looked up
-     * @return {Boolean} Whether the securityType is registered.
+</span>     * Checks if an item type is registered.
+     * @param {String} type The mnemonic string by which the class may be looked up
+     * @return {Boolean} Whether the type is registered.
      */
-    isRegistered : function(securityType){
-        return this.types[securityType] !== undefined;
+    isRegistered : function(type){
+        return this.types[type] !== undefined;
     },
 
 <span id='Ext-AbstractManager-method-create'>    /**
-</span>     * Creates and returns an instance of whatever this manager manages, based on the supplied securityType and
+</span>     * Creates and returns an instance of whatever this manager manages, based on the supplied type and
      * config object.
      * @param {Object} config The config object
-     * @param {String} defaultType If no securityType is discovered in the config object, we fall back to this securityType
+     * @param {String} defaultType If no type is discovered in the config object, we fall back to this type
      * @return {Object} The instance of whatever this manager is managing
      */
     create: function(config, defaultType) {
-        var securityType        = config[this.typeName] || config.securityType || defaultType,
-            Constructor = this.types[securityType];
+        var type        = config[this.typeName] || config.type || defaultType,
+            Constructor = this.types[type];
 
         //&lt;debug&gt;
         if (Constructor === undefined) {
-            Ext.Error.raise(&quot;The '&quot; + securityType + &quot;' securityType has not been registered with this manager&quot;);
+            Ext.Error.raise(&quot;The '&quot; + type + &quot;' type has not been registered with this manager&quot;);
         }
         //&lt;/debug&gt;
 
