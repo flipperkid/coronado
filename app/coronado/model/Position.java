@@ -5,6 +5,7 @@ import coronado.api.model.StockResponse;
 import coronado.model.api.AccountHistoryResponse;
 import coronado.api.model.AccountHoldingsResponse;
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.joda.time.DateTime;
 import play.Logger;
 import play.db.ebean.Model;
 
@@ -156,7 +157,7 @@ public class Position extends Model {
 
         final double partialQuantity = Math.min(getShares(), holding.getQuantity());
         final double closeValue = holding.getMarketValue() * partialQuantity/holding.getQuantity();
-        close(closeValue, new Date());
+        close(closeValue, new DateTime().toDateMidnight().toDate());
         return partialQuantity;
     }
 
@@ -165,7 +166,7 @@ public class Position extends Model {
             return;
         }
         final double value = quote.getPrice().doubleValue();
-        close(value*getShares(), new Date());
+        close(value*getShares(), new DateTime().toDateMidnight().toDate());
     }
 
     // TODO Issue will occur if the position has already been closed.

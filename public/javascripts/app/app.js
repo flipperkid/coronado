@@ -24,7 +24,7 @@ Ext.define('Position', {
         {name: 'costBasis', type: 'decimal'},
         {name: 'closeValue', type: 'decimal'},
         {name: 'profitLoss', type: 'decimal', persist: false, convert: function(value, record) {
-            return value || record.get('closeValue') - record.get('costBasis');
+            return value !== '' ? value : record.get('closeValue') - record.get('costBasis');
         }},
         {name: 'shares', type: 'decimal'},
         {name: 'closed', type: 'boolean'},
@@ -35,17 +35,17 @@ Ext.define('Position', {
             return Ext.Date.format(value, 'c');
         }},
         {name: 'termLength', type: 'int', persist: false, convert: function(value, record) {
-            return value || daysBetween(record.get('openDate'), record.get('closeDate')) + 1;
+            return value !== '' ? value : daysBetween(record.get('openDate'), record.get('closeDate')) + 1;
         }},
         {name: 'symbol', type: 'string'},
         {name: 'cusip', type: 'string'},
         {name: 'description', type: 'string'},
         {name: 'securityType', type: 'string'},
         {name: 'return', type: 'decimal', persist: false, convert: function(value, record) {
-            return value || record.get('profitLoss')/record.get('costBasis');
+            return value !== '' ? value : record.get('profitLoss')/record.get('costBasis');
         }},
         {name: 'annualizedReturn', type: 'decimal', persist: false, convert: function(value, record) {
-            return value || Math.pow(1 + record.get('return'), 365/record.get('termLength'));
+            return value !== '' ? value : Math.pow(1 + record.get('return'), 365/record.get('termLength'));
         }}
     ],
     hasMany: {model: 'Quote', name: 'quotes'},
@@ -315,24 +315,42 @@ var addTagged = function(selected, symbolText) {
 var combinePositionPerformance = function(positions, includeSymbol) {
     var newPositionPerf = new Position();
     newPositionPerf.parents = positions.slice(0);
+
+    var validDays = [];
+    positions.forEach(function(cPos) {
+        cPos.quotes().each(function(cQuote) {
+            if (!validDays.some(function(vDate) {
+                return Ext.Date.isEqual(vDate, cQuote.get('date'));
+            })) {
+                validDays.push(cQuote.get('date'));
+            }
+        });
+    });
+    var hasHistoricalQuotes = validDays.length > 0;
+
     var costBasis = 0.0;
     var profitLoss = 0.0;
-    var startDate = null;
-    var endDate = null;
+    var startTimestamp = null;
+    var endTimestamp = null;
     positions.forEach(function(cSel) {
         costBasis += cSel.get('costBasis');
         profitLoss += cSel.get('profitLoss');
         var cStartDate = Ext.Date.format(cSel.get('openDate'), 'U');
         var cEndDate = Ext.Date.format(cSel.get('closeDate'), 'U');
-        if (startDate === null) {
-            startDate = cStartDate;
+        if (startTimestamp === null) {
+            startTimestamp = cStartDate;
         } else {
-            startDate = Math.min(cStartDate, startDate);
+            startTimestamp = Math.min(cStartDate, startTimestamp);
         }
-        if (endDate === null) {
-            endDate = cEndDate;
+        if (endTimestamp === null) {
+            endTimestamp = cEndDate;
         } else {
-            endDate = Math.max(cEndDate, endDate);
+            endTimestamp = Math.max(cEndDate, endTimestamp);
+        }
+        if (!validDays.some(function(vDate) {
+            return Ext.Date.isEqual(vDate, cSel.get('closeDate'));
+        })) {
+            validDays.push(cSel.get('closeDate'));
         }
     });
     newPositionPerf.set('costBasis', costBasis);
@@ -348,31 +366,81 @@ var combinePositionPerformance = function(positions, includeSymbol) {
         newPositionPerf.set('symbol', includeSymbol);
     }
 
+    var today = Ext.Date.parse(Ext.Date.now(), 'time');
+    Ext.Date.clearTime(today);
+
     var compoundReturnRate = 1.0;
-    var cDate = Ext.Date.parse(startDate, 'U');
-    var now = Ext.Date.now();
-    while (Ext.Date.format(cDate, 'time') < now) {
+    var cDate = Ext.Date.parse(startTimestamp, 'U');
+    var startDate = cDate;
+    var endDate = Ext.Date.parse(endTimestamp, 'U');
+    var lastDate = null;
+    while (Ext.Date.format(cDate, 'time') <= Ext.Date.format(today, 'time')) {
+        if(hasHistoricalQuotes && !validDays.some(function(vDate) {
+            return Ext.Date.isEqual(vDate, cDate);
+        })) {
+            cDate = Ext.Date.add(cDate, Ext.Date.DAY, 1);
+            continue;
+        }
+
         var aggrReturn = 0.0;
         var aggrCostBasis = 0.0;
         positions.forEach(function(cSel) {
-            if(Ext.Date.between(cDate, cSel.get('openDate'), cSel.get('closeDate'))) {
-                var priorTerm = daysBetween(cSel.get('openDate'), cDate);
+            if(!Ext.Date.between(cDate, cSel.get('openDate'), cSel.get('closeDate'))) {
+                return;
+            }
+
+            var quotes = cSel.quotes();
+            if(quotes.count() > 0) {
+                if(Ext.Date.isEqual(cSel.get('openDate'), cDate)) {
+                    aggrCostBasis += cSel.get('costBasis');
+                } else {
+                    var quoteIdx = quotes.findBy(findFn(lastDate));
+                    if(quoteIdx === -1) {
+                        //console.log("Error no quote found for " + cSel.get('symbol') + " on " + lastDate);
+                        return;
+                    }
+                    var pQuote = quotes.getAt(quoteIdx);
+                    aggrCostBasis += pQuote.get('close') * cSel.get('shares');
+                }
+                if(Ext.Date.isEqual(cSel.get('closeDate'), cDate)) {
+                    aggrReturn += cSel.get('closeValue');
+                } else {
+                    var quoteIdx = quotes.findBy(findFn(cDate));
+                    if(quoteIdx === -1) {
+                        //console.log("Error no quote found for " + cSel.get('symbol') + " on " + cDate);
+                        return;
+                    }
+                    var cQuote = quotes.getAt(quoteIdx);
+                    aggrReturn += cQuote.get('close') * cSel.get('shares');
+                }
+            } else {
+                // Old way not using timeseries data for options
+                var priorTerm = daysBetween(cSel.get('openDate'), lastDate);
+                var currTerm = daysBetween(lastDate, cDate);
+                if(Ext.Date.isEqual(cSel.get('openDate'), cDate)) {
+                    priorTerm = 0;
+                    currTerm = 1;
+                }
                 var adjCostBasis = cSel.get('costBasis') * Math.pow(cSel.get('annualizedReturn'), priorTerm/365.0);
                 aggrCostBasis += adjCostBasis;
-                aggrReturn += adjCostBasis * Math.pow(cSel.get('annualizedReturn'), 1/365.0);
+                aggrReturn += adjCostBasis * Math.pow(cSel.get('annualizedReturn'), currTerm/365.0);
             }
         });
         if(aggrCostBasis > 0) {
             compoundReturnRate *= aggrReturn/aggrCostBasis;
         }
-        if(newPositionPerf.get('symbol') === 'BA') {
-            console.log(aggrCostBasis + ' ' + aggrReturn);
-        }
-        cDate = Ext.Date.add(cDate, Ext.Date.DAY, 1)
+        lastDate = cDate;
+        cDate = Ext.Date.add(cDate, Ext.Date.DAY, 1);
     };
-    var totalTerm = 1 + daysBetween(Ext.Date.parse(startDate, 'U'), Ext.Date.parse(endDate, 'U'));
+    var totalTerm = 1 + daysBetween(startDate, endDate);
     newPositionPerf.set('annualizedReturn', Math.pow(compoundReturnRate, 365.0/totalTerm));
     return newPositionPerf;
+};
+
+var findFn = function(match) {
+    return function(currQuote) {
+        return Ext.Date.isEqual(currQuote.get('date'), match);
+    };
 };
 
 var daysBetween = function(startDate, endDate) {
