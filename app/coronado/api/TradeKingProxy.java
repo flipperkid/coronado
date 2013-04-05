@@ -135,9 +135,25 @@ public class TradeKingProxy {
         final SyncRequest request = new SyncRequest(url, client);
 
         final String response = request.send();
-        AccountHistoryResponse.ListOfAccountHistories accountHistories = jsonDeserializer
-                .fromJson(response,
-                        AccountHistoryResponse.ListOfAccountHistories.class);
+        AccountHistoryResponse.ListOfAccountHistories accountHistories = null;
+        try {
+            accountHistories = jsonDeserializer
+                    .fromJson(response,
+                            AccountHistoryResponse.ListOfAccountHistories.class);
+        } catch (NullPointerException npe) {
+            Logger.debug(response);
+            Logger.error(npe.getMessage(), npe);
+
+            final String currMonthUrl = "accounts/" + keys.ACCOUNT_NUMBER + "/history.json?range=current_month&transactions=all";
+            final SyncRequest currMonthRequest = new SyncRequest(currMonthUrl, client);
+
+            final String currMonthResponse = currMonthRequest.send();
+            accountHistories = jsonDeserializer
+                    .fromJson(currMonthResponse,
+                            AccountHistoryResponse.ListOfAccountHistories.class);
+
+        }
+
         return accountHistories.get();
     }
 

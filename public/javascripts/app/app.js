@@ -396,7 +396,7 @@ var combinePositionPerformance = function(positions, includeSymbol) {
                 } else {
                     var quoteIdx = quotes.findBy(findFn(lastDate));
                     if(quoteIdx === -1) {
-                        //console.log("Error no quote found for " + cSel.get('symbol') + " on " + lastDate);
+                        console.log("Error no quote found for last date " + cSel.get('symbol') + " on " + lastDate);
                         return;
                     }
                     var pQuote = quotes.getAt(quoteIdx);
@@ -407,7 +407,7 @@ var combinePositionPerformance = function(positions, includeSymbol) {
                 } else {
                     var quoteIdx = quotes.findBy(findFn(cDate));
                     if(quoteIdx === -1) {
-                        //console.log("Error no quote found for " + cSel.get('symbol') + " on " + cDate);
+                        console.log("Error no quote found for current date " + cSel.get('symbol') + " on " + cDate);
                         return;
                     }
                     var cQuote = quotes.getAt(quoteIdx);

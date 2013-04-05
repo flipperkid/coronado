@@ -97,8 +97,42 @@ public class Position extends Model {
     public void loadQuotes() {
         if("CS".equals(getSecurityType())) {
             quotes = Lists.newArrayList();
+            List<Bookkeeping> bookkeepings = Bookkeeping.find.orderBy("date").findList();
+            Date startDate = getOpenDate();
+            for(Bookkeeping bookkeeping : bookkeepings) {
+                final Date bookkeepingDate = bookkeeping.getDate();
+                AbstractResolution resolution = bookkeeping.getResolution();
+                if(!(resolution instanceof SplitResolution)) {
+                    if(bookkeeping.getCusip().equals(getCusip())) {
+                        Logger.error("Unresolved bookkeeping: " + bookkeeping.getCusip() + " " + bookkeeping.getSymbol());
+                    }
+                    continue;
+                }
+                SplitResolution splitResolution = (SplitResolution)resolution;
+
+                if((bookkeeping.getCusip().equals(getCusip()) || splitResolution.getParentCusip().equals(getCusip())) &&
+                        bookkeepingDate.after(getOpenDate()) && bookkeepingDate.before(getCloseDate())) {
+                    if(bookkeepingDate.before(startDate)) {
+                        Logger.error("Bookkeepings must have taken place out of order, skipping some " +
+                                bookkeeping.getCusip() + " " + bookkeeping.getSymbol());
+                        continue;
+                    }
+                    List<QuoteHistory> quotesToAdd = QuoteHistory.find.where().eq("symbol",
+                            Position.getSymbolFromCusip(splitResolution.getParentCusip()))
+                            .between("date", startDate, bookkeepingDate).orderBy("date").findList();
+                    startDate = bookkeepingDate;
+                    double splitRatio = splitResolution.getSplitRatio();
+                    if(!splitResolution.getParentCusip().equals(getCusip())) {
+                        splitRatio = splitResolution.getSplitRatio() / (splitResolution.getSplitRatio() - 1);
+                    }
+                    for(QuoteHistory quoteToAdd : quotesToAdd) {
+                        quoteToAdd.split(splitRatio);
+                    }
+                    quotes.addAll(quotesToAdd);
+                }
+            }
             quotes.addAll(QuoteHistory.find.where().eq("symbol", getSymbol())
-                    .between("date", getOpenDate(), getCloseDate()).orderBy("date").findList());
+                    .between("date", startDate, getCloseDate()).orderBy("date").findList());
         }
     }
 
@@ -173,7 +207,7 @@ public class Position extends Model {
     public Position split(final String outputCusip, final double splitRatio) {
         if(outputCusip.equals(this.getCusip())) {
             shares *= splitRatio;
-            return null;
+            return null ;
         }
         final double newShares = this.getShares()*splitRatio - this.getShares();
         final double newCostBasis = this.getCostBasis() * newShares / (this.getShares()*splitRatio);
@@ -192,4 +226,17 @@ public class Position extends Model {
     public static Finder<Long,Position> find = new Finder<Long,Position>(
             Long.class, Position.class
     );
+
+    public static String getSymbolFromCusip(final String cusip) {
+        List<Position> matchingSymbols = find.where().eq("cusip", cusip).findList();
+        if(matchingSymbols.size() == 0) {
+            return null;
+        }
+        try {
+            return matchingSymbols.get(0).getQuoteSymbol();
+        } catch (ParseException e) {
+            Logger.error(e.getMessage(), e);
+        }
+        return null;
+    }
 };

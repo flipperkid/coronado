@@ -48,12 +48,19 @@ public class QuoteHistory extends Model {
         return symbol;
     }
 
-    public void setSymbol(String symbol) {
+    public void setSymbol(final String symbol) {
         this.symbol = symbol;
     }
 
     public Date getDate() {
         return date;
+    }
+
+    public void split(final double splitRatio) {
+        open /= splitRatio;
+        close /= splitRatio;
+        high /= splitRatio;
+        low /= splitRatio;
     }
 
     public static Finder<Long,QuoteHistory> find = new Finder<Long,QuoteHistory>(
