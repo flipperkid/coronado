@@ -18,6 +18,17 @@ Ext.define('Quote', {
     ]
 });
 
+Ext.define('TimeseriesValue', {
+    extend: 'Ext.data.Model',
+    fields: [
+        {name: 'closeValue', type: 'decimal'},
+        {name: 'aggrGain', type: 'decimal'},
+        {name: 'date', type: 'date', dateFormat: 'time', serialize: function(value, record) {
+            return Ext.Date.format(value, 'c');
+        }}
+    ]
+});
+
 Ext.define('Position', {
     extend: 'Ext.data.Model',
     fields: [
@@ -48,7 +59,10 @@ Ext.define('Position', {
             return value !== '' ? value : Math.pow(1 + record.get('return'), 365/record.get('termLength'));
         }}
     ],
-    hasMany: {model: 'Quote', name: 'quotes'},
+    hasMany: [
+        {model: 'Quote', name: 'quotes', persist: false},
+        {model: 'TimeseriesValue', name: 'timeseriesData', persist: false}
+    ],
     proxy: {
         type: 'ajax',
         url: '/positions',
@@ -134,12 +148,67 @@ var loadPerformance = function() {
             flex: 1
         }
     });
+    var rightCol = Ext.create('Ext.container.Container', {
+        layout: 'vbox',
+        defaults: {
+            width: '100%'
+        }
+    });
 
     aggrPerfStore = createAggrPerfStore();
     taggedPerfStore = createTagStore();
     performanceStore = createPositionStore();
     createBookkeepingWindow();
     bookkeepingStore = createBookkeepingStore();
+
+    // Visualization
+    timeseriesChart = Ext.create('Ext.chart.Chart', {
+        height: 300,
+        animate: true,
+        store: Ext.create('Ext.data.Store', {
+            model: 'TimeseriesValue',
+            proxy: {
+                type: 'memory'
+            }
+        }),
+        axes: [{
+            type: 'Numeric',
+            position: 'left',
+            fields: ['aggrGain'],
+            label: {
+                renderer: Ext.util.Format.numberRenderer('0,0.00')
+            },
+            title: 'Aggregate Gain',
+            grid: true
+        }, {
+            type: 'Time',
+            position: 'bottom',
+            fields: ['date'],
+            title: 'Date',
+            dateFormat: 'n-j-y',
+            step: [Ext.Date.MONTH, 3]
+        }],
+        series: [{
+            type: 'line',
+            highlight: {
+                size: 7,
+                radius: 7
+            },
+            axis: 'bottom',
+            xField: 'date',
+            yField: 'aggrGain',
+            showMarkers: false,
+            tips: {
+                trackMouse: true,
+                width: 200,
+                height: 28,
+                renderer: function(storeItem, item) {
+                    this.setTitle(Ext.Date.format(storeItem.get('date'), 'n-j-y') + ': ' +
+                        Ext.util.Format.numberRenderer('0.00')(storeItem.get('aggrGain')));
+                }
+            }
+        }]
+    });
 
     var perfGrid = Ext.create('Ext.grid.Panel', {
         title: 'Performance',
@@ -173,7 +242,6 @@ var loadPerformance = function() {
         },{
             text: 'Close Date', dataIndex: 'closeDate', flex: 2, xtype:'datecolumn', format:'n-j-y', hidden: true
         }],
-        width: '60%',
         selModel: {
             mode: 'SIMPLE'
         }
@@ -200,8 +268,7 @@ var loadPerformance = function() {
         },{
             text: 'Profit Loss', dataIndex: 'profitLoss', flex: 2,
                 renderer: Ext.util.Format.usMoney
-        }],
-        width: '40%'
+        }]
     });
 
 
@@ -238,6 +305,9 @@ var loadPerformance = function() {
             });
             perfGrid.fireEvent('selectionchange', null, record.positions().getRange());
         }
+
+        // Update visualization
+        timeseriesChart.bindStore(record.aggregatePerformance.timeseriesData());
     });
 
     // --- Buttons ---
@@ -274,10 +344,13 @@ var loadPerformance = function() {
             taggedPerfStore.remove(aggrGrid.getSelectionModel().getSelection());
         }
     }));
+
     bodyDiv.add(btnDiv);
     bodyDiv.add(viewDiv);
     viewDiv.add(perfGrid);
-    viewDiv.add(aggrGrid);
+    rightCol.add(aggrGrid);
+    rightCol.add(timeseriesChart);
+    viewDiv.add(rightCol);
 };
 
 // --- Methods ---
@@ -374,7 +447,9 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     var startDate = cDate;
     var endDate = Ext.Date.parse(endTimestamp, 'U');
     var lastDate = null;
-    while (Ext.Date.format(cDate, 'time') <= Ext.Date.format(today, 'time')) {
+    var lastAggrGain = 0;
+    console.log(cDate + ' ' + newPositionPerf.get('symbol'));
+    while (startTimestamp !== null && Ext.Date.format(cDate, 'time') <= Ext.Date.format(today, 'time')) {
         if(hasHistoricalQuotes && !validDays.some(function(vDate) {
             return Ext.Date.isEqual(vDate, cDate);
         })) {
@@ -415,9 +490,9 @@ var combinePositionPerformance = function(positions, includeSymbol) {
                 }
             } else {
                 // Old way not using timeseries data for options
-                var priorTerm = daysBetween(cSel.get('openDate'), lastDate);
+                var priorTerm = daysBetween(cSel.get('openDate'), lastDate) + 1;
                 var currTerm = daysBetween(lastDate, cDate);
-                if(Ext.Date.isEqual(cSel.get('openDate'), cDate)) {
+                if (Ext.Date.isEqual(cSel.get('openDate'), cDate)) {
                     priorTerm = 0;
                     currTerm = 1;
                 }
@@ -429,6 +504,13 @@ var combinePositionPerformance = function(positions, includeSymbol) {
         if(aggrCostBasis > 0) {
             compoundReturnRate *= aggrReturn/aggrCostBasis;
         }
+        var aggrGain = lastAggrGain + aggrReturn - aggrCostBasis;
+        newPositionPerf.timeseriesData().add({
+            'date': cDate,
+            'closeValue': aggrReturn,
+            'aggrGain': aggrGain
+        });
+        lastAggrGain = aggrGain;
         lastDate = cDate;
         cDate = Ext.Date.add(cDate, Ext.Date.DAY, 1);
     };
@@ -535,7 +617,7 @@ var defineOverrides = function() {
             var assocLen = record.associations.getCount();
             for ( var i = 0; i < assocLen; i++) {
                 var association = record.associations.getAt(i);
-                if (association.type == 'hasMany') {
+                if (association.type == 'hasMany' && association.persist !== false) {
                     data[association.name] = [];
                     var childStore = record[association.name]();
 
@@ -548,7 +630,7 @@ var defineOverrides = function() {
                         }
                     };
                     childStore.each(processChild, this);
-                } else if (association.type == 'hasOne') {
+                } else if (association.type == 'hasOne' &&   association.persist !== false) {
                     var childRecord = record[association.instanceName];
                     var childData = this.getRecordData.call(this, childRecord, operation);
                     if (childRecord.dirty | childRecord.phantom | (childData != null)) {
