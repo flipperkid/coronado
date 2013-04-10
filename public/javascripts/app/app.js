@@ -23,6 +23,7 @@ Ext.define('TimeseriesValue', {
     fields: [
         {name: 'closeValue', type: 'decimal'},
         {name: 'aggrGain', type: 'decimal'},
+        {name: 'annualizedReturn', type: 'decimal'},
         {name: 'date', type: 'date', dateFormat: 'time', serialize: function(value, record) {
             return Ext.Date.format(value, 'c');
         }}
@@ -174,12 +175,15 @@ var loadPerformance = function() {
         axes: [{
             type: 'Numeric',
             position: 'left',
-            fields: ['aggrGain'],
+            fields: ['annualizedReturn'],
             label: {
                 renderer: Ext.util.Format.numberRenderer('0,0.00')
             },
-            title: 'Aggregate Gain',
-            grid: true
+            title: 'Annualized Return',
+            grid: true,
+            minimum: -10.0,
+            maximum: 25.0,
+            constrain: false
         }, {
             type: 'Time',
             position: 'bottom',
@@ -196,7 +200,7 @@ var loadPerformance = function() {
             },
             axis: 'bottom',
             xField: 'date',
-            yField: 'aggrGain',
+            yField: 'annualizedReturn',
             showMarkers: false,
             tips: {
                 trackMouse: true,
@@ -204,7 +208,7 @@ var loadPerformance = function() {
                 height: 28,
                 renderer: function(storeItem, item) {
                     this.setTitle(Ext.Date.format(storeItem.get('date'), 'n-j-y') + ': ' +
-                        Ext.util.Format.numberRenderer('0.00')(storeItem.get('aggrGain')));
+                        Ext.util.Format.numberRenderer('0.000')(storeItem.get('annualizedReturn'))+'%');
                 }
             }
         }]
@@ -448,7 +452,6 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     var endDate = Ext.Date.parse(endTimestamp, 'U');
     var lastDate = null;
     var lastAggrGain = 0;
-    console.log(cDate + ' ' + newPositionPerf.get('symbol'));
     while (startTimestamp !== null && Ext.Date.format(cDate, 'time') <= Ext.Date.format(today, 'time')) {
         if(hasHistoricalQuotes && !validDays.some(function(vDate) {
             return Ext.Date.isEqual(vDate, cDate);
@@ -503,14 +506,16 @@ var combinePositionPerformance = function(positions, includeSymbol) {
         });
         if(aggrCostBasis > 0) {
             compoundReturnRate *= aggrReturn/aggrCostBasis;
+            var aggrGain = lastAggrGain + aggrReturn - aggrCostBasis;
+            var cAnnualizedReturn = (Math.pow(compoundReturnRate, 365.0/(1 + daysBetween(startDate, cDate))) - 1)*100;
+            newPositionPerf.timeseriesData().add({
+                'date': cDate,
+                'closeValue': aggrReturn,
+                'aggrGain': aggrGain,
+                'annualizedReturn': cAnnualizedReturn
+            });
+            lastAggrGain = aggrGain;
         }
-        var aggrGain = lastAggrGain + aggrReturn - aggrCostBasis;
-        newPositionPerf.timeseriesData().add({
-            'date': cDate,
-            'closeValue': aggrReturn,
-            'aggrGain': aggrGain
-        });
-        lastAggrGain = aggrGain;
         lastDate = cDate;
         cDate = Ext.Date.add(cDate, Ext.Date.DAY, 1);
     };
