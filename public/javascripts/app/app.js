@@ -23,8 +23,20 @@ Ext.define('TimeseriesValue', {
     fields: [
         {name: 'closeValue', type: 'decimal'},
         {name: 'aggrGain', type: 'decimal'},
-        {name: 'annualizedReturn', type: 'decimal'},
+        {name: 'returnRate', type: 'decimal'},
+        {name: 'returnPct', type: 'decimal', convert: function(value, record) {
+            return (record.get('returnRate') / (value !== '' ? value.get('returnRate') : 1) - 1)*100;
+        }},
+        {name: 'annualizedReturn', type: 'decimal', convert: function(value, record) {
+            var currDate = record.get('date');
+            var daysElapsed = value !== '' ? daysBetween(value.get('date'), currDate) :
+                (1 + daysBetween(record.get('startDate'), currDate));
+            return (Math.pow(record.get('returnRate'), 365.0 / daysElapsed) - 1)*100;
+        }},
         {name: 'date', type: 'date', dateFormat: 'time', serialize: function(value, record) {
+            return Ext.Date.format(value, 'c');
+        }},
+        {name: 'startDate', type: 'date', dateFormat: 'time', serialize: function(value, record) {
             return Ext.Date.format(value, 'c');
         }}
     ]
@@ -163,7 +175,7 @@ var loadPerformance = function() {
     bookkeepingStore = createBookkeepingStore();
 
     // Visualization
-    timeseriesChart = Ext.create('Ext.chart.Chart', {
+    annualizedReturnChart = Ext.create('Ext.chart.Chart', {
         height: 300,
         animate: true,
         store: Ext.create('Ext.data.Store', {
@@ -214,6 +226,57 @@ var loadPerformance = function() {
         }]
     });
 
+    aggrReturnChart = Ext.create('Ext.chart.Chart', {
+        height: 300,
+        animate: true,
+        store: Ext.create('Ext.data.Store', {
+            model: 'TimeseriesValue',
+            proxy: {
+                type: 'memory'
+            }
+        }),
+        axes: [{
+            type: 'Numeric',
+            position: 'left',
+            fields: ['returnPct'],
+            label: {
+                renderer: Ext.util.Format.numberRenderer('0,0.00')
+            },
+            title: 'Return (%)',
+            grid: true,
+            constrain: false
+        }, {
+            type: 'Time',
+            position: 'bottom',
+            fields: ['date'],
+            title: 'Date',
+            dateFormat: 'n-j-y',
+            step: [Ext.Date.MONTH, 3]
+        }],
+        series: [{
+            type: 'line',
+            highlight: {
+                size: 7,
+                radius: 7
+            },
+            axis: 'bottom',
+            xField: 'date',
+            yField: 'returnPct',
+            showMarkers: false,
+            tips: {
+                trackMouse: true,
+                width: 200,
+                height: 28,
+                renderer: function(storeItem, item) {
+                    this.setTitle(Ext.Date.format(storeItem.get('date'), 'n-j-y') + ': ' +
+                        Ext.util.Format.numberRenderer('0.000')(storeItem.get('returnPct'))+'%');
+                }
+            }
+        }]
+    });
+
+
+    // Grids
     var perfGrid = Ext.create('Ext.grid.Panel', {
         title: 'Performance',
         store: aggrPerfStore,
@@ -311,7 +374,13 @@ var loadPerformance = function() {
         }
 
         // Update visualization
-        timeseriesChart.bindStore(record.aggregatePerformance.timeseriesData());
+        var chartOriginRecord = record.aggregatePerformance.timeseriesData().first();
+        record.aggregatePerformance.timeseriesData().each(function(cRecord) {
+            cRecord.set('annualizedReturn', chartOriginRecord);
+            cRecord.set('returnPct', chartOriginRecord);
+        });
+        annualizedReturnChart.bindStore(record.aggregatePerformance.timeseriesData());
+        aggrReturnChart.bindStore(record.aggregatePerformance.timeseriesData());
     });
 
     // --- Buttons ---
@@ -353,7 +422,8 @@ var loadPerformance = function() {
     bodyDiv.add(viewDiv);
     viewDiv.add(perfGrid);
     rightCol.add(aggrGrid);
-    rightCol.add(timeseriesChart);
+    rightCol.add(aggrReturnChart);
+    rightCol.add(annualizedReturnChart);
     viewDiv.add(rightCol);
 };
 
@@ -449,6 +519,7 @@ var combinePositionPerformance = function(positions, includeSymbol) {
     var compoundReturnRate = 1.0;
     var cDate = Ext.Date.parse(startTimestamp, 'U');
     var startDate = cDate;
+    var startCostBasis = null;
     var endDate = Ext.Date.parse(endTimestamp, 'U');
     var lastDate = null;
     var lastAggrGain = 0;
@@ -460,7 +531,7 @@ var combinePositionPerformance = function(positions, includeSymbol) {
             continue;
         }
 
-        var aggrReturn = 0.0;
+        var aggrValue = 0.0;
         var aggrCostBasis = 0.0;
         positions.forEach(function(cSel) {
             if(!Ext.Date.between(cDate, cSel.get('openDate'), cSel.get('closeDate'))) {
@@ -481,7 +552,7 @@ var combinePositionPerformance = function(positions, includeSymbol) {
                     aggrCostBasis += pQuote.get('close') * cSel.get('shares');
                 }
                 if(Ext.Date.isEqual(cSel.get('closeDate'), cDate)) {
-                    aggrReturn += cSel.get('closeValue');
+                    aggrValue += cSel.get('closeValue');
                 } else {
                     var quoteIdx = quotes.findBy(findFn(cDate));
                     if(quoteIdx === -1) {
@@ -489,7 +560,7 @@ var combinePositionPerformance = function(positions, includeSymbol) {
                         return;
                     }
                     var cQuote = quotes.getAt(quoteIdx);
-                    aggrReturn += cQuote.get('close') * cSel.get('shares');
+                    aggrValue += cQuote.get('close') * cSel.get('shares');
                 }
             } else {
                 // Old way not using timeseries data for options
@@ -501,18 +572,21 @@ var combinePositionPerformance = function(positions, includeSymbol) {
                 }
                 var adjCostBasis = cSel.get('costBasis') * Math.pow(cSel.get('annualizedReturn'), priorTerm/365.0);
                 aggrCostBasis += adjCostBasis;
-                aggrReturn += adjCostBasis * Math.pow(cSel.get('annualizedReturn'), currTerm/365.0);
+                aggrValue += adjCostBasis * Math.pow(cSel.get('annualizedReturn'), currTerm/365.0);
             }
         });
         if(aggrCostBasis > 0) {
-            compoundReturnRate *= aggrReturn/aggrCostBasis;
-            var aggrGain = lastAggrGain + aggrReturn - aggrCostBasis;
-            var cAnnualizedReturn = (Math.pow(compoundReturnRate, 365.0/(1 + daysBetween(startDate, cDate))) - 1)*100;
+            if(startCostBasis === null) {
+                startCostBasis = aggrCostBasis;
+            }
+            compoundReturnRate *= aggrValue/aggrCostBasis;
+            var aggrGain = lastAggrGain + aggrValue - aggrCostBasis;
             newPositionPerf.timeseriesData().add({
                 'date': cDate,
-                'closeValue': aggrReturn,
+                'startDate': startDate,
+                'closeValue': aggrValue,
                 'aggrGain': aggrGain,
-                'annualizedReturn': cAnnualizedReturn
+                'returnRate': compoundReturnRate
             });
             lastAggrGain = aggrGain;
         }
