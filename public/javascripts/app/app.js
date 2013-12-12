@@ -193,8 +193,8 @@ var loadPerformance = function() {
             },
             title: 'Annualized Return',
             grid: true,
-            minimum: -10.0,
-            maximum: 25.0,
+            minimum: -20.0,
+            maximum: 100.0,
             constrain: false
         }, {
             type: 'Time',
@@ -374,13 +374,20 @@ var loadPerformance = function() {
         }
 
         // Update visualization
-        var chartOriginRecord = record.aggregatePerformance.timeseriesData().first();
-        record.aggregatePerformance.timeseriesData().each(function(cRecord) {
+        var timeseriesData = record.aggregatePerformance.timeseriesData();
+        timeseriesData.sort('date', 'DESC');
+        var chartOriginRecord = timeseriesData.getAt(timeseriesData.findBy(function(cRecord) {
+            return daysBetween(cRecord.get('date'), Ext.Date.parse(Ext.Date.now(), 'time')) > 365;
+        })) || '';
+        timeseriesData.filterBy(function(cRecord) {
+            return daysBetween(cRecord.get('date'), Ext.Date.parse(Ext.Date.now(), 'time')) <= 365
+        });
+        timeseriesData.each(function(cRecord) {
             cRecord.set('annualizedReturn', chartOriginRecord);
             cRecord.set('returnPct', chartOriginRecord);
         });
-        annualizedReturnChart.bindStore(record.aggregatePerformance.timeseriesData());
-        aggrReturnChart.bindStore(record.aggregatePerformance.timeseriesData());
+        annualizedReturnChart.bindStore(timeseriesData);
+        aggrReturnChart.bindStore(timeseriesData);
     });
 
     // --- Buttons ---
