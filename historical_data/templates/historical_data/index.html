@@ -1,0 +1,11 @@
+{% block title %}{{ title }}Coronado Tags{% endblock %}
+
+{% if tags %}
+    <ul>
+        {% for tag in tags %}
+            <li><a href="{% url 'historical_data:tag' tag.id %}">{{ tag.tag }}</a></li>
+        {% endfor %}
+    </ul>
+{% else %}
+    <p>Hello, world. You're at the index.</p>
+{% endif %}
