@@ -62,7 +62,7 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'coronado',
-        'USER': 'cjordan',
+        'USER': 'postgres',
         'HOST': 'localhost',
         'PORT': '5432'
     }
